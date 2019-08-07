@@ -4,8 +4,15 @@
   "private": true,
   "dependencies": {
     "react": "^16.8.6",
+    "react-dependent-script": "^1.1.2",
     "react-dom": "^16.8.6",
-    "react-scripts": "3.0.1"
+    "react-google-autocomplete": "^1.1.0",
+    "react-map-gl": "^5.0.7",
+    "react-places-autocomplete": "^7.2.1",
+    "react-redux": "^7.1.0",
+    "react-scripts": "3.0.1",
+    "redux": "^4.0.4",
+    "redux-thunk": "^2.3.0"
   },
   "scripts": {
     "start": "react-scripts start",

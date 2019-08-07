@@ -1,26 +1,40 @@
-import React from 'react';
-import logo from './logo.svg';
+import React, { Component } from 'react';
 import './App.css';
+import 'mapbox-gl/dist/mapbox-gl.css';
+import MapContainer from './containers/MapContainer'
+import { connect } from 'react-redux'
+// import SearchBar from './components/SearchBar'
+// import { GOOGLE_TOKEN } from './vars'
+// import ReactDependentScript from 'react-dependent-script';
+// import PlacesAutocomplete from 'react-places-autocomplete';
+// import Autocomplete from 'react-google-autocomplete';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+
+// import actions!
+import { fetchSpots } from './actions'
+
+class App extends Component {
+
+  componentDidMount() {
+    this.props.fetchSpots()
+    .then(() => console.log(this.props.spots))
+  }
+
+  render() {
+    return (
+      <MapContainer />
+    );
+  }
 }
 
-export default App;
+// list all state attributes to use as props in the component
+function msp(state) {
+  return {
+    spots: state.map.spots
+  }
+}
+
+// add msp to map state to props as first argument (or null), then map dispatch actions as second argument
+export default connect(msp, {
+  fetchSpots
+})(App);
