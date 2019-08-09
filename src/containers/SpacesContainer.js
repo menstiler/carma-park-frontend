@@ -1,22 +1,15 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux'
 import { TOKEN } from '../vars.js'
-
+import SpaceCard from '../components/SpaceCard'
 // import actions!
 import { claimSpace } from '../actions'
 
 function SpacesContainer(props) {
 
   const renderSpaces = () => {
-    let filterSpaces = props.spaces.filter(space => !space.claimed)
-    return filterSpaces.map(space => {
-      return (
-        <div>
-          {space.longitude} - {space.latitude}
-          <button onClick={() => props.claimSpace(1, space.id)}>Claim</button>
-        </div>
-      )
-    })
+    let filterSpaces = props.spaces.filter(space => space.owner)
+    return filterSpaces.map(space => <SpaceCard key={space.id} space={space} />)
   }
 
   return(
@@ -33,7 +26,8 @@ function msp(state) {
     currentPosition: state.map.currentPosition,
     showPopup: state.map.showPopup,
     popupDets: state.map.popupDets,
-    spaces: state.map.spaces
+    spaces: state.map.spaces,
+    users: state.map.users,
   }
 }
 

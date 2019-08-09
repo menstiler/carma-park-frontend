@@ -1,44 +1,69 @@
 import React from 'react';
-import ReactMapGL, { Marker, CanvasOverlay, Popup } from 'react-map-gl';
+import ReactMapGL, { Marker, CanvasOverlay, Popup, GeolocateControl } from 'react-map-gl';
 import { connect } from 'react-redux'
-import { TOKEN } from '../vars.js'
 
 // import actions!
-import { changeViewport, openPopup, closePopup, updateUserMarker} from '../actions'
+import {
+  changeViewport,
+  openPopup,
+  closePopup,
+  updateUserMarker,
+  openSpace
+} from '../actions'
 
 function Map(props) {
 
   const renderMarkers = () => {
-    let filterSpaces = props.spaces.filter(space => !space.claimed)
+    let filterSpaces = props.spaces.filter(space => space.owner)
     return filterSpaces.map(space => {
       let lat = parseFloat(space.latitude)
       let lng = parseFloat(space.longitude)
-      return (
-        <Marker key={space.id} latitude={lat} longitude={lng} offsetLeft={-20} offsetTop={-10} >
-          <div onClick={() => props.openPopup([lat, lng])} className="mapMarkerStyle"></div>
-        </Marker>
-      )
+      if (props.selectedSpace && (props.selectedSpace.id === space.id) && props.selectedSpace.owner === props.selectedSpace.claimer) {
+        return (
+          <Marker key={space.id} latitude={parseFloat(props.selectedSpace.latitude)} longitude={parseFloat(props.selectedSpace.longitude)} >
+            <div onClick={() => props.openSpace(space)} onMouseOut={props.closePopup} onMouseOver={() => props.openPopup([parseFloat(props.selectedSpace.latitude), parseFloat(props.selectedSpace.longitude)], space.address)} className="mapUserMarkerStyle"></div>
+          </Marker>
+        )
+      } else {
+        return (
+          <Marker key={space.id} latitude={lat} longitude={lng} >
+            <div onClick={() => props.openSpace(space)} onMouseOut={props.closePopup} onMouseOver={() => props.openPopup([lat, lng], space.address)} className="mapMarkerStyle"></div>
+          </Marker>
+        )
+      }
     })
   }
 
   return(
     <ReactMapGL
-        mapboxApiAccessToken={TOKEN}
+        mapboxApiAccessToken={process.env.REACT_APP_MAPBOX_TOKEN}
         {...props.viewport}
         onViewportChange={(viewport) => props.changeViewport(viewport)}
       >
-      <Marker draggable={true} onDragEnd={(event) => props.updateUserMarker(event, event.lngLat)} latitude={props.currentPosition.latitude} longitude={props.currentPosition.longitude} >
-        <div onClick={() => props.openPopup([props.currentPosition.latitude, props.currentPosition.longitude], "I am here!")} className="mapUserMarkerStyle"></div>
-      </Marker>
+      {
+        props.selectedSpace && props.selectedSpace.owner === props.selectedSpace.claimer
+        ?
+        <Marker latitude={parseFloat(props.selectedSpace.latitude)} longitude={parseFloat(props.selectedSpace.longitude)} >
+          <div onMouseOut={props.closePopup} onMouseOver={() => props.openPopup([parseFloat(props.selectedSpace.latitude), parseFloat(props.selectedSpace.longitude)], "Me")} className="mapUserMarkerStyle"></div>
+        </Marker>
+        :
+        <Marker draggable={true} onDragEnd={(event) => props.updateUserMarker(event, event.lngLat)} latitude={props.currentPosition.latitude} longitude={props.currentPosition.longitude} >
+          <div onMouseOut={props.closePopup} onMouseOver={() => props.openPopup([props.currentPosition.latitude, props.currentPosition.longitude], "Me")} className="mapUserMarkerStyle"></div>
+        </Marker>
+      }
+      <GeolocateControl
+          positionOptions={{enableHighAccuracy: false}}
+          trackUserLocation={true}
+        />
       {renderMarkers()}
       {props.showPopup ? <Popup
       latitude={props.popupDets.coords[0]}
       longitude={props.popupDets.coords[1]}
-      closeButton={true}
-      closeOnClick={true}
-      onClose={props.closePopup}
+      closeButton={false}
       anchor="bottom" >
-      <div>{props.popupDets.text}</div>
+      <div>
+        {props.popupDets.text.split(' ').slice(0, 2).join(' ').replace(/,/g, '')}
+      </div>
       </Popup> : null}
     </ReactMapGL>
   )
@@ -51,7 +76,8 @@ function msp(state) {
     currentPosition: state.map.currentPosition,
     showPopup: state.map.showPopup,
     popupDets: state.map.popupDets,
-    spaces: state.map.spaces
+    spaces: state.map.spaces,
+    selectedSpace: state.map.selectedSpace
   }
 }
 
@@ -60,5 +86,6 @@ export default connect(msp, {
   changeViewport,
   openPopup,
   closePopup,
-  updateUserMarker
+  updateUserMarker,
+  openSpace
 })(Map);

@@ -1,13 +1,14 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux'
+import Search from './Search'
+import { handleFormSubmit  } from '../actions'
 
-import { handleFormChange  } from '../actions'
-
-function MapContainer(props) {
+function SpaceForm(props) {
 
   return (
-    <form onSubmit={props.handleSubmit}>
-      <input type="text" value={props.address} onChange={props.handleFormChange} />
+    <form onSubmit={(event) => props.handleFormSubmit(event, 1, props.address)}>
+      <Search />
+      <input type="submit" />
     </form>
   );
 }
@@ -19,5 +20,5 @@ function msp(state) {
 }
 
 export default connect(msp, {
-  handleFormChange
-})(MapContainer);
+  handleFormSubmit
+})(SpaceForm);
