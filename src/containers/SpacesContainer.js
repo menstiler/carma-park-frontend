@@ -8,8 +8,9 @@ import { claimSpace } from '../actions'
 function SpacesContainer(props) {
 
   const renderSpaces = () => {
-    let filterSpaces = props.spaces.filter(space => space.owner)
-    return filterSpaces.map(space => <SpaceCard key={space.id} space={space} />)
+    // let filterSpaces1 = props.spaces.filter(space => (parseFloat(space.longitude) < props.mapBounds._ne.lng) && (parseFloat(space.longitude) > props.mapBounds._sw.lng) && (space => parseFloat(space.latitude) < props.mapBounds._ne.lat && parseFloat(space.latitude) > props.mapBounds._sw.lat))
+    let filterSpaces = props.spaces.filter(space => !space.claimed && space.available || (space.available && ((space.owner !== space.claimer) && ((space.owner === props.currentUser) || (space.claimer === props.currentUser)))))
+    return filterSpaces.map(space => <SpaceCard key={space.id} space={space} routerProps={props.routerProps} />)
   }
 
   return(
@@ -23,11 +24,13 @@ function SpacesContainer(props) {
 function msp(state) {
   return {
     viewport: state.map.viewport,
+    currentUser: state.user.currentUser,
     currentPosition: state.map.currentPosition,
     showPopup: state.map.showPopup,
     popupDets: state.map.popupDets,
     spaces: state.map.spaces,
     users: state.map.users,
+    mapBounds: state.map.mapBounds
   }
 }
 

@@ -3,7 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@mapbox/react-geocoder": "^2.5.0",
     "dotenv-webpack": "^1.7.0",
+    "mapbox-gl": "^1.2.0",
     "material-ui-search-bar": "^0.4.2",
     "react": "^16.8.6",
     "react-dependent-script": "^1.1.2",
@@ -11,12 +13,15 @@
     "react-google-autocomplete": "^1.1.0",
     "react-load-script": "0.0.6",
     "react-map-gl": "^5.0.7",
+    "react-mapbox-autocomplete": "^0.2.3",
     "react-places-autocomplete": "^7.2.1",
     "react-redux": "^7.1.0",
+    "react-router": "^5.0.1",
     "react-router-dom": "^5.0.1",
     "react-scripts": "3.0.1",
     "redux": "^4.0.4",
-    "redux-thunk": "^2.3.0"
+    "redux-thunk": "^2.3.0",
+    "semantic-ui-react": "^0.87.3"
   },
   "scripts": {
     "start": "react-scripts start",

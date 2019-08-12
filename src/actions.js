@@ -11,11 +11,42 @@ import {
   OPEN_SPACE,
   SHOW_SPACE,
   CANCEL_CLAIM,
+  REMOVE_SPACE,
+  GO_TO,
+  EDIT_SPACE,
+  HANDLE_EDIT_CHANGE
 } from './types'
 
 import { GOOGLE_TOKEN } from './vars.js'
 
-const API = "http://localhost:3000/"
+const API = "http://localhost:3005/"
+
+function goToViewport(coords) {
+  return {type: GO_TO, payload: coords}
+}
+
+function editSpace(space_id, address) {
+  return function(dispatch) {
+    return fetch(API + 'spaces/' + space_id, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        "Accept": "application/json"
+      },
+      body: JSON.stringify({
+        address: address
+      })
+    })
+    .then(resp => resp.json())
+    .then(json => {
+      dispatch({type: EDIT_SPACE, payload: json})
+    })
+  }
+}
+
+function setInitialValueForForm(address) {
+  return {type: HANDLE_EDIT_CHANGE, payload: address}
+}
 
 function changeViewport(viewport) {
   return {type: CHANGE_VIEWPORT, payload: viewport}
@@ -67,27 +98,25 @@ function claimSpace(user_id, space_id) {
       })
     })
     .then(resp => resp.json())
-    .then(spot => {
-      dispatch({type: CLAIM_SPACE, payload: spot})
+    .then(space => {
+      dispatch({type: CLAIM_SPACE, payload: space})
     })
   }
 }
 
-function handleFormChange(query) {
-  return {type: HANDLE_FORM_CHANGE, payload: query}
+function handleEditChange(event) {
+  return {type: HANDLE_EDIT_CHANGE, payload: event.target.value}
 }
 
-function handleFormSubmit(event, user_id, location) {
-  debugger
-  event.preventDefault()
+function handleFormChange(address, coords) {
+  return {type: HANDLE_FORM_CHANGE, payload: {address, coords}}
+}
+
+function createSpace(user_id, address, location) {
   return function(dispatch){
-    getCoordsFromAddress(location)
+    createNewSpace(user_id, address, location)
     .then(resp => {
-      debugger
-      createNewSpace(user_id, location, resp)
-      .then(resp => {
-        dispatch({type: NEW_SPACE, payload: resp})
-      })
+      dispatch({type: NEW_SPACE, payload: resp})
     })
   }
 }
@@ -113,12 +142,43 @@ function createNewSpace(user_id, address, location) {
   })
 }
 
-function getCoordsFromAddress(address) {
-  return fetch(`https://maps.googleapis.com/maps/api/geocode/json?address=${address}&key=${process.env.REACT_APP_GOOGLE_TOKEN}`)
-  .then(resp => resp.json())
-  .then(json => {
-    return json.results[0].geometry.location
-  })
+function removeSpace(space_id) {
+  return function(dispatch) {
+    return fetch(API + 'user_spaces/remove_space', {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Accept": "application/json"
+      },
+      body: JSON.stringify({
+        space_id: space_id
+      })
+    })
+    .then(resp => resp.json())
+    .then(resp => {
+      dispatch({type: REMOVE_SPACE, payload: space_id})
+    })
+  }
+}
+
+function addSpaceAfterParking(user_id, space_id) {
+  return function(dispatch){
+    return fetch(API + 'user_spaces/add_space_after_park', {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Accept": "application/json"
+      },
+      body: JSON.stringify({
+        user_id: user_id,
+        space_id: space_id
+      })
+    })
+    .then(resp => resp.json())
+    .then(space => {
+      dispatch({type: CLAIM_SPACE, payload: space})
+    })
+  }
 }
 
 function showSpace(space) {
@@ -178,9 +238,15 @@ export {
   updateUserMarker,
   claimSpace,
   handleFormChange,
-  handleFormSubmit,
+  createSpace,
   openSpace,
   showSpace,
   cancelClaim,
-  finishedParking
+  finishedParking,
+  addSpaceAfterParking,
+  removeSpace,
+  goToViewport,
+  handleEditChange,
+  editSpace,
+  setInitialValueForForm
 }

@@ -1,16 +1,23 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux'
-
-import { claimSpace, cancelClaim } from '../actions'
+import { Link } from 'react-router-dom'
+import { claimSpace, cancelClaim, removeSpace, editSpace } from '../actions'
 
 function SpaceShow(props) {
+
+  const claimAction = () => {
+    props.claimSpace(props.currentUser, props.selectedSpace.id)
+    .then(resp => {
+      props.routerProps.history.push(`/spaces/${props.selectedSpace.id}`)
+    })
+  }
+
   return (
     <div className="panel on">
         {
           !props.selectedSpace.claimed && props.selectedSpace.owner !== props.currentUser
           ?
-          <button
-            onClick={() => props.claimSpace(props.currentUser, props.selectedSpace.id)}>
+          <button onClick={claimAction}>
             Claim
           </button>
           :
@@ -19,20 +26,30 @@ function SpaceShow(props) {
         {
           !props.selectedSpace.claimed && props.selectedSpace.owner === props.currentUser
           ?
-          <button
-            onClick={() => props.cancelSpace(props.currentUser, props.selectedSpace.id)}>
-            Cancel
-          </button>
+          <>
+            <Link to={'/'}>
+              <button
+                onClick={() => props.removeSpace(props.selectedSpace.id)}>
+                Cancel
+              </button>
+            </Link>
+            <Link to={`/spaces/edit/${props.selectedSpace.id}`}>
+              <button>
+                Edit
+              </button>
+            </Link>
+          </>
           :
           null
         }
         {
           props.selectedSpace.claimed && props.selectedSpace.claimer === props.currentUser
           ?
-          <button
-            onClick={() => props.cancelClaim(props.currentUser, props.selectedSpace.id)}>
-            Cancel
-          </button>
+          <Link to={`/spaces/${props.selectedSpace.id}`}>
+            <button>
+              Continue Parking
+            </button>
+          </Link>
           :
           null
         }
@@ -59,5 +76,7 @@ function msp(state) {
 
 export default connect(msp, {
   claimSpace,
-  cancelClaim
+  cancelClaim,
+  removeSpace,
+  editSpace
 })(SpaceShow);

@@ -54,7 +54,7 @@
   height: 100vh;
 }
 
-div.map-container > div:first-of-type {
+div.map-container > div:nth-of-type(2) {
   width: 100%!important
 }
 
@@ -84,4 +84,21 @@ div.map-container > div:first-of-type {
 
 .panel, .on {
   display: block
+}
+
+.geolocate-user {
+  position: absolute!important;
+  margin: 10!important
+}
+
+.addSpace.ui.icon.button {
+  position: absolute;
+  right:0;
+  bottom: 0;
+  font-size: 1.5rem;
+  margin: 20px;
+}
+
+.addSpace.ui.icon.button:hover {
+  background-color: red;
 }

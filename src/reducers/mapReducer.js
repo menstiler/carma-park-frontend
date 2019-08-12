@@ -8,6 +8,9 @@ import {
   NEW_SPACE,
   OPEN_SPACE,
   SHOW_SPACE,
+  REMOVE_SPACE,
+  GO_TO,
+  EDIT_SPACE
 } from '../types'
 
 const defaultState = {
@@ -54,9 +57,26 @@ function mapReducer(prevState=defaultState, action) {
       let newSpaces = [...prevState.spaces].map(spot => { if (spot.id !== foundSpot.id) { return spot } else { return action.payload }})
       return {...prevState, spaces: newSpaces, selectedSpace: action.payload}
     case NEW_SPACE:
-      return {...prevState, spaces: [...prevState.spaces, action.payload]}
+      return {...prevState, spaces: [...prevState.spaces, action.payload], selectedSpace: action.payload}
     case SHOW_SPACE:
-      return {...prevState, selectedSpace: action.payload}
+      return {...prevState, selectedSpace: action.payload, showPopup: true, popupDets: {
+        text: action.payload.address,
+        coords: [parseFloat(action.payload.latitude), parseFloat(action.payload.longitude)]
+      }}
+    case REMOVE_SPACE:
+      let foundSpace = prevState.spaces.find(space => space.id === action.payload)
+      let spacesFiltered = [...prevState.spaces].filter(space => space.id !== foundSpace.id)
+      return {...prevState, spaces: spacesFiltered}
+    case GO_TO:
+      return {...prevState, viewport: {
+        ...prevState.viewport,
+        latitude: parseFloat(action.payload[0]),
+        longitude: parseFloat(action.payload[1])
+      }}
+    case EDIT_SPACE:
+      let updatedSpace = prevState.spaces.find(space => space.id === action.payload.id)
+      let updatedSpaces = [...prevState.spaces].map(space => { if (space.id !== updatedSpace.id) { return space } else { return action.payload }})
+      return {...prevState, spaces: updatedSpaces}
     default:
       return {...prevState}
   }

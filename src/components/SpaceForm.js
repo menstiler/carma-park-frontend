@@ -1,24 +1,36 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux'
 import Search from './Search'
-import { handleFormSubmit  } from '../actions'
+import Map from './Map'
+import { createSpace  } from '../actions'
 
 function SpaceForm(props) {
 
+  const handleFormSubmit = (event) => {
+    event.preventDefault()
+    props.createSpace(props.currentUser, props.address, props.coords)
+    props.routerProps.history.push('/')
+  }
+
   return (
-    <form onSubmit={(event) => props.handleFormSubmit(event, 1, props.address)}>
-      <Search />
-      <input type="submit" />
+    <>
+    <form onSubmit={(event) => handleFormSubmit(event)}>
+      <Search createSpace={true} />
+      <Map createSpace={true} />
+      <input type="submit" value="Add Parking Spot" />
     </form>
+    </>
   );
 }
 
 function msp(state) {
   return {
-    address: state.form.address
+    currentUser: state.user.currentUser,
+    address: state.form.address,
+    coords: state.form.coords
   }
 }
 
 export default connect(msp, {
-  handleFormSubmit
+  createSpace
 })(SpaceForm);

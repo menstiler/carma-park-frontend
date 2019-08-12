@@ -4,20 +4,30 @@ import { connect } from 'react-redux'
 import { showSpace, claimSpace } from '../actions'
 import SpaceShow from './SpaceShow'
 
-function SpaceCard(props) {
-  return (
-    <>
-      <button className="accordion" onClick={() => props.showSpace(props.space)}>
-        {props.space.address} - {props.users.find(user => user.id === props.space.owner).name}
+class SpaceCard extends React.Component {
+
+  componentDidUpdate() {
+    if (this.props.selectedSpace && this.props.selectedSpace.id === this.props.space.id) {
+      let element = document.querySelector(`[data-id="${this.props.space.id}"]`)
+      element.scrollIntoView({ behavior: 'smooth' })
+    }
+  }
+
+  render() {
+    return (
+      <>
+      <button data-id={this.props.space.id} className="accordion" onClick={() => this.props.showSpace(this.props.space)}>
+      {this.props.space.address} - {this.props.users.find(user => user.id === this.props.space.owner).name}
       </button>
-      {props.selectedSpace && props.selectedSpace.id === props.space.id
+      {this.props.selectedSpace && this.props.selectedSpace.id === this.props.space.id
         ?
-        <SpaceShow />
+        <SpaceShow routerProps={this.props.routerProps} />
         :
         null
       }
-    </>
-  )
+      </>
+    )
+  }
 }
 
 function msp(state) {

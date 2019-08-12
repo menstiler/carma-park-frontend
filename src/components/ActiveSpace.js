@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
-
-import { cancelClaim, finishedParking } from '../actions'
+import { Link } from 'react-router-dom'
+import { cancelClaim, finishedParking, addSpaceAfterParking, removeSpace } from '../actions'
 
 function ActiveSpace(props) {
   return (
@@ -19,21 +19,27 @@ function ActiveSpace(props) {
         props.selectedSpace.owner === props.currentUser
         ?
         <>
-          <button
-            onClick={() => props.addSpaceAfterPark(props.currentUser, props.selectedSpace.id)}>
-            Add Parking Spot
-          </button>
-          <button
-            onClick={() => props.addSpaceAfterPark(props.currentUser, props.selectedSpace.id)}>
-            Find New Parking Spot
-          </button>
+          <Link to={"/"} >
+            <button
+              onClick={() => props.addSpaceAfterParking(props.currentUser, props.selectedSpace.id)}>
+              Add Parking Spot
+            </button>
+          </Link>
+          <Link to={"/"} >
+            <button
+              onClick={() => props.removeSpace(props.selectedSpace.id)}>
+              Find New Parking Spot
+            </button>
+          </Link>
         </>
         :
         <>
-          <button
-            onClick={() => props.cancelClaim(props.currentUser, props.selectedSpace.id)}>
-            Cancel
-          </button>
+          <Link to={"/"} >
+            <button
+              onClick={() => props.cancelClaim(props.currentUser, props.selectedSpace.id)}>
+              Cancel
+            </button>
+          </Link>
           <button
             onClick={() => props.finishedParking(props.currentUser, props.selectedSpace.id)}>
             Parked
@@ -55,5 +61,7 @@ function msp(state) {
 
 export default connect(msp, {
   cancelClaim,
-  finishedParking
+  finishedParking,
+  addSpaceAfterParking,
+  removeSpace
 })(ActiveSpace);

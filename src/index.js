@@ -5,11 +5,11 @@ import App from './App';
 import { createStore, combineReducers, applyMiddleware } from 'redux'
 import thunk from 'redux-thunk'
 import { BrowserRouter as Router, Route } from 'react-router-dom'
-// import all reducers
 import mapReducer from './reducers/mapReducer'
 import formReducer from './reducers/formReducer'
 import userReducer from './reducers/userReducer'
 import { Provider } from 'react-redux'
+
 require('dotenv').config()
 
 // combine all reducers, add them as key-value pairs to combineReducers

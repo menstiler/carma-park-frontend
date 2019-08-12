@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import './App.css';
 import 'mapbox-gl/dist/mapbox-gl.css';
-import MapContainer from './containers/MapContainer'
+import MainContainer from './containers/MainContainer'
 import { connect } from 'react-redux'
 
 
@@ -15,7 +15,8 @@ class App extends Component {
 
   render() {
     return (
-      <MapContainer />
+
+      <MainContainer />
     );
   }
 }
