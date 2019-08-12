@@ -24,7 +24,6 @@ class Map extends React.Component {
   }
 
   renderMarkers = () => {
-    // let filterSpaces1 = this.props.spaces.filter(space => (parseFloat(space.longitude) < this.props.mapBounds._ne.lng) && (parseFloat(space.longitude) > this.props.mapBounds._sw.lng) && (space => parseFloat(space.latitude) < this.props.mapBounds._ne.lat && parseFloat(space.latitude) > this.props.mapBounds._sw.lat))
     let filterSpaces = this.props.spaces.filter(space => !space.claimed && space.available || (space.available && ((space.owner !== space.claimer) && ((space.owner === this.props.currentUser) || (space.claimer === this.props.currentUser)))))
     return filterSpaces.map(space => {
       let lat = parseFloat(space.latitude)

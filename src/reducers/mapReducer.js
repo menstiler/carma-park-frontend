@@ -55,7 +55,7 @@ function mapReducer(prevState=defaultState, action) {
     case CLAIM_SPACE:
       let foundSpot = prevState.spaces.find(space => space.id === action.payload.id)
       let newSpaces = [...prevState.spaces].map(spot => { if (spot.id !== foundSpot.id) { return spot } else { return action.payload }})
-      return {...prevState, spaces: newSpaces, selectedSpace: action.payload}
+      return {...prevState, spaces: newSpaces, selectedSpace: action.payload, showPopup: false}
     case NEW_SPACE:
       return {...prevState, spaces: [...prevState.spaces, action.payload], selectedSpace: action.payload}
     case SHOW_SPACE:
@@ -66,17 +66,13 @@ function mapReducer(prevState=defaultState, action) {
     case REMOVE_SPACE:
       let foundSpace = prevState.spaces.find(space => space.id === action.payload)
       let spacesFiltered = [...prevState.spaces].filter(space => space.id !== foundSpace.id)
-      return {...prevState, spaces: spacesFiltered}
+      return {...prevState, spaces: spacesFiltered, showPopup: false}
     case GO_TO:
       return {...prevState, viewport: {
         ...prevState.viewport,
         latitude: parseFloat(action.payload[0]),
         longitude: parseFloat(action.payload[1])
       }}
-    case EDIT_SPACE:
-      let updatedSpace = prevState.spaces.find(space => space.id === action.payload.id)
-      let updatedSpaces = [...prevState.spaces].map(space => { if (space.id !== updatedSpace.id) { return space } else { return action.payload }})
-      return {...prevState, spaces: updatedSpaces}
     default:
       return {...prevState}
   }

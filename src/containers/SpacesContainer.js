@@ -2,14 +2,18 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux'
 import { TOKEN } from '../vars.js'
 import SpaceCard from '../components/SpaceCard'
-// import actions!
 import { claimSpace } from '../actions'
+// import actions!
+
 
 function SpacesContainer(props) {
 
   const renderSpaces = () => {
-    // let filterSpaces1 = props.spaces.filter(space => (parseFloat(space.longitude) < props.mapBounds._ne.lng) && (parseFloat(space.longitude) > props.mapBounds._sw.lng) && (space => parseFloat(space.latitude) < props.mapBounds._ne.lat && parseFloat(space.latitude) > props.mapBounds._sw.lat))
-    let filterSpaces = props.spaces.filter(space => !space.claimed && space.available || (space.available && ((space.owner !== space.claimer) && ((space.owner === props.currentUser) || (space.claimer === props.currentUser)))))
+    let sortedSpaces = props.spaces
+    if (props.distanceShow) {
+      sortedSpaces = sortedSpaces.filter(space => parseInt(space.distance) <= parseInt(props.distanceShow))
+    }
+    let filterSpaces = sortedSpaces.filter(space => !space.claimed && space.available || (space.available && ((space.owner !== space.claimer) && ((space.owner === props.currentUser) || (space.claimer === props.currentUser)))))
     return filterSpaces.map(space => <SpaceCard key={space.id} space={space} routerProps={props.routerProps} />)
   }
 
@@ -30,7 +34,7 @@ function msp(state) {
     popupDets: state.map.popupDets,
     spaces: state.map.spaces,
     users: state.map.users,
-    mapBounds: state.map.mapBounds
+    distanceShow: state.form.distanceShow
   }
 }
 

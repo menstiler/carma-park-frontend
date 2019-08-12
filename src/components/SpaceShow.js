@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
-import { claimSpace, cancelClaim, removeSpace, editSpace } from '../actions'
+import { claimSpace, cancelClaim, removeSpace } from '../actions'
 
 function SpaceShow(props) {
 
@@ -26,19 +26,12 @@ function SpaceShow(props) {
         {
           !props.selectedSpace.claimed && props.selectedSpace.owner === props.currentUser
           ?
-          <>
-            <Link to={'/'}>
-              <button
-                onClick={() => props.removeSpace(props.selectedSpace.id)}>
-                Cancel
-              </button>
-            </Link>
-            <Link to={`/spaces/edit/${props.selectedSpace.id}`}>
-              <button>
-                Edit
-              </button>
-            </Link>
-          </>
+          <Link to={'/'}>
+            <button
+              onClick={() => props.removeSpace(props.selectedSpace.id)}>
+              Cancel
+            </button>
+          </Link>
           :
           null
         }
@@ -77,6 +70,5 @@ function msp(state) {
 export default connect(msp, {
   claimSpace,
   cancelClaim,
-  removeSpace,
-  editSpace
+  removeSpace
 })(SpaceShow);

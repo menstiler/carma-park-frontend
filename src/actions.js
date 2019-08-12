@@ -14,10 +14,9 @@ import {
   REMOVE_SPACE,
   GO_TO,
   EDIT_SPACE,
-  HANDLE_EDIT_CHANGE
+  HANDLE_EDIT_CHANGE,
+  SHOW_DISTANCE
 } from './types'
-
-import { GOOGLE_TOKEN } from './vars.js'
 
 const API = "http://localhost:3005/"
 
@@ -25,27 +24,8 @@ function goToViewport(coords) {
   return {type: GO_TO, payload: coords}
 }
 
-function editSpace(space_id, address) {
-  return function(dispatch) {
-    return fetch(API + 'spaces/' + space_id, {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-        "Accept": "application/json"
-      },
-      body: JSON.stringify({
-        address: address
-      })
-    })
-    .then(resp => resp.json())
-    .then(json => {
-      dispatch({type: EDIT_SPACE, payload: json})
-    })
-  }
-}
-
-function setInitialValueForForm(address) {
-  return {type: HANDLE_EDIT_CHANGE, payload: address}
+function updateDistanceFilter(event) {
+  return {type: SHOW_DISTANCE, payload: event.target.value}
 }
 
 function changeViewport(viewport) {
@@ -70,18 +50,46 @@ function updateUserMarker(coords, lngLat) {
   return {type: UPDATE_USER_MARKER, payload: lngLat}
 }
 
-function fetchSpots() {
+function fetchSpots(currentPosition) {
   return function(dispatch){
     return fetch(API + 'spaces')
     .then(resp => resp.json())
     .then(spaces => {
+      const addDistances = spaces.map(space => {
+        let distance = calDistance(currentPosition.latitude, currentPosition.longitude, parseFloat(space.latitude), parseFloat(space.longitude))
+        return {...space, distance: distance}
+      })
+      let sortedSpaces = addDistances.sort(function(a, b) { return a.distance - b.distance })
       fetch(API + 'users')
       .then(resp => resp.json())
       .then(users => {
-        dispatch({type: FETCH_SPOTS, payload: {spaces: spaces, users: users}})
+        dispatch({type: FETCH_SPOTS, payload: {spaces: sortedSpaces, users: users}})
       })
     })
   }
+}
+
+// calculate distance from origin, this function is from: https://www.geodatasource.com/developers/javascript
+function calDistance(lat1, lon1, lat2, lon2, unit) {
+	if ((lat1 == lat2) && (lon1 == lon2)) {
+		return 0;
+	}
+	else {
+		var radlat1 = Math.PI * lat1/180;
+		var radlat2 = Math.PI * lat2/180;
+		var theta = lon1-lon2;
+		var radtheta = Math.PI * theta/180;
+		var dist = Math.sin(radlat1) * Math.sin(radlat2) + Math.cos(radlat1) * Math.cos(radlat2) * Math.cos(radtheta);
+		if (dist > 1) {
+			dist = 1;
+		}
+		dist = Math.acos(dist);
+		dist = dist * 180/Math.PI;
+		dist = dist * 60 * 1.1515;
+		if (unit=="K") { dist = dist * 1.609344 }
+		if (unit=="N") { dist = dist * 0.8684 }
+		return dist;
+	}
 }
 
 function claimSpace(user_id, space_id) {
@@ -104,16 +112,13 @@ function claimSpace(user_id, space_id) {
   }
 }
 
-function handleEditChange(event) {
-  return {type: HANDLE_EDIT_CHANGE, payload: event.target.value}
-}
-
 function handleFormChange(address, coords) {
   return {type: HANDLE_FORM_CHANGE, payload: {address, coords}}
 }
 
 function createSpace(user_id, address, location) {
   return function(dispatch){
+    dispatch({type: HANDLE_SUBMIT})
     createNewSpace(user_id, address, location)
     .then(resp => {
       dispatch({type: NEW_SPACE, payload: resp})
@@ -246,7 +251,5 @@ export {
   addSpaceAfterParking,
   removeSpace,
   goToViewport,
-  handleEditChange,
-  editSpace,
-  setInitialValueForForm
+  updateDistanceFilter
 }

@@ -10,12 +10,11 @@ import { fetchSpots } from './actions'
 class App extends Component {
 
   componentDidMount() {
-    this.props.fetchSpots()
+    this.props.fetchSpots(this.props.currentPosition)
   }
 
   render() {
     return (
-
       <MainContainer />
     );
   }
@@ -23,7 +22,8 @@ class App extends Component {
 
 function msp(state) {
   return {
-    spots: state.map.spots
+    spots: state.map.spots,
+    currentPosition: state.map.currentPosition
   }
 }
 
