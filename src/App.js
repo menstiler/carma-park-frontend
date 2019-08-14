@@ -2,8 +2,12 @@ import React, { Component } from 'react';
 import './App.css';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import MainContainer from './containers/MainContainer'
+import Navbar from './components/Navbar'
 import { connect } from 'react-redux'
-import { fetchSpots, setCurrentPosition, updateTimer } from './actions'
+import { ActionCable } from 'react-actioncable-provider'
+import Cable from './components/Cable'
+
+import { fetchSpots, setCurrentPosition, updateTimer, fetchChats, handleReceivedMessage, handleReceivedChatroom } from './actions'
 
 let mainInterval
 
@@ -16,6 +20,7 @@ class App extends Component {
     } else {
       this.props.setCurrentPosition([-74.01500, 40.705341])
     }
+    this.props.fetchChats()
     mainInterval = setInterval(() => {
       this.props.updateTimer()
     }, 1000)
@@ -32,9 +37,21 @@ class App extends Component {
   }
 
   render() {
-    // console.log(this.props.timer)
     return (
-      <MainContainer />
+      <>
+        <ActionCable
+          channel={{ channel: 'ChatroomsChannel' }}
+          onReceived={this.props.handleReceivedChatroom}
+        />
+        {this.props.chats.length ? (
+          <Cable
+          chatrooms={this.props.chats}
+          handleReceivedMessage={this.props.handleReceivedMessage}
+          />
+        ) : null}
+        <Navbar />
+        <MainContainer />
+      </>
     );
   }
 }
@@ -43,12 +60,16 @@ function msp(state) {
   return {
     spots: state.map.spots,
     currentPosition: state.map.currentPosition,
-    timer: state.user.timer
+    timer: state.user.timer,
+    chats: state.user.chats,
   }
 }
 
 export default connect(msp, {
   fetchSpots,
   setCurrentPosition,
-  updateTimer
+  updateTimer,
+  fetchChats,
+  handleReceivedMessage,
+  handleReceivedChatroom,
 })(App);

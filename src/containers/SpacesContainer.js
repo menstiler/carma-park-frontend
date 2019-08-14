@@ -42,7 +42,3 @@ function msp(state) {
 export default connect(msp, {
   claimSpace
 })(SpacesContainer);
-
-export {
-  SpacesContainer
-};

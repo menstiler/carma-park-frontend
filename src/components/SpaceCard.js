@@ -46,7 +46,7 @@ class SpaceCard extends React.Component {
 
   renderDeadline = () => {
     if (this.state.time) {
-      console.log("TIMER", moment(this.state.time.diff(this.props.timer)))
+      // console.log("TIMER", moment(this.state.time.diff(this.props.timer)))
       return `Expiring in ${moment.duration(this.state.time.diff(this.props.timer)).humanize()}`
     } else {
       return null
@@ -58,8 +58,8 @@ class SpaceCard extends React.Component {
       <>
       <button data-id={this.props.space.id} className="accordion" onClick={() => this.props.showSpace(this.props.space)}>
       {this.props.space.address} - {this.props.users.find(user => user.id === this.props.space.owner).name}
-      </button>
       <p>{this.renderDeadline()}</p>
+      </button>
       {this.props.selectedSpace && this.props.selectedSpace.id === this.props.space.id
         ?
         <SpaceShow routerProps={this.props.routerProps} />

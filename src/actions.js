@@ -18,13 +18,58 @@ import {
   SHOW_DISTANCE,
   SET_POSITION,
   UPDATE_TIMER,
-  TOGGLE_SHOW_DIRECTIONS
+  TOGGLE_SHOW_DIRECTIONS,
+  UPDATE_CHATS,
+  OPEN_CHAT,
+  ADD_CHAT,
+  ADD_MESSAGE,
+  ADD_USERS
 } from './types'
 
 const API = "http://localhost:3005/"
 
+const HEADERS = {
+  'Content-Type': 'application/json',
+  Accept: 'application/json',
+};
+
 function goToViewport(coords) {
   return {type: GO_TO, payload: coords}
+}
+
+function fetchChats() {
+  return function(dispatch) {
+    return fetch(`${API}chatrooms`)
+    .then(res => res.json())
+    .then(chatrooms => {
+      dispatch({type: UPDATE_CHATS, payload: chatrooms})
+    });
+  }
+}
+
+function handleReceivedChatroom(response) {
+  const { chatroom } = response;
+  return {type: ADD_CHAT, payload: chatroom}
+};
+
+function handleReceivedMessage(response) {
+  const { message } = response;
+  return {type: ADD_MESSAGE, payload: message }
+};
+
+function openChat(space_id) {
+  return function(dispatch) {
+    let chatroom = {space: space_id}
+    return fetch(`${API}chatrooms`, {
+      method: 'POST',
+      headers: HEADERS,
+      body: JSON.stringify(chatroom)
+    })
+    .then(resp => resp.json)
+    .then(json => {
+      dispatch({type: OPEN_CHAT, payload: space_id})
+    })
+  }
 }
 
 function updateTimer() {
@@ -202,7 +247,10 @@ function addSpaceAfterParking(user_id, space_id) {
 }
 
 function showSpace(space) {
-  return {type: SHOW_SPACE, payload: space}
+  return function(dispatch) {
+    dispatch({type: SHOW_SPACE, payload: space})
+    dispatch({type: GO_TO, payload: [space.latitude, space.longitude]})
+  }
 }
 
 function cancelClaim(user_id, space_id) {
@@ -269,5 +317,9 @@ export {
   updateDistanceFilter,
   setCurrentPosition,
   updateTimer,
-  toggleShowDirections
+  toggleShowDirections,
+  fetchChats,
+  openChat,
+  handleReceivedMessage,
+  handleReceivedChatroom,
 }

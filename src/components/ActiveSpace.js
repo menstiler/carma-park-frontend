@@ -1,9 +1,26 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
-import { cancelClaim, finishedParking, addSpaceAfterParking, removeSpace, toggleShowDirections } from '../actions'
+import MessagesArea from './MessagesArea'
+import { cancelClaim, finishedParking, addSpaceAfterParking, removeSpace, toggleShowDirections, openChat } from '../actions'
 
 function ActiveSpace(props) {
+
+  const renderChat = () => {
+    if (props.activeChat && (props.activeChat === props.selectedSpace.id)) {
+      return <MessagesArea
+        chatroom={findActiveChatroom(
+        props.chats,
+        props.activeChat
+        )}
+      />
+    } else if (props.chats.find(chat => chat.space === props.selectedSpace.id)) {
+      return <button onClick={() => props.openChat(props.selectedSpace.id)}>Continue Chat</button>
+    } else {
+      return <button onClick={() => props.openChat(props.selectedSpace.id)}>Chat</button>
+    }
+  }
+
   return (
     <div>
       <p>{props.selectedSpace.address}</p>
@@ -15,6 +32,9 @@ function ActiveSpace(props) {
         null
       }
       <p>Claimed By: {props.users.find(user => user.id === props.selectedSpace.claimer).name}</p>
+      {
+        renderChat()
+      }
       {
         props.selectedSpace.owner === props.currentUser
         ?
@@ -51,13 +71,20 @@ function ActiveSpace(props) {
   )
 }
 
+const findActiveChatroom = (chatroooms, activeChatroom) => {
+  return chatroooms.find(
+    chatroom => chatroom.id === activeChatroom
+  );
+};
 
 function msp(state) {
   return {
     users: state.map.users,
     selectedSpace: state.map.selectedSpace,
     currentUser: state.user.currentUser,
-    showDirection: state.map.showDirection
+    showDirection: state.map.showDirection,
+    chats: state.user.chats,
+    activeChat: state.user.activeChat
   }
 }
 
@@ -66,5 +93,6 @@ export default connect(msp, {
   finishedParking,
   addSpaceAfterParking,
   removeSpace,
-  toggleShowDirections
+  toggleShowDirections,
+  openChat
 })(ActiveSpace);

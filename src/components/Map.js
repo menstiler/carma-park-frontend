@@ -44,6 +44,22 @@ class Map extends React.Component {
     })
   }
 
+  renderPopup = () => {
+    if (!this.props.selectedSpace.claimed) {
+      return (
+        <Popup
+        latitude={this.props.popupDets.coords[0]}
+        longitude={this.props.popupDets.coords[1]}
+        closeButton={false}
+        anchor="bottom" >
+        <div>
+        {this.props.popupDets.text.split(' ').slice(0, 2).join(' ').replace(/,/g, '')}
+        </div>
+        </Popup>
+      )
+    }
+  }
+
   render() {
     return(
       <ReactMapGL
@@ -79,15 +95,9 @@ class Map extends React.Component {
         this.renderMarkers()
       }
       {
-        this.props.showPopup ? <Popup
-        latitude={this.props.popupDets.coords[0]}
-        longitude={this.props.popupDets.coords[1]}
-        closeButton={false}
-        anchor="bottom" >
-        <div>
-        {this.props.popupDets.text.split(' ').slice(0, 2).join(' ').replace(/,/g, '')}
-        </div>
-        </Popup> : null
+        this.props.showPopup ?
+        this.renderPopup()
+        : null
       }
       </ReactMapGL>
       )

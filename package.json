@@ -10,6 +10,7 @@
     "material-ui-search-bar": "^0.4.2",
     "moment": "^2.24.0",
     "react": "^16.8.6",
+    "react-actioncable-provider": "^2.0.0",
     "react-dependent-script": "^1.1.2",
     "react-dom": "^16.8.6",
     "react-google-autocomplete": "^1.1.0",

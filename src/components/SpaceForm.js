@@ -57,7 +57,7 @@ class SpaceForm extends React.Component {
           {
             this.state.hours || this.state.minutes
             ?
-            `Parking spot will be availbale for ${this.renderOutput()}`
+            `Parking spot will be available for ${this.renderOutput()}`
             :
             null
           }

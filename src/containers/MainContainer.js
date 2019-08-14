@@ -7,10 +7,6 @@ import {  } from '../actions'
 
 function MainContainer(props) {
 
-  const changeText = () => {
-
-  }
-
   return (
     <Switch>
       <Route path="/add_space" render={(routerProps) => <SpaceForm routerProps={routerProps} />} />
