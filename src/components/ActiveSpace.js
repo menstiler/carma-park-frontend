@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
-import { cancelClaim, finishedParking, addSpaceAfterParking, removeSpace } from '../actions'
+import { cancelClaim, finishedParking, addSpaceAfterParking, removeSpace, toggleShowDirections } from '../actions'
 
 function ActiveSpace(props) {
   return (
@@ -44,6 +44,7 @@ function ActiveSpace(props) {
             onClick={() => props.finishedParking(props.currentUser, props.selectedSpace.id)}>
             Parked
           </button>
+          <button onClick={props.toggleShowDirections}>{props.showDirection ? "Hide Directions" : "Show Directions"}</button>
         </>
       }
     </div>
@@ -55,7 +56,8 @@ function msp(state) {
   return {
     users: state.map.users,
     selectedSpace: state.map.selectedSpace,
-    currentUser: state.user.currentUser
+    currentUser: state.user.currentUser,
+    showDirection: state.map.showDirection
   }
 }
 
@@ -63,5 +65,6 @@ export default connect(msp, {
   cancelClaim,
   finishedParking,
   addSpaceAfterParking,
-  removeSpace
+  removeSpace,
+  toggleShowDirections
 })(ActiveSpace);

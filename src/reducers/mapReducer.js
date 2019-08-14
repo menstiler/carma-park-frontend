@@ -11,7 +11,8 @@ import {
   REMOVE_SPACE,
   GO_TO,
   EDIT_SPACE,
-  SET_POSITION
+  SET_POSITION,
+  TOGGLE_SHOW_DIRECTIONS
 } from '../types'
 
 const defaultState = {
@@ -34,7 +35,8 @@ const defaultState = {
   },
   spaces: [],
   users: [],
-  selectedSpace: null
+  selectedSpace: null,
+  showDirection: true
 }
 
 function mapReducer(prevState=defaultState, action) {
@@ -77,6 +79,8 @@ function mapReducer(prevState=defaultState, action) {
       }}
     case SET_POSITION:
       return {...prevState, currentPosition: {...prevState.currentPosition, longitude: action.payload[0], latitude: action.payload[1]}, viewport: {...prevState.viewport, longitude: action.payload[0], latitude: action.payload[1] }}
+    case TOGGLE_SHOW_DIRECTIONS:
+      return {...prevState, showDirection: !prevState.showDirection}
     default:
       return {...prevState}
   }

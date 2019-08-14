@@ -17,7 +17,8 @@ import {
   HANDLE_EDIT_CHANGE,
   SHOW_DISTANCE,
   SET_POSITION,
-  UPDATE_TIMER
+  UPDATE_TIMER,
+  TOGGLE_SHOW_DIRECTIONS
 } from './types'
 
 const API = "http://localhost:3005/"
@@ -28,6 +29,10 @@ function goToViewport(coords) {
 
 function updateTimer() {
   return {type: UPDATE_TIMER}
+}
+
+function toggleShowDirections() {
+  return {type: TOGGLE_SHOW_DIRECTIONS}
 }
 function setCurrentPosition(coords) {
   return {type: SET_POSITION, payload: coords}
@@ -263,5 +268,6 @@ export {
   goToViewport,
   updateDistanceFilter,
   setCurrentPosition,
-  updateTimer
+  updateTimer,
+  toggleShowDirections
 }

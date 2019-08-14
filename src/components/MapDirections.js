@@ -3,11 +3,9 @@ import { connect } from 'react-redux'
 import mapboxgl from 'mapbox-gl';
 import MapboxDirections from '@mapbox/mapbox-gl-directions/dist/mapbox-gl-directions'
 
-class MapDirections extends React.Component {
+import {  } from '../actions'
 
-  state = {
-    showDirection: false
-  }
+class MapDirections extends React.Component {
 
   componentDidMount () {
     const script1 = document.createElement("script");
@@ -24,7 +22,7 @@ class MapDirections extends React.Component {
       container: this.mapContainer,
       style: 'mapbox://styles/mapbox/streets-v11',
       center: [this.props.viewport.longitude, this.props.viewport.latitude],
-      zoom: 15
+      zoom: 10
     });
 
     this.map.on('load', () => {
@@ -37,25 +35,14 @@ class MapDirections extends React.Component {
       document.querySelector('.directions-control.directions-control-inputs').style.display = "none"
     });
 
-    this.timeout = setTimeout(() => {
-      document.querySelector('.directions-control.directions-control-directions').style.display = "none"
-    }, 3000)
-
-  }
-
-  componentWillUpdate() {
-    document.querySelector('.directions-control.directions-control-directions').style.display = this.state.showDirection ? "block" : "none"
   }
 
   componentWillUnmount() {
-    clearTimeout(this.timeout)
     this.map.remove();
   }
 
-  showDirections = () => {
-    this.setState({
-      showDirection: true
-    })
+  componentDidUpdate() {
+    document.querySelector('.directions-control.directions-control-directions').style.display = this.props.showDirection ? "block" : "none"
   }
 
   render() {
@@ -67,9 +54,7 @@ class MapDirections extends React.Component {
     };
 
     return (
-      <div style={style} ref={el => (this.mapContainer = el)}>
-      <button onClick={this.showDirections}>Show Directions</button>
-      </div>
+      <div style={style} ref={el => (this.mapContainer = el)}></div>
     )
   }
 }
@@ -78,10 +63,10 @@ function msp(state) {
   return {
     currentPosition: state.map.currentPosition,
     viewport: state.map.viewport,
-    selectedSpace: state.map.selectedSpace
+    selectedSpace: state.map.selectedSpace,
+    showDirection: state.map.showDirection
   }
 }
 
 export default connect(msp, {
-
 })(MapDirections);
