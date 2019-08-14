@@ -4,8 +4,10 @@ import { connect } from 'react-redux'
 import SpacesContainer from './SpacesContainer'
 import SpaceForm from '../components/SpaceForm'
 import ActiveSpace from '../components/ActiveSpace'
+import MapDirections from '../components/MapDirections'
 import FilterContainer from './FilterContainer'
 import { Route, Switch, Link } from 'react-router-dom'
+
 import {  } from '../actions'
 import { Button } from 'semantic-ui-react'
 
@@ -20,7 +22,7 @@ function MapContainer(props) {
               <ActiveSpace />
             </div>
             <div className="map-container">
-              <Map />
+              <MapDirections />
             </div>
           </div>
         )}} />

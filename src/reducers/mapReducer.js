@@ -10,7 +10,8 @@ import {
   SHOW_SPACE,
   REMOVE_SPACE,
   GO_TO,
-  EDIT_SPACE
+  EDIT_SPACE,
+  SET_POSITION
 } from '../types'
 
 const defaultState = {
@@ -22,8 +23,9 @@ const defaultState = {
     zoom: 15
   },
   currentPosition: {
-    latitude: 40.705341,
-    longitude: -74.01500,
+    latitude: 40.7052529,
+    longitude: -74.016259,
+    address: "11 Broadway, 11 Broadway, New York, New York 10004, United States"
   },
   showPopup: false,
   popupDets: {
@@ -73,6 +75,8 @@ function mapReducer(prevState=defaultState, action) {
         latitude: parseFloat(action.payload[0]),
         longitude: parseFloat(action.payload[1])
       }}
+    case SET_POSITION:
+      return {...prevState, currentPosition: {...prevState.currentPosition, longitude: action.payload[0], latitude: action.payload[1]}, viewport: {...prevState.viewport, longitude: action.payload[0], latitude: action.payload[1] }}
     default:
       return {...prevState}
   }

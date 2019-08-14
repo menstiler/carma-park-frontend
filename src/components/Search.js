@@ -19,6 +19,7 @@ function Search(props) {
           width: '200px',
           margin: '0 auto',
           maxWidth: 800,
+          background: 'black'
         }}
         publicKey={process.env.REACT_APP_MAPBOX_TOKEN}
         inputClass='form-control search'

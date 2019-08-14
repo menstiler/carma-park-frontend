@@ -15,13 +15,22 @@ import {
   GO_TO,
   EDIT_SPACE,
   HANDLE_EDIT_CHANGE,
-  SHOW_DISTANCE
+  SHOW_DISTANCE,
+  SET_POSITION,
+  UPDATE_TIMER
 } from './types'
 
 const API = "http://localhost:3005/"
 
 function goToViewport(coords) {
   return {type: GO_TO, payload: coords}
+}
+
+function updateTimer() {
+  return {type: UPDATE_TIMER}
+}
+function setCurrentPosition(coords) {
+  return {type: SET_POSITION, payload: coords}
 }
 
 function updateDistanceFilter(event) {
@@ -116,22 +125,23 @@ function handleFormChange(address, coords) {
   return {type: HANDLE_FORM_CHANGE, payload: {address, coords}}
 }
 
-function createSpace(user_id, address, location) {
+function createSpace(user_id, address, location, time) {
   return function(dispatch){
     dispatch({type: HANDLE_SUBMIT})
-    createNewSpace(user_id, address, location)
+    createNewSpace(user_id, address, location, time)
     .then(resp => {
       dispatch({type: NEW_SPACE, payload: resp})
     })
   }
 }
 
-function createNewSpace(user_id, address, location) {
+function createNewSpace(user_id, address, location, time) {
   let space = {
     owner: user_id,
     longitude: location.lng,
     latitude: location.lat,
-    address: address
+    address: address,
+    deadline: time
   }
   return fetch(API + 'spaces', {
     method: "POST",
@@ -251,5 +261,7 @@ export {
   addSpaceAfterParking,
   removeSpace,
   goToViewport,
-  updateDistanceFilter
+  updateDistanceFilter,
+  setCurrentPosition,
+  updateTimer
 }
