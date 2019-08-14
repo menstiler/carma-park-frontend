@@ -102,3 +102,16 @@ div.map-container > div:nth-of-type(2) {
 .addSpace.ui.icon.button:hover {
   background-color: red;
 }
+
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.setTime input {
+  border: 0px;
+  border-bottom: 1px solid;
+  text-align:center;
+  width: 2%
+}

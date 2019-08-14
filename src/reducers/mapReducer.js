@@ -59,7 +59,7 @@ function mapReducer(prevState=defaultState, action) {
     case CLAIM_SPACE:
       let foundSpot = prevState.spaces.find(space => space.id === action.payload.id)
       let newSpaces = [...prevState.spaces].map(spot => { if (spot.id !== foundSpot.id) { return spot } else { return action.payload }})
-      return {...prevState, spaces: newSpaces, selectedSpace: action.payload, showPopup: false}
+      return {...prevState, spaces: newSpaces, selectedSpace: action.payload, showPopup: false, showDirection: true}
     case NEW_SPACE:
       return {...prevState, spaces: [...prevState.spaces, action.payload], selectedSpace: action.payload}
     case SHOW_SPACE:

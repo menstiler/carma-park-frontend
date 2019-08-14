@@ -78,7 +78,8 @@ class Map extends React.Component {
         :
         this.renderMarkers()
       }
-      {this.props.showPopup ? <Popup
+      {
+        this.props.showPopup ? <Popup
         latitude={this.props.popupDets.coords[0]}
         longitude={this.props.popupDets.coords[1]}
         closeButton={false}
@@ -86,8 +87,9 @@ class Map extends React.Component {
         <div>
         {this.props.popupDets.text.split(' ').slice(0, 2).join(' ').replace(/,/g, '')}
         </div>
-        </Popup> : null}
-        </ReactMapGL>
+        </Popup> : null
+      }
+      </ReactMapGL>
       )
   }
 }

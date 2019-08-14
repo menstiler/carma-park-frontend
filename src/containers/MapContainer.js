@@ -8,7 +8,7 @@ import MapDirections from '../components/MapDirections'
 import FilterContainer from './FilterContainer'
 import { Route, Switch, Link } from 'react-router-dom'
 
-import {  } from '../actions'
+import { closePopup } from '../actions'
 import { Button } from 'semantic-ui-react'
 
 function MapContainer(props) {
@@ -22,7 +22,13 @@ function MapContainer(props) {
               <ActiveSpace />
             </div>
             <div className="map-container">
+            {
+              props.selectedSpace.claimer !== props.selectedSpace.owner
+              ?
               <MapDirections />
+              :
+              <Map />
+            }
             </div>
           </div>
         )}} />
@@ -38,7 +44,7 @@ function MapContainer(props) {
                 <Map />
               </div>
               <Link to={'/add_space'} >
-                <Button className="addSpace" circular icon='add' />
+                <Button onClick={props.closePopup} className="addSpace" circular icon='add' />
               </Link>
             </div>
           </>
@@ -56,5 +62,5 @@ function msp(state) {
 }
 
 export default connect(msp, {
-
+  closePopup
 })(MapContainer);

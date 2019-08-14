@@ -33,15 +33,37 @@ class SpaceForm extends React.Component {
     }
   }
 
+  renderOutput = () => {
+    if (this.state.hours && this.state.minutes) {
+      return `${this.state.hours} ${this.state.hours > 1 ? "hours" : "hour"} and ${this.state.minutes} ${this.state.minutes > 1 ? "minutes" : "minute"}`
+    } else if (this.state.hours) {
+      return `${this.state.hours} ${this.state.hours > 1 ? "hours" : "hour"}`
+    } else if (this.state.minutes) {
+      return `${this.state.minutes} ${this.state.minutes > 1 ? "minutes" : "minute"}`
+    }
+  }
+
   render() {
     return (
       <>
       <form onSubmit={(event) => this.handleFormSubmit(event)}>
-      <Search createSpace={true} />
-      <Map createSpace={true} />
-      Minutes: <input type="number" min="1" max="59" name="minutes" onChange={this.handleTimeChange}/>
-      Hours: <input type="number" min="1" max="24" name="hours" onChange={this.handleTimeChange}/>
-      <input type="submit" value="Add Parking Spot" />
+        <Search createSpace={true} />
+        <Map createSpace={true} />
+        <div className="setTime">
+          <label>Add Deadline:</label>
+          <input type="number" placeholder="0" min="1" max="24" name="hours" onChange={this.handleTimeChange}/>:
+          <input type="number" placeholder="0" min="1" max="59" name="minutes" onChange={this.handleTimeChange}/>
+          <div>
+          {
+            this.state.hours || this.state.minutes
+            ?
+            `Parking spot will be availbale for ${this.renderOutput()}`
+            :
+            null
+          }
+          </div>
+        </div>
+        <input type="submit" value="Add Parking Spot" />
       </form>
       </>
     );
