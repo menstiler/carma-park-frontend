@@ -7,7 +7,7 @@ import { connect } from 'react-redux'
 import { ActionCable } from 'react-actioncable-provider'
 import Cable from './components/Cable'
 
-import { handleAutoLogin, fetchSpots, setCurrentPosition, updateTimer, fetchChats, handleReceivedMessage, handleReceivedChatroom } from './actions'
+import { handleReceivedSpace, handleAutoLogin, fetchSpots, setCurrentPosition, updateTimer, fetchChats, handleReceivedMessage, handleReceivedChatroom } from './actions'
 
 let mainInterval
 
@@ -47,6 +47,10 @@ class App extends Component {
           channel={{ channel: 'ChatroomsChannel' }}
           onReceived={this.props.handleReceivedChatroom}
         />
+        <ActionCable
+          channel={{ channel: 'SpacesChannel' }}
+          onReceived={(response) =>this.props.handleReceivedSpace(response, this.props.history, this.props.currentUser)}
+        />
         {this.props.chats.length ? (
           <Cable
           chatrooms={this.props.chats}
@@ -77,5 +81,6 @@ export default connect(msp, {
   fetchChats,
   handleReceivedMessage,
   handleReceivedChatroom,
-  handleAutoLogin
+  handleAutoLogin,
+  handleReceivedSpace
 })(App);

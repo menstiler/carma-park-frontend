@@ -42,7 +42,9 @@ class MapDirections extends React.Component {
   }
 
   componentDidUpdate() {
-    document.querySelector('.directions-control.directions-control-directions').style.display = this.props.showDirection ? "block" : "none"
+    if (document.querySelector('.directions-control.directions-control-directions') !== null) {
+      document.querySelector('.directions-control.directions-control-directions').style.display = this.props.showDirection ? "block" : "none"
+    }
   }
 
   render() {
@@ -53,8 +55,10 @@ class MapDirections extends React.Component {
       width: '100%'
     };
 
-    return (
-      <div style={style} ref={el => (this.mapContainer = el)}></div>
+      return (
+      <>
+        <div style={style} ref={el => (this.mapContainer = el)}></div>
+      </>
     )
   }
 }
@@ -64,7 +68,7 @@ function msp(state) {
     currentPosition: state.map.currentPosition,
     viewport: state.map.viewport,
     selectedSpace: state.map.selectedSpace,
-    showDirection: state.map.showDirection
+    showDirection: state.map.showDirection,
   }
 }
 

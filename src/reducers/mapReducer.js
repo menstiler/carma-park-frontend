@@ -12,7 +12,8 @@ import {
   GO_TO,
   EDIT_SPACE,
   SET_POSITION,
-  TOGGLE_SHOW_DIRECTIONS
+  TOGGLE_SHOW_DIRECTIONS,
+  TOGGLE_LOADING
 } from '../types'
 
 const defaultState = {
@@ -36,7 +37,8 @@ const defaultState = {
   spaces: [],
   users: [],
   selectedSpace: null,
-  showDirection: true
+  showDirection: true,
+  loading: false
 }
 
 function mapReducer(prevState=defaultState, action) {
@@ -56,10 +58,12 @@ function mapReducer(prevState=defaultState, action) {
       return {...prevState, spaces: action.payload.spaces, users: action.payload.users}
     case UPDATE_USER_MARKER:
       return {...prevState, currentPosition: {latitude: action.payload[1], longitude: action.payload[0]}}
+    case TOGGLE_LOADING:
+      return {...prevState, loading: true}
     case CLAIM_SPACE:
       let foundSpot = prevState.spaces.find(space => space.id === action.payload.id)
       let newSpaces = [...prevState.spaces].map(spot => { if (spot.id !== foundSpot.id) { return spot } else { return action.payload }})
-      return {...prevState, spaces: newSpaces, selectedSpace: action.payload, showPopup: false, showDirection: true}
+      return {...prevState, spaces: newSpaces, selectedSpace: action.payload, showPopup: false, showDirection: true, loading: false}
     case NEW_SPACE:
       return {...prevState, spaces: [...prevState.spaces, action.payload], selectedSpace: action.payload}
     case SHOW_SPACE:
@@ -68,7 +72,7 @@ function mapReducer(prevState=defaultState, action) {
         coords: [parseFloat(action.payload.latitude), parseFloat(action.payload.longitude)]
       }}
     case REMOVE_SPACE:
-      let foundSpace = prevState.spaces.find(space => space.id === action.payload)
+      let foundSpace = prevState.spaces.find(space => space.id === action.payload.id)
       let spacesFiltered = [...prevState.spaces].filter(space => space.id !== foundSpace.id)
       return {...prevState, spaces: spacesFiltered, showPopup: false}
     case GO_TO:

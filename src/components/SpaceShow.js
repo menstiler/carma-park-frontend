@@ -4,42 +4,40 @@ import { Link } from 'react-router-dom'
 import { openNewChat, claimSpace, cancelClaim, removeSpace, openChat } from '../actions'
 import ChatTable from './ChatTable'
 
-function SpaceShow(props) {
+class SpaceShow extends React.Component {
 
-  const claimAction = () => {
-    props.claimSpace(props.currentUser, props.selectedSpace.id)
-    .then(resp => {
-      props.routerProps.history.push(`/spaces/${props.selectedSpace.id}`)
-    })
+  claimAction = () => {
+    this.props.claimSpace(this.props.currentUser, this.props.selectedSpace.id)
   }
 
-  const renderChat = () => {
-    if (props.activeChat && (props.activeChat.space === props.selectedSpace.id)) {
+  renderChat = () => {
+    if (this.props.activeChat && (this.props.activeChat.space === this.props.selectedSpace.id)) {
       return <ChatTable />
-    } else if (props.chats.find(chat => chat.space === props.selectedSpace.id)) {
-      return <button onClick={() => props.openChat(props.selectedSpace.id)}>Continue Chat</button>
+    } else if (this.props.chats.find(chat => chat.space === this.props.selectedSpace.id)) {
+      return <button onClick={() => this.props.openChat(this.props.selectedSpace.id)}>Continue Chat</button>
     } else {
-      return <button onClick={() => props.openNewChat(props.selectedSpace.id)}>Chat</button>
+      return <button onClick={() => this.props.openNewChat(this.props.selectedSpace.id)}>Chat</button>
     }
   }
 
+  render() {
   return (
     <div className="panel on">
         {
-          !props.selectedSpace.claimed && props.selectedSpace.owner !== props.currentUser
+          !this.props.selectedSpace.claimed && this.props.selectedSpace.owner !== this.props.currentUser
           ?
-          <button onClick={claimAction}>
+          <button onClick={this.claimAction}>
             Claim
           </button>
           :
           null
         }
         {
-          !props.selectedSpace.claimed && props.selectedSpace.owner === props.currentUser
+          !this.props.selectedSpace.claimed && this.props.selectedSpace.owner === this.props.currentUser
           ?
           <Link to={'/'}>
             <button
-              onClick={() => props.removeSpace(props.selectedSpace.id)}>
+              onClick={() => this.props.removeSpace(this.props.selectedSpace.id)}>
               Cancel
             </button>
           </Link>
@@ -47,9 +45,9 @@ function SpaceShow(props) {
           null
         }
         {
-          props.selectedSpace.claimed && props.selectedSpace.claimer === props.currentUser
+          this.props.selectedSpace.claimed && this.props.selectedSpace.claimer === this.props.currentUser
           ?
-          <Link to={`/spaces/${props.selectedSpace.id}`}>
+          <Link to={`/spaces/${this.props.selectedSpace.id}`}>
             <button>
               Continue Parking
             </button>
@@ -58,12 +56,12 @@ function SpaceShow(props) {
           null
         }
         {
-          props.selectedSpace.claimed && props.selectedSpace.owner === props.currentUser
+          this.props.selectedSpace.claimed && this.props.selectedSpace.owner === this.props.currentUser
           ?
           <div>
-            Claimed by {props.users.find(user => user.id === props.selectedSpace.claimer).name}
+            Claimed by {this.props.users.find(user => user.id === this.props.selectedSpace.claimer).name}
             {
-              renderChat()
+              this.renderChat()
             }
           </div>
           :
@@ -71,6 +69,7 @@ function SpaceShow(props) {
         }
     </div>
   )
+}
 }
 
 const findActiveChatroom = (chatrooms, activeChatroom) => {

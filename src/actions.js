@@ -25,7 +25,8 @@ import {
   ADD_MESSAGE,
   ADD_USERS,
   SET_USER,
-  CLOSE_CHAT
+  CLOSE_CHAT,
+  TOGGLE_LOADING
 } from './types'
 
 const API = "http://localhost:3005/"
@@ -86,6 +87,20 @@ function fetchChats() {
     .then(chatrooms => {
       dispatch({type: UPDATE_CHATS, payload: chatrooms})
     });
+  }
+}
+
+function handleReceivedSpace(response, history, currentUser) {
+  const space = response.space;
+  if (response.update) {
+    if (currentUser === space.claimer) {
+      history.push(`/spaces/${space.id}`)
+    }
+    return {type: CLAIM_SPACE, payload: space}
+  } else if (response.delete) {
+    return {type: REMOVE_SPACE, payload: space}
+  } else {
+    return {type: NEW_SPACE, payload: space}
   }
 }
 
@@ -195,20 +210,14 @@ function calDistance(lat1, lon1, lat2, lon2, unit) {
 
 function claimSpace(user_id, space_id) {
   return function(dispatch){
-    return fetch(API + 'user_spaces', {
+    dispatch({type: "TOGGLE_LOADING"})
+    return fetch(API + 'claim', {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Accept": "application/json"
-      },
+      headers: HEADERS,
       body: JSON.stringify({
         user_id: user_id,
         space_id: space_id
       })
-    })
-    .then(resp => resp.json())
-    .then(space => {
-      dispatch({type: CLAIM_SPACE, payload: space})
     })
   }
 }
@@ -243,15 +252,11 @@ function createNewSpace(user_id, address, location, time) {
     },
     body: JSON.stringify(space)
   })
-  .then(resp => resp.json())
-  .then(spot => {
-    return spot
-  })
 }
 
 function removeSpace(space_id) {
   return function(dispatch) {
-    return fetch(API + 'user_spaces/remove_space', {
+    return fetch(API + 'remove_space', {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -261,16 +266,12 @@ function removeSpace(space_id) {
         space_id: space_id
       })
     })
-    .then(resp => resp.json())
-    .then(resp => {
-      dispatch({type: REMOVE_SPACE, payload: space_id})
-    })
   }
 }
 
 function addSpaceAfterParking(user_id, space_id) {
   return function(dispatch){
-    return fetch(API + 'user_spaces/add_space_after_park', {
+    return fetch(API + 'add_space_after_park', {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -280,10 +281,6 @@ function addSpaceAfterParking(user_id, space_id) {
         user_id: user_id,
         space_id: space_id
       })
-    })
-    .then(resp => resp.json())
-    .then(space => {
-      dispatch({type: CLAIM_SPACE, payload: space})
     })
   }
 }
@@ -297,7 +294,7 @@ function showSpace(space) {
 
 function cancelClaim(user_id, space_id) {
   return function(dispatch){
-    return fetch(API + 'user_spaces/cancel_claim', {
+    return fetch(API + 'cancel_claim', {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -306,16 +303,6 @@ function cancelClaim(user_id, space_id) {
       body: JSON.stringify({
         user_id: user_id,
         space_id: space_id
-      })
-    })
-    .then(resp => resp.json())
-    .then(spot => {
-      fetch(API + 'chatrooms/' + space_id, {
-        method: "DELETE",
-      })
-      .then(resp => {
-        dispatch({type: CLAIM_SPACE, payload: spot})
-        dispatch({type: CLOSE_CHAT, payload: space_id})
       })
     })
   }
@@ -323,7 +310,7 @@ function cancelClaim(user_id, space_id) {
 
 function finishedParking(user_id, space_id) {
   return function(dispatch){
-    return fetch(API + 'user_spaces/parked', {
+    return fetch(API + 'parked', {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -333,10 +320,6 @@ function finishedParking(user_id, space_id) {
         user_id: user_id,
         space_id: space_id
       })
-    })
-    .then(resp => resp.json())
-    .then(spot => {
-      dispatch({type: CLAIM_SPACE, payload: spot})
     })
   }
 }
@@ -372,5 +355,6 @@ export {
   handleReceivedMessage,
   handleReceivedChatroom,
   handleLoginSubmit,
-  handleAutoLogin
+  handleAutoLogin,
+  handleReceivedSpace
 }
