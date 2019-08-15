@@ -1,23 +1,20 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
-import MessagesArea from './MessagesArea'
-import { cancelClaim, finishedParking, addSpaceAfterParking, removeSpace, toggleShowDirections, openChat } from '../actions'
+import ChatTable from './ChatTable'
+import { openSpace, openNewChat, cancelClaim, finishedParking, addSpaceAfterParking, removeSpace, toggleShowDirections, openChat } from '../actions'
 
 function ActiveSpace(props) {
 
   const renderChat = () => {
-    if (props.activeChat && (props.activeChat === props.selectedSpace.id)) {
-      return <MessagesArea
-        chatroom={findActiveChatroom(
-        props.chats,
-        props.activeChat
-        )}
-      />
+    debugger
+    if (props.activeChat && (props.activeChat.space === props.selectedSpace.id)) {
+      return <ChatTable />
     } else if (props.chats.find(chat => chat.space === props.selectedSpace.id)) {
+      debugger
       return <button onClick={() => props.openChat(props.selectedSpace.id)}>Continue Chat</button>
     } else {
-      return <button onClick={() => props.openChat(props.selectedSpace.id)}>Chat</button>
+      return <button onClick={() => props.openNewChat(props.selectedSpace.id)}>Chat</button>
     }
   }
 
@@ -27,7 +24,9 @@ function ActiveSpace(props) {
       {
         props.selectedSpace.owner !== props.currentUser
         ?
-        <p>Created By: {props.users.find(user => user.id === props.selectedSpace.owner).name}</p>
+        <>
+          <p>Created By: {props.users.find(user => user.id === props.selectedSpace.owner).name}</p>
+        </>
         :
         null
       }
@@ -71,12 +70,6 @@ function ActiveSpace(props) {
   )
 }
 
-const findActiveChatroom = (chatroooms, activeChatroom) => {
-  return chatroooms.find(
-    chatroom => chatroom.id === activeChatroom
-  );
-};
-
 function msp(state) {
   return {
     users: state.map.users,
@@ -84,7 +77,7 @@ function msp(state) {
     currentUser: state.user.currentUser,
     showDirection: state.map.showDirection,
     chats: state.user.chats,
-    activeChat: state.user.activeChat
+    activeChat: state.user.activeChat,
   }
 }
 
@@ -94,5 +87,7 @@ export default connect(msp, {
   addSpaceAfterParking,
   removeSpace,
   toggleShowDirections,
-  openChat
+  openChat,
+  openSpace,
+  openNewChat
 })(ActiveSpace);

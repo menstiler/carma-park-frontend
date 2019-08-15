@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
-import { claimSpace, cancelClaim, removeSpace } from '../actions'
+import { openNewChat, claimSpace, cancelClaim, removeSpace, openChat } from '../actions'
+import ChatTable from './ChatTable'
 
 function SpaceShow(props) {
 
@@ -10,6 +11,16 @@ function SpaceShow(props) {
     .then(resp => {
       props.routerProps.history.push(`/spaces/${props.selectedSpace.id}`)
     })
+  }
+
+  const renderChat = () => {
+    if (props.activeChat && (props.activeChat.space === props.selectedSpace.id)) {
+      return <ChatTable />
+    } else if (props.chats.find(chat => chat.space === props.selectedSpace.id)) {
+      return <button onClick={() => props.openChat(props.selectedSpace.id)}>Continue Chat</button>
+    } else {
+      return <button onClick={() => props.openNewChat(props.selectedSpace.id)}>Chat</button>
+    }
   }
 
   return (
@@ -51,6 +62,9 @@ function SpaceShow(props) {
           ?
           <div>
             Claimed by {props.users.find(user => user.id === props.selectedSpace.claimer).name}
+            {
+              renderChat()
+            }
           </div>
           :
           null
@@ -59,16 +73,26 @@ function SpaceShow(props) {
   )
 }
 
+const findActiveChatroom = (chatrooms, activeChatroom) => {
+  return chatrooms.find(
+    chatroom => chatroom.space === activeChatroom
+  );
+};
+
 function msp(state) {
   return {
     users: state.map.users,
     selectedSpace: state.map.selectedSpace,
-    currentUser: state.user.currentUser
+    currentUser: state.user.currentUser,
+    chats: state.user.chats,
+    activeChat: state.user.activeChat
   }
 }
 
 export default connect(msp, {
   claimSpace,
   cancelClaim,
-  removeSpace
+  removeSpace,
+  openChat,
+  openNewChat
 })(SpaceShow);

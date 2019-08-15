@@ -1,10 +1,11 @@
 import React from 'react'
 import { connect } from 'react-redux'
-
+import Login from './Login'
 function Navbar(props) {
-  let currentUser = props.users.length ? props.users.find(user => user.id === props.currentUser).name : 'Welcome';
-  return(
-    <p>{currentUser}</p>
+  return (
+    <div>
+      <Login />
+    </div>
   )
 }
 

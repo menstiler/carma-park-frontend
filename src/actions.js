@@ -23,7 +23,9 @@ import {
   OPEN_CHAT,
   ADD_CHAT,
   ADD_MESSAGE,
-  ADD_USERS
+  ADD_USERS,
+  SET_USER,
+  CLOSE_CHAT
 } from './types'
 
 const API = "http://localhost:3005/"
@@ -32,6 +34,46 @@ const HEADERS = {
   'Content-Type': 'application/json',
   Accept: 'application/json',
 };
+
+function handleAutoLogin(token) {
+  return function(dispatch) {
+    return fetch(API + "auto_login", {
+      headers: {
+        "Authorization": token
+      }
+    })
+    .then(res => res.json())
+    .then(response => {
+      if (response.errors){
+        alert(response.errors)
+      } else {
+        dispatch({type: SET_USER, payload: response})
+      }
+    })
+  }
+}
+
+function handleLoginSubmit(event, user) {
+  event.preventDefault()
+  return function(dispatch) {
+    fetch(API + "login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Accept": "application/json"
+      },
+      body: JSON.stringify(user)
+    })
+    .then(res => res.json())
+    .then(response => {
+      if (response.errors){
+        alert(response.errors)
+      } else {
+        dispatch({type: SET_USER, payload: response})
+      }
+    })
+  }
+}
 
 function goToViewport(coords) {
   return {type: GO_TO, payload: coords}
@@ -58,16 +100,16 @@ function handleReceivedMessage(response) {
 };
 
 function openChat(space_id) {
+  return {type: OPEN_CHAT, payload: space_id}
+}
+
+function openNewChat(space_id) {
   return function(dispatch) {
-    let chatroom = {space: space_id}
-    return fetch(`${API}chatrooms`, {
-      method: 'POST',
+    const chatroom = { space: space_id }
+    return fetch(API + "chatrooms", {
+      method: "POST",
       headers: HEADERS,
       body: JSON.stringify(chatroom)
-    })
-    .then(resp => resp.json)
-    .then(json => {
-      dispatch({type: OPEN_CHAT, payload: space_id})
     })
   }
 }
@@ -130,25 +172,25 @@ function fetchSpots(currentPosition) {
 
 // calculate distance from origin, this function is from: https://www.geodatasource.com/developers/javascript
 function calDistance(lat1, lon1, lat2, lon2, unit) {
-	if ((lat1 == lat2) && (lon1 == lon2)) {
-		return 0;
-	}
-	else {
-		var radlat1 = Math.PI * lat1/180;
-		var radlat2 = Math.PI * lat2/180;
-		var theta = lon1-lon2;
-		var radtheta = Math.PI * theta/180;
-		var dist = Math.sin(radlat1) * Math.sin(radlat2) + Math.cos(radlat1) * Math.cos(radlat2) * Math.cos(radtheta);
-		if (dist > 1) {
-			dist = 1;
-		}
-		dist = Math.acos(dist);
-		dist = dist * 180/Math.PI;
-		dist = dist * 60 * 1.1515;
-		if (unit=="K") { dist = dist * 1.609344 }
-		if (unit=="N") { dist = dist * 0.8684 }
-		return dist;
-	}
+  if ((lat1 == lat2) && (lon1 == lon2)) {
+    return 0;
+  }
+  else {
+    var radlat1 = Math.PI * lat1/180;
+    var radlat2 = Math.PI * lat2/180;
+    var theta = lon1-lon2;
+    var radtheta = Math.PI * theta/180;
+    var dist = Math.sin(radlat1) * Math.sin(radlat2) + Math.cos(radlat1) * Math.cos(radlat2) * Math.cos(radtheta);
+    if (dist > 1) {
+      dist = 1;
+    }
+    dist = Math.acos(dist);
+    dist = dist * 180/Math.PI;
+    dist = dist * 60 * 1.1515;
+    if (unit=="K") { dist = dist * 1.609344 }
+    if (unit=="N") { dist = dist * 0.8684 }
+    return dist;
+  }
 }
 
 function claimSpace(user_id, space_id) {
@@ -268,7 +310,13 @@ function cancelClaim(user_id, space_id) {
     })
     .then(resp => resp.json())
     .then(spot => {
-      dispatch({type: CLAIM_SPACE, payload: spot})
+      fetch(API + 'chatrooms/' + space_id, {
+        method: "DELETE",
+      })
+      .then(resp => {
+        dispatch({type: CLAIM_SPACE, payload: spot})
+        dispatch({type: CLOSE_CHAT, payload: space_id})
+      })
     })
   }
 }
@@ -319,7 +367,10 @@ export {
   updateTimer,
   toggleShowDirections,
   fetchChats,
+  openNewChat,
   openChat,
   handleReceivedMessage,
   handleReceivedChatroom,
+  handleLoginSubmit,
+  handleAutoLogin
 }

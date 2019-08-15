@@ -21,6 +21,9 @@ const UPDATE_CHATS = "UPDATE_CHATS"
 const OPEN_CHAT = "OPEN_CHAT"
 const ADD_CHAT = "ADD_CHAT"
 const ADD_MESSAGE = "ADD_MESSAGE"
+const SET_USER = "SET_USER"
+const CLOSE_CHAT = "CLOSE_CHAT"
+
 
 export {
   CHANGE_VIEWPORT,
@@ -45,4 +48,6 @@ export {
   OPEN_CHAT,
   ADD_CHAT,
   ADD_MESSAGE,
+  SET_USER,
+  CLOSE_CHAT
 }

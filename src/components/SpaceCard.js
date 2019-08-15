@@ -57,8 +57,8 @@ class SpaceCard extends React.Component {
     return (
       <>
       <button data-id={this.props.space.id} className="accordion" onClick={() => this.props.showSpace(this.props.space)}>
-      {this.props.space.address} - {this.props.users.find(user => user.id === this.props.space.owner).name}
-      <p>{this.renderDeadline()}</p>
+        {this.props.space.address} - {this.props.users.find(user => user.id === this.props.space.owner).name}
+        <p>{this.renderDeadline()}</p>
       </button>
       {this.props.selectedSpace && this.props.selectedSpace.id === this.props.space.id
         ?

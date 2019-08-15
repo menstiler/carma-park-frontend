@@ -17,11 +17,8 @@ const MessagesArea = ({
 
 export default MessagesArea;
 
-
-// helpers
-
 const orderedMessages = (messages, users) => {
-  console.log('hi');
+  debugger;
   const sortedMessages = messages.sort(
     (a, b) => new Date(a.created_at) - new Date(b.created_at)
   );

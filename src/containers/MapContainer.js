@@ -15,23 +15,28 @@ function MapContainer(props) {
 
   return (
     <Switch>
-      <Route path="/spaces/:id" render={() => {
-        return (
-          <div className="action-container">
-            <div className="space-container">
-              <ActiveSpace />
+      <Route path="/spaces/:id" render={(routerProps) => {
+        if (props.selectedSpace) {
+          return (
+            <div className="action-container">
+              <div className="space-container">
+                <ActiveSpace routerProps={routerProps} />
+              </div>
+              <div className="map-container">
+              {
+                props.selectedSpace.claimer !== props.selectedSpace.owner
+                ?
+                <MapDirections />
+                :
+                <Map />
+              }
+              </div>
             </div>
-            <div className="map-container">
-            {
-              props.selectedSpace.claimer !== props.selectedSpace.owner
-              ?
-              <MapDirections />
-              :
-              <Map />
-            }
-            </div>
-          </div>
-        )}} />
+          )
+        } else {
+          routerProps.history.push('/')
+        }
+      }} />
       <Route path="/" render={(routerProps) => {
         return (
           <>
@@ -57,7 +62,7 @@ function msp(state) {
   return {
     selectedSpace: state.map.selectedSpace,
     currentUser: state.user.currentUser,
-    address: state.form.address
+    address: state.form.address,
   }
 }
 

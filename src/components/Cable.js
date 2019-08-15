@@ -6,10 +6,10 @@ import { handleReceivedMessage } from '../actions'
 const Cable = ({ chatrooms, handleReceivedMessage }) => {
   return (
     <>
-      {chatrooms.map(function(chatroom, index) {
+      {chatrooms.map(chatroom => {
         return (
           <ActionCable
-            key={index}
+            key={chatroom.id}
             channel={{ channel: 'MessagesChannel', chatroom: chatroom.id }}
             onReceived={handleReceivedMessage}
           />
