@@ -9,11 +9,13 @@ function FilterContainer(props) {
 
   return (
     <>
-    <Search />
-    <input type="number" min="0" max="10" onChange={props.updateDistanceFilter}/>
+      <Search />
+      Show Spot within: <input type="range" name="points" min="0" max="10" onChange={props.updateDistanceFilter} />
+      <p>{props.distanceShow} Miles</p>
     </>
   )
 }
+// <input type="number" min="0" max="10" onChange={props.updateDistanceFilter}/>
 
 function msp(state) {
   return {

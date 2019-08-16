@@ -24,7 +24,21 @@ class Map extends React.Component {
   }
 
   renderMarkers = () => {
-    let filterSpaces = this.props.spaces.filter(space => !space.claimed && space.available || (space.available && ((space.owner !== space.claimer) && ((space.owner === this.props.currentUser) || (space.claimer === this.props.currentUser)))))
+    let filterSpaces = this.props.spaces.filter(space =>
+      (!space.claimed && space.available)
+      ||
+      (
+        (space.claimed && space.available)
+        &&
+        (
+          (space.owner !== space.claimer)
+          &&
+          (space.owner === this.props.currentUser || space.claimer === this.props.currentUser)
+        )
+      )
+      ||
+      (space.claimed && ((space.owner === space.claimer) && (space.owner === this.props.currentUser)))
+    )
     return filterSpaces.map(space => {
       let lat = parseFloat(space.latitude)
       let lng = parseFloat(space.longitude)
@@ -45,19 +59,17 @@ class Map extends React.Component {
   }
 
   renderPopup = () => {
-    if (!this.props.selectedSpace.claimed) {
-      return (
-        <Popup
-        latitude={this.props.popupDets.coords[0]}
-        longitude={this.props.popupDets.coords[1]}
-        closeButton={false}
-        anchor="bottom" >
-        <div>
-        {this.props.popupDets.text.split(' ').slice(0, 2).join(' ').replace(/,/g, '')}
-        </div>
-        </Popup>
-      )
-    }
+    return (
+      <Popup
+      latitude={this.props.popupDets.coords[0]}
+      longitude={this.props.popupDets.coords[1]}
+      closeButton={false}
+      anchor="bottom" >
+      <div>
+      {this.props.popupDets.text.split(' ').slice(0, 2).join(' ').replace(/,/g, '')}
+      </div>
+      </Popup>
+    )
   }
 
   render() {
@@ -114,7 +126,8 @@ function msp(state) {
     spaces: state.map.spaces,
     selectedSpace: state.map.selectedSpace,
     marker: state.form.marker,
-    mapBounds: state.map.mapBounds
+    mapBounds: state.map.mapBounds,
+    currentUser: state.user.currentUser
   }
 }
 

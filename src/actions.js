@@ -26,7 +26,8 @@ import {
   ADD_USERS,
   SET_USER,
   CLOSE_CHAT,
-  TOGGLE_LOADING
+  TOGGLE_LOADING,
+  FETCH_USERS
 } from './types'
 
 const API = "http://localhost:3005/"
@@ -76,8 +77,12 @@ function handleLoginSubmit(event, user) {
   }
 }
 
-function goToViewport(coords) {
-  return {type: GO_TO, payload: coords}
+function goToViewport(coords, spaces) {
+  return function(dispatch) {
+    const sortedSpaces = sortSpotByDistance(coords, spaces)
+    dispatch({type: FETCH_SPOTS, payload: sortedSpaces })
+    dispatch({type: GO_TO, payload: {coords: coords}})
+  }
 }
 
 function fetchChats() {
@@ -92,21 +97,27 @@ function fetchChats() {
 
 function handleReceivedSpace(response, history, currentUser) {
   const space = response.space;
-  if (response.update) {
+  if (response.action === 'update') {
     if (currentUser === space.claimer) {
       history.push(`/spaces/${space.id}`)
     }
     return {type: CLAIM_SPACE, payload: space}
-  } else if (response.delete) {
+  } else if (response.action === 'delete') {
     return {type: REMOVE_SPACE, payload: space}
-  } else {
+  } else if (response.action === 'create') {
     return {type: NEW_SPACE, payload: space}
   }
 }
 
 function handleReceivedChatroom(response) {
-  const { chatroom } = response;
-  return {type: ADD_CHAT, payload: chatroom}
+  const chatroom = response.chatroom;
+  debugger
+  if (response.action === 'create') {
+    return {type: ADD_CHAT, payload: chatroom}
+  } else if (response.action === 'delete') {
+    debugger
+    return {type: CLOSE_CHAT, payload: chatroom}
+  }
 };
 
 function handleReceivedMessage(response) {
@@ -166,24 +177,45 @@ function updateUserMarker(coords, lngLat) {
   return {type: UPDATE_USER_MARKER, payload: lngLat}
 }
 
-function fetchSpots(currentPosition) {
+function fetchSpots(viewport) {
   return function(dispatch){
     return fetch(API + 'spaces')
     .then(resp => resp.json())
     .then(spaces => {
-      const addDistances = spaces.map(space => {
-        let distance = calDistance(currentPosition.latitude, currentPosition.longitude, parseFloat(space.latitude), parseFloat(space.longitude))
-        return {...space, distance: distance}
-      })
-      let sortedSpaces = addDistances.sort(function(a, b) { return a.distance - b.distance })
-      fetch(API + 'users')
-      .then(resp => resp.json())
-      .then(users => {
-        dispatch({type: FETCH_SPOTS, payload: {spaces: sortedSpaces, users: users}})
-      })
+      const sortedSpaces = sortSpotByDistance(viewport, spaces)
+      dispatch({type: FETCH_SPOTS, payload: sortedSpaces })
     })
   }
 }
+
+function sortSpotByDistance(origin, spaces) {
+  const addDistances = spaces.map(space => {
+    if (space.distance) {
+      let newDistance = calDistance(origin.latitude, origin.longitude, parseFloat(space.latitude), parseFloat(space.longitude))
+      return {...space, distance: newDistance}
+    } else {
+      let distance = calDistance(origin.latitude, origin.longitude, parseFloat(space.latitude), parseFloat(space.longitude))
+      return {...space, distance: distance}
+    }
+  })
+  let sortedSpaces = addDistances.sort(function(a, b) { return a.distance - b.distance })
+  return sortedSpaces
+}
+
+function dispatchSpots(spaces) {
+  return {type: FETCH_SPOTS, payload: spaces}
+}
+
+function fetchUsers() {
+  return function(dispatch) {
+    return fetch(API + 'users')
+    .then(resp => resp.json())
+    .then(users => {
+      dispatch({type: FETCH_USERS, payload: users})
+    })
+  }
+}
+
 
 // calculate distance from origin, this function is from: https://www.geodatasource.com/developers/javascript
 function calDistance(lat1, lon1, lat2, lon2, unit) {
@@ -288,7 +320,7 @@ function addSpaceAfterParking(user_id, space_id) {
 function showSpace(space) {
   return function(dispatch) {
     dispatch({type: SHOW_SPACE, payload: space})
-    dispatch({type: GO_TO, payload: [space.latitude, space.longitude]})
+    dispatch({type: GO_TO, payload: {coords: {latitude: space.latitude, longitude: space.longitude}}})
   }
 }
 
@@ -356,5 +388,6 @@ export {
   handleReceivedChatroom,
   handleLoginSubmit,
   handleAutoLogin,
-  handleReceivedSpace
+  handleReceivedSpace,
+  fetchUsers
 }

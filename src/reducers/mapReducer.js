@@ -35,7 +35,6 @@ const defaultState = {
     coords: []
   },
   spaces: [],
-  users: [],
   selectedSpace: null,
   showDirection: true,
   loading: false
@@ -55,7 +54,7 @@ function mapReducer(prevState=defaultState, action) {
     case CLOSE_POPUP:
       return {...prevState, showPopup: false}
     case FETCH_SPOTS:
-      return {...prevState, spaces: action.payload.spaces, users: action.payload.users}
+      return {...prevState, spaces: action.payload}
     case UPDATE_USER_MARKER:
       return {...prevState, currentPosition: {latitude: action.payload[1], longitude: action.payload[0]}}
     case TOGGLE_LOADING:
@@ -78,8 +77,8 @@ function mapReducer(prevState=defaultState, action) {
     case GO_TO:
       return {...prevState, viewport: {
         ...prevState.viewport,
-        latitude: parseFloat(action.payload[0]),
-        longitude: parseFloat(action.payload[1])
+        latitude: parseFloat(action.payload.coords.latitude),
+        longitude: parseFloat(action.payload.coords.longitude)
       }}
     case SET_POSITION:
       return {...prevState, currentPosition: {...prevState.currentPosition, longitude: action.payload[0], latitude: action.payload[1]}, viewport: {...prevState.viewport, longitude: action.payload[0], latitude: action.payload[1] }}

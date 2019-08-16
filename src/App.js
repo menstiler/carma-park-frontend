@@ -7,7 +7,7 @@ import { connect } from 'react-redux'
 import { ActionCable } from 'react-actioncable-provider'
 import Cable from './components/Cable'
 
-import { handleReceivedSpace, handleAutoLogin, fetchSpots, setCurrentPosition, updateTimer, fetchChats, handleReceivedMessage, handleReceivedChatroom } from './actions'
+import { fetchUsers, handleReceivedSpace, handleAutoLogin, fetchSpots, setCurrentPosition, updateTimer, fetchChats, handleReceivedMessage, handleReceivedChatroom } from './actions'
 
 let mainInterval
 
@@ -18,12 +18,15 @@ class App extends Component {
     if(token) {
       this.props.handleAutoLogin(token)
     }
-    this.props.fetchSpots(this.props.currentPosition)
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(this.displayLocationInfo);
     } else {
       this.props.setCurrentPosition([-74.01500, 40.705341])
     }
+    this.props.fetchUsers()
+    .then(resp => {
+      this.props.fetchSpots(this.props.viewport)
+    })
     this.props.fetchChats()
     mainInterval = setInterval(() => {
       this.props.updateTimer()
@@ -70,7 +73,8 @@ function msp(state) {
     currentPosition: state.map.currentPosition,
     timer: state.user.timer,
     chats: state.user.chats,
-    currentUser: state.user.currentUser
+    currentUser: state.user.currentUser,
+    viewport: state.map.viewport
   }
 }
 
@@ -82,5 +86,6 @@ export default connect(msp, {
   handleReceivedMessage,
   handleReceivedChatroom,
   handleAutoLogin,
-  handleReceivedSpace
+  handleReceivedSpace,
+  fetchUsers
 })(App);

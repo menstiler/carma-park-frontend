@@ -2,6 +2,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
 import ChatTable from './ChatTable'
+import { Image, Segment } from 'semantic-ui-react'
 import { openSpace, openNewChat, cancelClaim, finishedParking, addSpaceAfterParking, removeSpace, toggleShowDirections, openChat } from '../actions'
 
 class ActiveSpace extends React.Component {
@@ -18,7 +19,7 @@ class ActiveSpace extends React.Component {
 
   render(){
     if (this.props.loading) {
-      return <div>Loading...</div>
+      return <div>loading...</div>
     } else {
       return (
         <div>
@@ -74,7 +75,7 @@ class ActiveSpace extends React.Component {
 
 function msp(state) {
   return {
-    users: state.map.users,
+    users: state.user.users,
     selectedSpace: state.map.selectedSpace,
     currentUser: state.user.currentUser,
     showDirection: state.map.showDirection,

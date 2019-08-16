@@ -7,7 +7,7 @@ import MapboxAutocomplete from 'react-mapbox-autocomplete';
 function Search(props) {
 
   const handleChange = (result, lat, lng, text) => {
-    props.goToViewport([lat,lng])
+    props.goToViewport({latitude: lat, longitude: lng}, props.spaces)
     if (props.createSpace) {
       props.handleFormChange(result, {lat, lng})
     }
@@ -32,6 +32,7 @@ function Search(props) {
 
 function msp(state) {
   return {
+    spaces: state.map.spaces
   }
 }
 

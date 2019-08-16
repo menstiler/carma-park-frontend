@@ -80,7 +80,7 @@ const findActiveChatroom = (chatrooms, activeChatroom) => {
 
 function msp(state) {
   return {
-    users: state.map.users,
+    users: state.user.users,
     selectedSpace: state.map.selectedSpace,
     currentUser: state.user.currentUser,
     chats: state.user.chats,

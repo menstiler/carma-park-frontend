@@ -56,16 +56,16 @@ class SpaceCard extends React.Component {
   render() {
     return (
       <>
-      <button data-id={this.props.space.id} className="accordion" onClick={() => this.props.showSpace(this.props.space)}>
-        {this.props.space.address} - {this.props.users.find(user => user.id === this.props.space.owner).name}
-        <p>{this.renderDeadline()}</p>
-      </button>
-      {this.props.selectedSpace && this.props.selectedSpace.id === this.props.space.id
-        ?
-        <SpaceShow routerProps={this.props.routerProps} />
-        :
-        null
-      }
+        <button data-id={this.props.space.id} className="accordion" onClick={() => this.props.showSpace(this.props.space)}>
+          {this.props.space.address} - {this.props.users.find(user => user.id === this.props.space.owner).name}
+          <p>{this.renderDeadline()}</p>
+        </button>
+        {this.props.selectedSpace && this.props.selectedSpace.id === this.props.space.id
+          ?
+          <SpaceShow routerProps={this.props.routerProps} />
+          :
+          null
+        }
       </>
     )
   }
@@ -73,7 +73,7 @@ class SpaceCard extends React.Component {
 
 function msp(state) {
   return {
-    users: state.map.users,
+    users: state.user.users,
     selectedSpace: state.map.selectedSpace,
     currentUser: state.user.currentUser,
     timer: state.user.timer

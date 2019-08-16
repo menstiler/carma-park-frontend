@@ -3,7 +3,6 @@ import { connect } from 'react-redux'
 import { TOKEN } from '../vars.js'
 import SpaceCard from '../components/SpaceCard'
 import { claimSpace } from '../actions'
-// import actions!
 
 
 function SpacesContainer(props) {
@@ -24,7 +23,6 @@ function SpacesContainer(props) {
   )
 }
 
-// list all state attributes to use as props in the component
 function msp(state) {
   return {
     viewport: state.map.viewport,
@@ -33,12 +31,11 @@ function msp(state) {
     showPopup: state.map.showPopup,
     popupDets: state.map.popupDets,
     spaces: state.map.spaces,
-    users: state.map.users,
+    users: state.user.users,
     distanceShow: state.form.distanceShow
   }
 }
 
-// add msp to map state to props as first argument (or null), then map dispatch actions as second argument
 export default connect(msp, {
   claimSpace
 })(SpacesContainer);
