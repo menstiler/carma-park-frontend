@@ -22,7 +22,7 @@ ReactDOM.render(
   <ActionCableProvider url={API_WS_ROOT}>
     <Provider store={store}>
       <Router>
-        <Route path="/" component={App} />
+        <Route path="/" render={(routerProps) => <App routerProps={routerProps} />} />
       </Router>
     </Provider>
   </ActionCableProvider>, document.getElementById('root'));

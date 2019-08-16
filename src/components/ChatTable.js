@@ -3,8 +3,6 @@ import { connect } from 'react-redux'
 import MessagesArea from './MessagesArea'
 
 function ChatTable(props) {
-  console.log(props);
-  debugger
   return (
     <MessagesArea
       chatroom={findActiveChatroom(
@@ -17,7 +15,7 @@ function ChatTable(props) {
 
 const findActiveChatroom = (chatrooms, activeChatroom) => {
   return chatrooms.find(
-    chatroom => chatroom.space === activeChatroom.space
+    chatroom => chatroom.space === activeChatroom
   );
 };
 

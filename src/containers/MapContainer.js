@@ -48,9 +48,15 @@ function MapContainer(props) {
                 <FilterContainer />
                 <Map />
               </div>
-              <Link to={'/add_space'} >
-                <Button onClick={props.closePopup} className="addSpace" circular icon='add' />
-              </Link>
+              {
+                props.currentUser
+                ?
+                <Link to={'/add_space'} >
+                  <Button onClick={props.closePopup} className="addSpace" circular icon='add' />
+                </Link>
+                :
+                null
+              }
             </div>
           </>
         )}} />

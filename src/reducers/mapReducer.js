@@ -58,7 +58,7 @@ function mapReducer(prevState=defaultState, action) {
     case UPDATE_USER_MARKER:
       return {...prevState, currentPosition: {latitude: action.payload[1], longitude: action.payload[0]}}
     case TOGGLE_LOADING:
-      return {...prevState, loading: true}
+      return {...prevState, loading: !prevState.loading}
     case CLAIM_SPACE:
       let foundSpot = prevState.spaces.find(space => space.id === action.payload.id)
       let newSpaces = [...prevState.spaces].map(spot => { if (spot.id !== foundSpot.id) { return spot } else { return action.payload }})

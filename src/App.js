@@ -15,7 +15,7 @@ class App extends Component {
 
   componentDidMount() {
     const token = localStorage.token
-    if(token) {
+    if (token) {
       this.props.handleAutoLogin(token)
     }
     if (navigator.geolocation) {
@@ -60,8 +60,8 @@ class App extends Component {
           handleReceivedMessage={this.props.handleReceivedMessage}
           />
         ) : null}
-        <Navbar />
-        <MainContainer />
+        <Navbar routerProps={this.props.routerProps} />
+        <MainContainer routerProps={this.props.routerProps} />
       </>
     );
   }

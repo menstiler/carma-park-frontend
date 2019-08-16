@@ -18,7 +18,6 @@ const MessagesArea = ({
 export default MessagesArea;
 
 const orderedMessages = (messages, users) => {
-  debugger;
   const sortedMessages = messages.sort(
     (a, b) => new Date(a.created_at) - new Date(b.created_at)
   );

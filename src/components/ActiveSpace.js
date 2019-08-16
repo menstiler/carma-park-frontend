@@ -8,7 +8,7 @@ import { openSpace, openNewChat, cancelClaim, finishedParking, addSpaceAfterPark
 class ActiveSpace extends React.Component {
 
   renderChat = () => {
-    if (this.props.activeChat && (this.props.activeChat.space === this.props.selectedSpace.id)) {
+    if (this.props.activeChat && (this.props.activeChat === this.props.selectedSpace.id)) {
       return <ChatTable />
     } else if (this.props.chats.find(chat => chat.space === this.props.selectedSpace.id)) {
       return <button onClick={() => this.props.openChat(this.props.selectedSpace.id)}>Continue Chat</button>

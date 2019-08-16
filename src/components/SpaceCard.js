@@ -60,7 +60,7 @@ class SpaceCard extends React.Component {
           {this.props.space.address} - {this.props.users.find(user => user.id === this.props.space.owner).name}
           <p>{this.renderDeadline()}</p>
         </button>
-        {this.props.selectedSpace && this.props.selectedSpace.id === this.props.space.id
+        {this.props.currentUser && (this.props.selectedSpace && (this.props.selectedSpace.id === this.props.space.id))
           ?
           <SpaceShow routerProps={this.props.routerProps} />
           :

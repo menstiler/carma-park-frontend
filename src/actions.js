@@ -27,7 +27,8 @@ import {
   SET_USER,
   CLOSE_CHAT,
   TOGGLE_LOADING,
-  FETCH_USERS
+  FETCH_USERS,
+  ADD_USER
 } from './types'
 
 const API = "http://localhost:3005/"
@@ -49,13 +50,44 @@ function handleAutoLogin(token) {
       if (response.errors){
         alert(response.errors)
       } else {
-        dispatch({type: SET_USER, payload: response})
+        dispatch({type: SET_USER, payload: response.id})
       }
     })
   }
 }
 
-function handleLoginSubmit(event, user) {
+function logout(history) {
+  history.push("/login")
+  localStorage.removeItem("token")
+  return {type: SET_USER, payload: null}
+}
+
+function handleSignupSubmit(event, user, history) {
+  event.preventDefault()
+  return function(dispatch) {
+    fetch(API + "users", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Accept": "application/json"
+      },
+      body: JSON.stringify({user: user})
+    })
+    .then(res => res.json())
+    .then(response => {
+      if (response.errors){
+        alert(response.errors)
+      } else {
+        dispatch({type: ADD_USER, payload: response.user})
+        dispatch({type: SET_USER, payload: response.user.id})
+        localStorage.token = response.token
+        history.push('/')
+      }
+    })
+  }
+}
+
+function handleLoginSubmit(event, user, history) {
   event.preventDefault()
   return function(dispatch) {
     fetch(API + "login", {
@@ -71,7 +103,9 @@ function handleLoginSubmit(event, user) {
       if (response.errors){
         alert(response.errors)
       } else {
-        dispatch({type: SET_USER, payload: response})
+        dispatch({type: SET_USER, payload: response.user.id})
+        localStorage.token = response.token
+        history.push('/')
       }
     })
   }
@@ -87,6 +121,7 @@ function goToViewport(coords, spaces) {
 
 function fetchChats() {
   return function(dispatch) {
+    dispatch({type: TOGGLE_LOADING})
     return fetch(`${API}chatrooms`)
     .then(res => res.json())
     .then(chatrooms => {
@@ -111,11 +146,9 @@ function handleReceivedSpace(response, history, currentUser) {
 
 function handleReceivedChatroom(response) {
   const chatroom = response.chatroom;
-  debugger
   if (response.action === 'create') {
     return {type: ADD_CHAT, payload: chatroom}
   } else if (response.action === 'delete') {
-    debugger
     return {type: CLOSE_CHAT, payload: chatroom}
   }
 };
@@ -212,6 +245,7 @@ function fetchUsers() {
     .then(resp => resp.json())
     .then(users => {
       dispatch({type: FETCH_USERS, payload: users})
+      dispatch({type: TOGGLE_LOADING})
     })
   }
 }
@@ -389,5 +423,7 @@ export {
   handleLoginSubmit,
   handleAutoLogin,
   handleReceivedSpace,
-  fetchUsers
+  fetchUsers,
+  logout,
+  handleSignupSubmit
 }
