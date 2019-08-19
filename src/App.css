@@ -14,6 +14,7 @@
   transform: rotate(45deg);
   border: 1px solid #FFFFFF;
 }
+
 .mapUserMarkerStyle {
   background-color: black;
   width: 1.5rem;
@@ -26,6 +27,7 @@
   transform: rotate(45deg);
   border: 1px solid #FFFFFF;
 }
+
 .mapMarkerStyle::after {
   position: 'absolute';
   content: '';
@@ -48,14 +50,19 @@
   width: 75%
 }
 
+.space-show {
+  width:25%
+}
+
 .space-container {
   width: 25%;
   overflow: auto;
-  height: 100vh;
+  height: 85vh;
 }
 
-div.map-container > div:nth-of-type(2) {
-  width: 100%!important
+div.map-container > div:nth-of-type(1) {
+  width: 100%!important;
+  height:100%!important;
 }
 
 .accordion {
@@ -109,9 +116,250 @@ input[type=number]::-webkit-outer-spin-button {
   margin: 0;
 }
 
+.setTime {
+  text-align: center;
+  margin:18px
+}
+
 .setTime input {
-  border: 0px;
-  border-bottom: 1px solid;
-  text-align:center;
-  width: 2%
+  border: 1px solid #e5d0d0;
+  text-align: center;
+  width: 25%;
+  border-radius: 3px;
+  font-size: 18px;
+  margin: 4px;
+  padding: 4px;
+}
+
+.filter-container {
+  display: flex
+}
+
+.filter-field {
+  display: flex;
+  flex-direction: column;
+}
+
+.filter-column-1 {
+  width: 25%;
+  display: flex;
+  align-items: center
+}
+
+.filter-column-2 {
+  display: flex;
+  justify-content: center;
+  width: 49%;
+}
+
+.filter-column-2 input {
+  width: 673px;
+  border: 1px solid #dfd9d9;
+  border-radius: 3px;
+  padding: 10px;
+}
+
+.filter-column-1 .filter-field {
+  margin: 10px;
+}
+
+.filter-column-1 .button {
+  margin: 10px;
+  padding: 10px;
+}
+
+.react-mapbox-ac-menu {
+  display: block;
+  width: 673px!important;
+  border-radius: 2px!important
+}
+
+.react-mapbox-ac-input {
+  margin-top: 1.5rem
+}
+.react-mapbox-ac-suggestion:hover {
+  background-color: #beccd4!important
+}
+
+.navbar {
+  overflow: hidden;
+  background-color: #eee;
+  font-family: Arial, Helvetica, sans-serif;
+  height: 40px;
+}
+
+.navbar a {
+  float: left;
+  font-size: 14px;
+  color: black;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+  line-height: 12px
+}
+
+.dropdown {
+  float: left;
+  overflow: hidden;
+}
+
+.fa.fa-caret-down {
+  margin-right: 10px
+}
+
+.dropdown .dropbtn {
+  cursor: pointer;
+  font-size: 16px;
+  border: none;
+  outline: none;
+  color: white;
+  padding: 14px 16px;
+  background-color: inherit;
+  font-family: inherit;
+  margin: 0;
+}
+
+.dropbtn {
+  height: 40px;
+  line-height: 40px;
+  margin-right: 50px;
+}
+
+.navbar a:hover, .dropdown:hover .dropbtn, .dropbtn:focus {
+  background-color: #b8b8b8;
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  right:0px;
+  background-color: #333333;
+  min-width: 160px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 1;
+}
+
+.dropdown-content a {
+  float: none;
+  color: white;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+  text-align: left;
+}
+
+.dropdown-content a:hover {
+  background-color: #ddd;
+}
+
+.dropdown-content.show {
+  display: block;
+}
+
+.login-page {
+  display: flex;
+  flex-direction: row-reverse
+}
+
+.login-page .login-form {
+  width: 40%;
+  align-self:center;
+  margin:20px;
+}
+
+.login-page > div:nth-of-type(2) {
+  width: 60%!important;
+  height:750px!important;
+}
+
+.space-form {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 20px
+}
+
+.space-form .react-mapbox-ac-input{
+  width: 500px;
+  border: 1px solid #dfd9d9;
+  border-radius: 3px;
+  padding: 10px;
+}
+
+.space-form .react-mapbox-ac-menu {
+  width: 500px!important;
+}
+
+.space-form form > div:nth-of-type(2) {
+  width: 500px!important;
+  height:450px!important
+}
+
+.space-form form {
+  border: 1px solid #ede7e7;
+  padding: 16px;
+  border-radius: 19px;
+}
+
+.space-form button{
+  margin-top: 20px!important
+}
+
+.space-form .streetview-image img {
+  width: 100%;
+  height: auto;
+  max-width: 300px;
+  min-width: 100px;
+  margin: 10px;
+}
+
+.streetview-image {
+  display: flex;
+  flex-direction: column;
+}
+
+.directions .mapboxgl-map {
+  top: 40px!important;
+}
+
+div.map-container.directions  > div:nth-of-type(1) {
+  height: auto!important;
+}
+
+.notifications {
+  position: absolute;
+  padding: 10px;
+  background: #333333;
+  z-index: 3;
+}
+
+.navbar ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background-color: #333;
+}
+
+.navbar li a {
+  display: block;
+  color: white;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+}
+
+.navbar li a:hover:not(.active) {
+  background-color: #111;
+}
+
+ .navbar .active {
+  background-color: #4CAF50;
+}
+
+i.icon.envelope.outline {
+  font-size: 28px;
+  color: white;
+  margin: 10px;
 }

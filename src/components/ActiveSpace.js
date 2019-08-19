@@ -8,46 +8,53 @@ import { openSpace, openNewChat, cancelClaim, finishedParking, addSpaceAfterPark
 class ActiveSpace extends React.Component {
 
   renderChat = () => {
-    if (this.props.activeChat && (this.props.activeChat === this.props.selectedSpace.id)) {
+    if (this.props.activeChat && (this.props.activeChat === this.props.activeSpace.id)) {
       return <ChatTable />
-    } else if (this.props.chats.find(chat => chat.space === this.props.selectedSpace.id)) {
-      return <button onClick={() => this.props.openChat(this.props.selectedSpace.id)}>Continue Chat</button>
+    } else if (this.props.chats.find(chat => chat.space === this.props.activeSpace.id)) {
+      return <button onClick={() => this.props.openChat(this.props.activeSpace.id)}>Continue Chat</button>
     } else {
-      return <button onClick={() => this.props.openNewChat(this.props.selectedSpace.id)}>Chat</button>
+      return <button onClick={() => this.props.openNewChat(this.props.activeSpace.id)}>Chat</button>
     }
   }
 
   render(){
+    const image = this.props.activeSpace.image
     if (this.props.loading) {
       return <div>loading...</div>
     } else {
       return (
         <div>
-          <p>{this.props.selectedSpace.address}</p>
+          <h3>{this.props.activeSpace.address}</h3>
           {
-            this.props.selectedSpace.owner !== this.props.currentUser
+            this.props.activeSpace.owner !== this.props.currentUser
             ?
             <>
-              <p>Created By: {this.props.users.find(user => user.id === this.props.selectedSpace.owner).name}</p>
-              <p>Claimed By: {this.props.users.find(user => user.id === this.props.selectedSpace.claimer).name}</p>
+              <h5>Created By: {this.props.users.find(user => user.id === this.props.activeSpace.owner).name}</h5>
+              <h5>Claimed By: {this.props.users.find(user => user.id === this.props.activeSpace.claimer).name}</h5>
+              {image
+              ?
+              <img src={image} style={{width: '300px'}} />
+              :
+              null
+              }
               {this.renderChat()}
             </>
             :
             null
           }
           {
-            this.props.selectedSpace.owner === this.props.currentUser
+            this.props.activeSpace.owner === this.props.currentUser
             ?
             <>
               <Link to={"/"} >
                 <button
-                  onClick={() => this.props.addSpaceAfterParking(this.props.currentUser, this.props.selectedSpace.id)}>
+                  onClick={() => this.props.addSpaceAfterParking(this.props.currentUser, this.props.activeSpace.id)}>
                   Add Parking Spot
                 </button>
               </Link>
               <Link to={"/"} >
                 <button
-                  onClick={() => this.props.removeSpace(this.props.selectedSpace.id)}>
+                  onClick={() => this.props.removeSpace(this.props.activeSpace.id)}>
                   Find New Parking Spot
                 </button>
               </Link>
@@ -56,12 +63,12 @@ class ActiveSpace extends React.Component {
             <>
               <Link to={"/"} >
                 <button
-                  onClick={() => this.props.cancelClaim(this.props.currentUser, this.props.selectedSpace.id)}>
+                  onClick={() => this.props.cancelClaim(this.props.currentUser, this.props.activeSpace.id)}>
                   Cancel
                 </button>
               </Link>
               <button
-                onClick={() => this.props.finishedParking(this.props.currentUser, this.props.selectedSpace.id)}>
+                onClick={() => this.props.finishedParking(this.props.currentUser, this.props.activeSpace.id)}>
                 Parked
               </button>
               <button onClick={this.props.toggleShowDirections}>{this.props.showDirection ? "Hide Directions" : "Show Directions"}</button>
@@ -76,7 +83,7 @@ class ActiveSpace extends React.Component {
 function msp(state) {
   return {
     users: state.user.users,
-    selectedSpace: state.map.selectedSpace,
+    activeSpace: state.map.activeSpace,
     currentUser: state.user.currentUser,
     showDirection: state.map.showDirection,
     chats: state.user.chats,

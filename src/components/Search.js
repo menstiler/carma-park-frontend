@@ -1,6 +1,5 @@
 import React from "react";
 import { connect } from 'react-redux'
-import Script from 'react-load-script';
 import { handleFormChange, goToViewport } from '../actions'
 import MapboxAutocomplete from 'react-mapbox-autocomplete';
 
@@ -25,7 +24,7 @@ function Search(props) {
         inputClass='form-control search'
         onSuggestionSelect={handleChange}
         country='us'
-        resetSearch={props.createSpace ? false : true}
+        resetSearch={false}
       />
   );
 }

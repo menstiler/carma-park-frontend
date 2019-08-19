@@ -9,7 +9,11 @@ import {
   ADD_MESSAGE,
   ADD_USER,
   SET_USER,
-  CLOSE_CHAT
+  CLOSE_CHAT,
+  ALERT,
+  UPDATE_NOTIFICATIONS,
+  TOGGLE_NOTIFICATIONS,
+  ADD_NOTIFICATION
 } from '../types'
 
 const defaultState = {
@@ -18,12 +22,17 @@ const defaultState = {
   chats: [],
   users: [],
   activeChat: null,
+  alert: null,
+  notifications: [],
+  showNotifications: false
 }
 
 function userReducer(prevState=defaultState, action) {
   switch(action.type) {
     case FETCH_USERS:
       return {...prevState, users: action.payload}
+    case ALERT:
+      return {...prevState, alert: action.payload}
     case ADD_USER:
       return {...prevState, users: [...prevState.users, action.payload]}
     case SET_USER:
@@ -38,8 +47,12 @@ function userReducer(prevState=defaultState, action) {
     case ADD_CHAT:
       return {...prevState, chats: [...prevState.chats, action.payload.chatroom], activeChat: action.payload.chatroom.space}
     case CLOSE_CHAT:
-      const filterChats = [...prevState.chats].filter(chat => chat.space !== action.payload.space)
-      return {...prevState, chats: filterChats, activeChat: null}
+      if (action.payload !== null) {
+        const filterChats = [...prevState.chats].filter(chat => chat.space !== action.payload.space)
+        return {...prevState, chats: filterChats, activeChat: null}
+      } else {
+        return {...prevState}
+      }
     case ADD_MESSAGE:
       const message = action.payload;
       const chatrooms = [...prevState.chats];
@@ -48,6 +61,12 @@ function userReducer(prevState=defaultState, action) {
       );
       chatroom.messages = [...chatroom.messages, message];
       return {...prevState, chats: chatrooms}
+    case UPDATE_NOTIFICATIONS:
+      return {...prevState, notifications: action.payload}
+    case ADD_NOTIFICATION:
+      return {...prevState, notifications: [...prevState.notifications, action.payload]}
+    case TOGGLE_NOTIFICATIONS:
+      return {...prevState, showNotifications: !prevState.showNotifications}
     default:
       return {...prevState}
   }

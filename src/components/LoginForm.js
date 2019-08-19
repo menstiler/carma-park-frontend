@@ -1,12 +1,18 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { handleLoginSubmit } from '../actions'
+import { handleLoginSubmit, closeAlert } from '../actions'
+import { Button, Form } from 'semantic-ui-react'
 import Map from './Map'
 
 class LoginForm extends React.Component {
+
   state = {
     username: '',
-    password: ''
+    password: '',
+  }
+
+  componentDidMount() {
+    this.props.closeAlert()
   }
 
   handleChange = (event) => {
@@ -17,23 +23,42 @@ class LoginForm extends React.Component {
 
   render() {
     return (
-      <>
-        <form onSubmit={(event) => this.props.handleLoginSubmit(event, this.state, this.props.routerProps.history)}>
-          <input type="text" name="username" onChange={this.handleChange} />
-          <input type="password" name="password" onChange={this.handleChange} />
-          <input type="submit" value="Login" />
-        </form>
-        <Map />
-      </>
+      <div className="login-page">
+        <div className="login-form">
+          {this.props.alert ? (
+           <div class="ui error message">
+             <i class="close icon" onClick={this.props.closeAlert}></i>
+             <div class="header">{this.props.alert}</div>
+           </div>
+            )
+            :
+            null
+          }
+          <Form onSubmit={(event) => this.props.handleLoginSubmit(event, this.state, this.props.routerProps.history)}>
+            <Form.Field>
+              <label>Username</label>
+              <input placeholder='Username' name="username" onChange={this.handleChange} />
+            </Form.Field>
+            <Form.Field>
+              <label>Password</label>
+              <input placeholder='Password' name="password" type="password" onChange={this.handleChange} />
+            </Form.Field>
+            <Button type='submit'>Login</Button>
+          </Form>
+        </div>
+        <Map parent="form" />
+      </div>
     )
   }
 }
 
 function msp(state) {
   return {
+    alert: state.user.alert
   }
 }
 
 export default connect(msp, {
-  handleLoginSubmit
+  handleLoginSubmit,
+  closeAlert
 })(LoginForm);

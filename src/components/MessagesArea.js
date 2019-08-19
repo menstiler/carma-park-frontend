@@ -1,7 +1,5 @@
 import React from 'react';
 import NewMessageForm from './NewMessageForm';
-import { connect } from 'react-redux'
-
 
 const MessagesArea = ({
   chatroom: { id, title, messages },

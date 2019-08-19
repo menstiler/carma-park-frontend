@@ -10,11 +10,8 @@ import {
   NEW_SPACE,
   OPEN_SPACE,
   SHOW_SPACE,
-  CANCEL_CLAIM,
   REMOVE_SPACE,
   GO_TO,
-  EDIT_SPACE,
-  HANDLE_EDIT_CHANGE,
   SHOW_DISTANCE,
   SET_POSITION,
   UPDATE_TIMER,
@@ -23,12 +20,18 @@ import {
   OPEN_CHAT,
   ADD_CHAT,
   ADD_MESSAGE,
-  ADD_USERS,
   SET_USER,
   CLOSE_CHAT,
   TOGGLE_LOADING,
   FETCH_USERS,
-  ADD_USER
+  ADD_USER,
+  ALERT,
+  UPDATE_PROGRESS_PREV,
+  UPDATE_PROGRESS_NEXT,
+  UPDATE_NOTIFICATIONS,
+  TOGGLE_NOTIFICATIONS,
+  ADD_NOTIFICATION,
+  UPDATE_ACTIVE_SPACE
 } from './types'
 
 const API = "http://localhost:3005/"
@@ -37,6 +40,10 @@ const HEADERS = {
   'Content-Type': 'application/json',
   Accept: 'application/json',
 };
+
+function dispatchActiveSpace(space) {
+  return {type: UPDATE_ACTIVE_SPACE, payload: space}
+}
 
 function handleAutoLogin(token) {
   return function(dispatch) {
@@ -48,7 +55,7 @@ function handleAutoLogin(token) {
     .then(res => res.json())
     .then(response => {
       if (response.errors){
-        alert(response.errors)
+        dispatch({type: ALERT, payload: response.errors})
       } else {
         dispatch({type: SET_USER, payload: response.id})
       }
@@ -60,6 +67,10 @@ function logout(history) {
   history.push("/login")
   localStorage.removeItem("token")
   return {type: SET_USER, payload: null}
+}
+
+function closeAlert() {
+  return {type: ALERT, payload: null}
 }
 
 function handleSignupSubmit(event, user, history) {
@@ -76,10 +87,11 @@ function handleSignupSubmit(event, user, history) {
     .then(res => res.json())
     .then(response => {
       if (response.errors){
-        alert(response.errors)
+        dispatch({type: ALERT, payload: response.errors.join(', ')})
       } else {
         dispatch({type: ADD_USER, payload: response.user})
         dispatch({type: SET_USER, payload: response.user.id})
+        dispatch({type: ALERT, payload: null})
         localStorage.token = response.token
         history.push('/')
       }
@@ -101,9 +113,10 @@ function handleLoginSubmit(event, user, history) {
     .then(res => res.json())
     .then(response => {
       if (response.errors){
-        alert(response.errors)
+        dispatch({type: ALERT, payload: response.errors})
       } else {
         dispatch({type: SET_USER, payload: response.user.id})
+        dispatch({type: ALERT, payload: null})
         localStorage.token = response.token
         history.push('/')
       }
@@ -130,11 +143,17 @@ function fetchChats() {
   }
 }
 
-function handleReceivedSpace(response, history, currentUser) {
+function handleReceivedNotifications(response) {
+  const notification = response;
+  return {type: ADD_NOTIFICATION, payload: notification}
+}
+
+function handleReceivedSpace(response, router, currentUser) {
   const space = response.space;
   if (response.action === 'update') {
     if (currentUser === space.claimer) {
-      history.push(`/spaces/${space.id}`)
+      debugger
+      router.history.push(`/spaces/${space.id}`)
     }
     return {type: CLAIM_SPACE, payload: space}
   } else if (response.action === 'delete') {
@@ -175,6 +194,29 @@ function openNewChat(space_id) {
 
 function updateTimer() {
   return {type: UPDATE_TIMER}
+}
+
+function handleNotificationDismiss(notification_id) {
+  return function(dispatch) {
+    return fetch(API + "notifications/" + notification_id, {
+      method: "DELETE"
+    })
+  }
+}
+
+function fetchNotifications(user_id) {
+  return function(dispatch) {
+    return fetch(API + "users/" + user_id)
+    .then(resp => resp.json())
+    .then(user => {
+      let notifications = user.notifications
+      dispatch({type: UPDATE_NOTIFICATIONS, payload: notifications})
+    })
+  }
+}
+
+function toggleShowNotifications() {
+  return {type: TOGGLE_NOTIFICATIONS}
 }
 
 function toggleShowDirections() {
@@ -235,10 +277,6 @@ function sortSpotByDistance(origin, spaces) {
   return sortedSpaces
 }
 
-function dispatchSpots(spaces) {
-  return {type: FETCH_SPOTS, payload: spaces}
-}
-
 function fetchUsers() {
   return function(dispatch) {
     return fetch(API + 'users')
@@ -253,7 +291,7 @@ function fetchUsers() {
 
 // calculate distance from origin, this function is from: https://www.geodatasource.com/developers/javascript
 function calDistance(lat1, lon1, lat2, lon2, unit) {
-  if ((lat1 == lat2) && (lon1 == lon2)) {
+  if ((lat1 === lat2) && (lon1 === lon2)) {
     return 0;
   }
   else {
@@ -268,8 +306,8 @@ function calDistance(lat1, lon1, lat2, lon2, unit) {
     dist = Math.acos(dist);
     dist = dist * 180/Math.PI;
     dist = dist * 60 * 1.1515;
-    if (unit=="K") { dist = dist * 1.609344 }
-    if (unit=="N") { dist = dist * 0.8684 }
+    if (unit==="K") { dist = dist * 1.609344 }
+    if (unit==="N") { dist = dist * 0.8684 }
     return dist;
   }
 }
@@ -292,23 +330,30 @@ function handleFormChange(address, coords) {
   return {type: HANDLE_FORM_CHANGE, payload: {address, coords}}
 }
 
-function createSpace(user_id, address, location, time) {
+function createSpace(user_id, address, location, time, image) {
   return function(dispatch){
+    dispatch({type: TOGGLE_LOADING})
     dispatch({type: HANDLE_SUBMIT})
-    createNewSpace(user_id, address, location, time)
-    .then(resp => {
-      dispatch({type: NEW_SPACE, payload: resp})
-    })
+    createNewSpace(user_id, address, location, time, image)
   }
 }
 
-function createNewSpace(user_id, address, location, time) {
+function nextStep() {
+  return {type: UPDATE_PROGRESS_NEXT}
+}
+
+function prevStep() {
+  return {type: UPDATE_PROGRESS_PREV}
+}
+
+function createNewSpace(user_id, address, location, time, image) {
   let space = {
     owner: user_id,
     longitude: location.lng,
     latitude: location.lat,
     address: address,
-    deadline: time
+    deadline: time,
+    image: image
   }
   return fetch(API + 'spaces', {
     method: "POST",
@@ -390,10 +435,6 @@ function finishedParking(user_id, space_id) {
   }
 }
 
-function template(argsFromComponent){
-  return function(dispatch){
-  }
-}
 
 export {
   changeViewport,
@@ -425,5 +466,13 @@ export {
   handleReceivedSpace,
   fetchUsers,
   logout,
-  handleSignupSubmit
+  handleSignupSubmit,
+  closeAlert,
+  nextStep,
+  prevStep,
+  fetchNotifications,
+  handleNotificationDismiss,
+  toggleShowNotifications,
+  handleReceivedNotifications,
+  dispatchActiveSpace
 }

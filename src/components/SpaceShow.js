@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
-import { openNewChat, claimSpace, cancelClaim, removeSpace, openChat } from '../actions'
+import { dispatchActiveSpace, openNewChat, claimSpace, cancelClaim, removeSpace, openChat } from '../actions'
 import ChatTable from './ChatTable'
 
-class SpaceShow extends React.Component {
+class SpaceShow extends Component {
 
   claimAction = () => {
     this.props.claimSpace(this.props.currentUser, this.props.selectedSpace.id)
@@ -20,9 +20,25 @@ class SpaceShow extends React.Component {
     }
   }
 
-  render() {
-  return (
-    <div className="panel on">
+  goToActiveSpace = () => {
+    this.props.dispatchActiveSpace(this.props.selectedSpace)
+    this.props.routerProps.history.push(`/spaces/${this.props.selectedSpace.id}`)
+  }
+
+   render() {
+
+    const owner = this.props.users.find(user => user.id === this.props.selectedSpace.owner)
+    const image = this.props.selectedSpace.image
+    return (
+      <div className="panel on">
+        <h3>{this.props.selectedSpace.address}</h3>
+        <h5>Created by {owner.name}</h5>
+        {image
+        ?
+        <img src={image} style={{width: '300px'}} alt={this.props.selectedSpace.address} />
+        :
+        null
+        }
         {
           !this.props.selectedSpace.claimed && this.props.selectedSpace.owner !== this.props.currentUser
           ?
@@ -47,11 +63,9 @@ class SpaceShow extends React.Component {
         {
           this.props.selectedSpace.claimed && this.props.selectedSpace.claimer === this.props.currentUser
           ?
-          <Link to={`/spaces/${this.props.selectedSpace.id}`}>
-            <button>
-              Continue Parking
-            </button>
-          </Link>
+          <button onClick={this.goToActiveSpace}>
+            Continue Parking
+          </button>
           :
           null
         }
@@ -67,16 +81,10 @@ class SpaceShow extends React.Component {
           :
           null
         }
-    </div>
-  )
+      </div>
+    )
+  }
 }
-}
-
-const findActiveChatroom = (chatrooms, activeChatroom) => {
-  return chatrooms.find(
-    chatroom => chatroom.space === activeChatroom
-  );
-};
 
 function msp(state) {
   return {
@@ -93,5 +101,6 @@ export default connect(msp, {
   cancelClaim,
   removeSpace,
   openChat,
-  openNewChat
+  openNewChat,
+  dispatchActiveSpace
 })(SpaceShow);

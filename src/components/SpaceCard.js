@@ -2,21 +2,12 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux'
 import moment from 'moment'
 import { showSpace, claimSpace, removeSpace } from '../actions'
-import SpaceShow from './SpaceShow'
 
-class SpaceCard extends React.Component {
+class SpaceCard extends Component {
 
   state = {
     time: null
   }
-
-  componentDidUpdate() {
-    if (this.props.selectedSpace && this.props.selectedSpace.id === this.props.space.id) {
-      let element = document.querySelector(`[data-id="${this.props.space.id}"]`)
-      element.scrollIntoView({ behavior: 'smooth' })
-    }
-  }
-
 
   componentDidMount() {
     if (this.props.space.deadline) {
@@ -60,12 +51,6 @@ class SpaceCard extends React.Component {
           {this.props.space.address} - {this.props.users.find(user => user.id === this.props.space.owner).name}
           <p>{this.renderDeadline()}</p>
         </button>
-        {this.props.currentUser && (this.props.selectedSpace && (this.props.selectedSpace.id === this.props.space.id))
-          ?
-          <SpaceShow routerProps={this.props.routerProps} />
-          :
-          null
-        }
       </>
     )
   }

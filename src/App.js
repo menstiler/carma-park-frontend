@@ -4,14 +4,15 @@ import 'mapbox-gl/dist/mapbox-gl.css';
 import MainContainer from './containers/MainContainer'
 import Navbar from './components/Navbar'
 import { connect } from 'react-redux'
-import { ActionCable } from 'react-actioncable-provider'
+import { ActionCableConsumer } from 'react-actioncable-provider'
 import Cable from './components/Cable'
 
-import { fetchUsers, handleReceivedSpace, handleAutoLogin, fetchSpots, setCurrentPosition, updateTimer, fetchChats, handleReceivedMessage, handleReceivedChatroom } from './actions'
-
-let mainInterval
+import { handleReceivedNotifications, fetchNotifications, fetchUsers, handleReceivedSpace, handleAutoLogin, fetchSpots, setCurrentPosition, updateTimer, fetchChats, handleReceivedMessage, handleReceivedChatroom } from './actions'
 
 class App extends Component {
+
+  notificationId = 0
+  mainInterval = 0
 
   componentDidMount() {
     const token = localStorage.token
@@ -28,13 +29,21 @@ class App extends Component {
       this.props.fetchSpots(this.props.viewport)
     })
     this.props.fetchChats()
-    mainInterval = setInterval(() => {
+    this.mainInterval = setInterval(() => {
       this.props.updateTimer()
     }, 1000)
   }
 
+
+  componentDidUpdate() {
+    if (this.props.currentUser) {
+      this.props.fetchNotifications(this.props.currentUser)
+    }
+  }
+
   componentWillUnmount() {
-    clearInterval(mainInterval)
+    clearInterval(this.mainInterval)
+    clearInterval(this.notificationInterval)
   }
 
   displayLocationInfo = (position) => {
@@ -46,13 +55,17 @@ class App extends Component {
   render() {
     return (
       <>
-        <ActionCable
+        <ActionCableConsumer
           channel={{ channel: 'ChatroomsChannel' }}
           onReceived={this.props.handleReceivedChatroom}
         />
-        <ActionCable
+        <ActionCableConsumer
+          channel={{ channel: 'NotificationsChannel' }}
+          onReceived={this.props.handleReceivedNotifications}
+        />
+        <ActionCableConsumer
           channel={{ channel: 'SpacesChannel' }}
-          onReceived={(response) =>this.props.handleReceivedSpace(response, this.props.history, this.props.currentUser)}
+          onReceived={(response) =>this.props.handleReceivedSpace(response, this.props.routerProps, this.props.currentUser)}
         />
         {this.props.chats.length ? (
           <Cable
@@ -87,5 +100,7 @@ export default connect(msp, {
   handleReceivedChatroom,
   handleAutoLogin,
   handleReceivedSpace,
-  fetchUsers
+  fetchUsers,
+  fetchNotifications,
+  handleReceivedNotifications
 })(App);

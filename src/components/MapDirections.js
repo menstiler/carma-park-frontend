@@ -21,7 +21,7 @@ class MapDirections extends React.Component {
     this.map = new mapboxgl.Map({
       container: this.mapContainer,
       style: 'mapbox://styles/mapbox/streets-v11',
-      center: [this.props.viewport.longitude, this.props.viewport.latitude],
+      center: [this.props.currentPosition.longitude, this.props.currentPosition.latitude],
       zoom: 10
     });
 

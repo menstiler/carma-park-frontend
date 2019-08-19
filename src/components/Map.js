@@ -1,5 +1,5 @@
 import React from 'react';
-import ReactMapGL, { Marker, LinearInterpolator, FlyToInterpolator, Popup, GeolocateControl } from 'react-map-gl';
+import ReactMapGL, { Marker, Popup, GeolocateControl } from 'react-map-gl';
 import { connect } from 'react-redux'
 
 // import actions!
@@ -8,10 +8,23 @@ import {
   openPopup,
   closePopup,
   updateUserMarker,
-  openSpace
+  openSpace,
+  goToViewport
 } from '../actions'
 
 class Map extends React.Component {
+
+  componentWillMount() {
+    if (this.props.parent === "form") {
+      this.props.closePopup()
+      this.props.goToViewport(
+        {
+          latitude: this.props.currentPosition.latitude,
+          longitude: this.props.currentPosition.longitude
+        },
+        this.props.spaces)
+    }
+  }
 
   renderNewSpaceMarker = () => {
     if (this.props.marker) {
@@ -78,7 +91,7 @@ class Map extends React.Component {
       ref={ map => this.mapRef = map }
       mapboxApiAccessToken={process.env.REACT_APP_MAPBOX_TOKEN}
       {...this.props.viewport}
-      mapStyle={'mapbox://styles/mapbox/streets-v9'}
+      mapStyle={`mapbox://styles/mapbox/${this.props.parent === 'form' ? "light" : "streets"}-v9`}
       onViewportChange={(viewport) => this.props.changeViewport(viewport)}
       >
       {
@@ -93,12 +106,14 @@ class Map extends React.Component {
         <div onMouseOut={props.closePopup} onMouseOver={() => props.openPopup([props.currentPosition.latitude, props.currentPosition.longitude], "Me")} className="mapUserMarkerStyle"></div>
         </Marker>
         */
+        /*
+        <GeolocateControl
+        className="geolocate-user"
+        positionOptions={{enableHighAccuracy: false}}
+        trackUserLocation={true}
+        />
+        */
       }
-      <GeolocateControl
-      className="geolocate-user"
-      positionOptions={{enableHighAccuracy: false}}
-      trackUserLocation={true}
-      />
       {
         this.props.createSpace
         ?
@@ -126,7 +141,6 @@ function msp(state) {
     spaces: state.map.spaces,
     selectedSpace: state.map.selectedSpace,
     marker: state.form.marker,
-    mapBounds: state.map.mapBounds,
     currentUser: state.user.currentUser
   }
 }
@@ -137,5 +151,6 @@ export default connect(msp, {
   openPopup,
   closePopup,
   updateUserMarker,
-  openSpace
+  openSpace,
+  goToViewport
 })(Map);

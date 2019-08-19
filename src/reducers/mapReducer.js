@@ -10,10 +10,10 @@ import {
   SHOW_SPACE,
   REMOVE_SPACE,
   GO_TO,
-  EDIT_SPACE,
   SET_POSITION,
   TOGGLE_SHOW_DIRECTIONS,
-  TOGGLE_LOADING
+  TOGGLE_LOADING,
+  UPDATE_ACTIVE_SPACE
 } from '../types'
 
 const defaultState = {
@@ -36,6 +36,7 @@ const defaultState = {
   },
   spaces: [],
   selectedSpace: null,
+  activeSpace: null,
   showDirection: true,
   loading: false
 }
@@ -62,18 +63,30 @@ function mapReducer(prevState=defaultState, action) {
     case CLAIM_SPACE:
       let foundSpot = prevState.spaces.find(space => space.id === action.payload.id)
       let newSpaces = [...prevState.spaces].map(spot => { if (spot.id !== foundSpot.id) { return spot } else { return action.payload }})
-      return {...prevState, spaces: newSpaces, selectedSpace: action.payload, showPopup: false, showDirection: true, loading: false}
+      if (prevState.selectedSpace && ((action.payload.owner === action.payload.claimer) && (action.payload.owner !== (prevState.selectedSpace.owner || prevState.selectedSpace.claimer)))) {
+        return {...prevState, spaces: newSpaces, activeSpace: action.payload, selectedSpace: null, showPopup: false, loading: false}
+      } else if (prevState.selectedSpace && (prevState.selectedSpace.id === foundSpot.id)) {
+        return {...prevState, spaces: newSpaces, selectedSpace: action.payload, activeSpace: action.payload, showPopup: false, showDirection: true, loading: false}
+      } else {
+        return {...prevState, spaces: newSpaces, activeSpace: action.payload, showPopup: false, showDirection: true, loading: false}
+      }
+    case UPDATE_ACTIVE_SPACE:
+      return {...prevState, activeSpace: action.payload}
     case NEW_SPACE:
-      return {...prevState, spaces: [...prevState.spaces, action.payload], selectedSpace: action.payload}
+      return {...prevState, spaces: [...prevState.spaces, action.payload], selectedSpace: action.payload, loading: false}
     case SHOW_SPACE:
-      return {...prevState, selectedSpace: action.payload, showPopup: true, popupDets: {
-        text: action.payload.address,
-        coords: [parseFloat(action.payload.latitude), parseFloat(action.payload.longitude)]
-      }}
+      if (prevState.selectedSpace && action.payload === prevState.selectedSpace) {
+        return {...prevState, selectedSpace: null}
+      } else {
+        return {...prevState, selectedSpace: action.payload, showPopup: true, popupDets: {
+          text: action.payload.address,
+          coords: [parseFloat(action.payload.latitude), parseFloat(action.payload.longitude)]
+        }}
+      }
     case REMOVE_SPACE:
       let foundSpace = prevState.spaces.find(space => space.id === action.payload.id)
       let spacesFiltered = [...prevState.spaces].filter(space => space.id !== foundSpace.id)
-      return {...prevState, spaces: spacesFiltered, showPopup: false}
+      return {...prevState, spaces: spacesFiltered, showPopup: false, selectedSpace: null}
     case GO_TO:
       return {...prevState, viewport: {
         ...prevState.viewport,

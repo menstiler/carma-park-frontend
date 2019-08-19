@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux'
-import { TOKEN } from '../vars.js'
 import SpaceCard from '../components/SpaceCard'
+import SpaceShow from '../components/SpaceShow'
 import { claimSpace } from '../actions'
 
 
@@ -17,9 +17,19 @@ function SpacesContainer(props) {
   }
 
   return(
-    <div>
-      {renderSpaces()}
-    </div>
+    <>
+      <div className="space-container">
+        {renderSpaces()}
+      </div>
+      {props.currentUser && props.selectedSpace
+        ?
+        <div className="space-show">
+          <SpaceShow routerProps={props.routerProps} />
+        </div>
+        :
+        null
+      }
+    </>
   )
 }
 
@@ -32,7 +42,8 @@ function msp(state) {
     popupDets: state.map.popupDets,
     spaces: state.map.spaces,
     users: state.user.users,
-    distanceShow: state.form.distanceShow
+    distanceShow: state.form.distanceShow,
+    selectedSpace: state.map.selectedSpace
   }
 }
 
