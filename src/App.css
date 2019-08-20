@@ -57,7 +57,7 @@
 .space-container {
   width: 25%;
   overflow: auto;
-  height: 85vh;
+  height: 83vh;
 }
 
 div.map-container > div:nth-of-type(1) {
@@ -78,7 +78,7 @@ div.map-container > div:nth-of-type(1) {
   transition: 0.4s;
 }
 
-.active, .accordion:hover {
+.accordion:hover {
   background-color: #ccc;
 }
 
@@ -104,10 +104,14 @@ div.map-container > div:nth-of-type(1) {
   bottom: 0;
   font-size: 1.5rem;
   margin: 20px;
+  background-color: #d6a464;
 }
 
+.addSpace.ui.circular.button {
+  border-radius: 5px
+}
 .addSpace.ui.icon.button:hover {
-  background-color: red;
+  background-color: #ff8500;
 }
 
 input[type=number]::-webkit-inner-spin-button,
@@ -149,7 +153,6 @@ input[type=number]::-webkit-outer-spin-button {
 .filter-column-2 {
   display: flex;
   justify-content: center;
-  width: 49%;
 }
 
 .filter-column-2 input {
@@ -157,6 +160,12 @@ input[type=number]::-webkit-outer-spin-button {
   border: 1px solid #dfd9d9;
   border-radius: 3px;
   padding: 10px;
+}
+
+.filter-column-3  {
+  display: flex;
+  align-items: center;
+  margin-left:10px
 }
 
 .filter-column-1 .filter-field {
@@ -223,6 +232,7 @@ input[type=number]::-webkit-outer-spin-button {
   height: 40px;
   line-height: 40px;
   margin-right: 50px;
+  color:white
 }
 
 .navbar a:hover, .dropdown:hover .dropbtn, .dropbtn:focus {
@@ -247,6 +257,7 @@ input[type=number]::-webkit-outer-spin-button {
   display: block;
   text-align: left;
 }
+
 
 .dropdown-content a:hover {
   background-color: #ddd;
@@ -320,7 +331,7 @@ input[type=number]::-webkit-outer-spin-button {
 }
 
 .directions .mapboxgl-map {
-  top: 40px!important;
+  top: 47px!important;
 }
 
 div.map-container.directions  > div:nth-of-type(1) {
@@ -328,38 +339,98 @@ div.map-container.directions  > div:nth-of-type(1) {
 }
 
 .notifications {
-  position: absolute;
   padding: 10px;
-  background: #333333;
   z-index: 3;
-}
-
-.navbar ul {
-  list-style-type: none;
-  margin: 0;
-  padding: 0;
-  overflow: hidden;
-  background-color: #333;
-}
-
-.navbar li a {
-  display: block;
-  color: white;
-  text-align: center;
-  padding: 14px 16px;
-  text-decoration: none;
-}
-
-.navbar li a:hover:not(.active) {
-  background-color: #111;
-}
-
- .navbar .active {
-  background-color: #4CAF50;
+  position: absolute;
+  width: 100%;
+  background: white;
+  border-bottom: 5px solid #b38282;
 }
 
 i.icon.envelope.outline {
   font-size: 28px;
   color: white;
   margin: 10px;
+}
+
+.ui.card, .ui.card:first-child  {
+  margin: 1em;
+  width:auto
+}
+
+.ui.card.on {
+  background: #ddb3b333
+}
+
+.chat-container {
+  max-height: 20vh;
+  overflow: auto;
+  display:flex;
+  flex-direction: column-reverse!important
+}
+
+.newMessageForm {
+  padding: 10px
+}
+
+img.parking-image {
+  width:100%
+}
+
+.active-space-container {
+  width: 25%;
+}
+
+.active-space-container.double {
+  width: 50%;
+  display: flex
+}
+
+.active-space-container.double > .active-space-chattable,
+.active-space-container.double > .active-space-info  {
+  width: 50%
+}
+
+.active-space-info {
+  padding:10px
+}
+
+.active-space-chattable .chat-container {
+  max-height: 85vh;
+  overflow: auto;
+  display:flex;
+  flex-direction: column-reverse!important
+}
+
+/* .action-container {
+  height: 95vh;
+} */
+
+.active-space-chattable > .ui.card {
+  height: 90vh;
+  justify-content: flex-end;
+}
+
+.active-space-info > .ui.fluid.button {
+  margin: 10px 0px
+}
+
+.ui.menu {
+  border-radius: 0px;
+  margin-bottom:0px
+}
+
+.messagesArea {
+  display: flex;
+  flex-flow: column;
+  align-items: flex-end
+}
+
+.messagesArea > .event {
+  display: flex;
+  padding:3px;
+}
+
+.messagesArea > .event.message-received {
+  align-self: flex-start;
 }

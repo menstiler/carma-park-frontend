@@ -16,11 +16,10 @@ class MapDirections extends React.Component {
     script2.async = true;
     document.body.appendChild(script1);
     document.body.appendChild(script2);
-
     mapboxgl.accessToken = process.env.REACT_APP_MAPBOX_TOKEN
     this.map = new mapboxgl.Map({
       container: this.mapContainer,
-      style: 'mapbox://styles/mapbox/streets-v11',
+      style: `mapbox://styles/mapbox/${this.props.mapStyle}`,
       center: [this.props.currentPosition.longitude, this.props.currentPosition.latitude],
       zoom: 10
     });
@@ -36,6 +35,7 @@ class MapDirections extends React.Component {
     });
 
   }
+
 
   componentWillUnmount() {
     this.map.remove();
@@ -69,6 +69,7 @@ function msp(state) {
     viewport: state.map.viewport,
     selectedSpace: state.map.selectedSpace,
     showDirection: state.map.showDirection,
+    mapStyle: state.map.mapStyle
   }
 }
 

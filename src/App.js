@@ -7,7 +7,7 @@ import { connect } from 'react-redux'
 import { ActionCableConsumer } from 'react-actioncable-provider'
 import Cable from './components/Cable'
 
-import { handleReceivedNotifications, fetchNotifications, fetchUsers, handleReceivedSpace, handleAutoLogin, fetchSpots, setCurrentPosition, updateTimer, fetchChats, handleReceivedMessage, handleReceivedChatroom } from './actions'
+import { closeNotifications, toggleShowNotifications, handleReceivedNotifications, fetchNotifications, fetchUsers, handleReceivedSpace, handleAutoLogin, fetchSpots, setCurrentPosition, updateTimer, fetchChats, handleReceivedMessage, handleReceivedChatroom } from './actions'
 
 class App extends Component {
 
@@ -32,6 +32,16 @@ class App extends Component {
     this.mainInterval = setInterval(() => {
       this.props.updateTimer()
     }, 1000)
+
+    document.addEventListener('click', (e) => {
+      if ((e.target.id !== 'showNotifications' && e.target.parentNode.parentNode.id !== 'showNotifications' && e.target.id !== "toggleNotifications") && this.props.showNotifications) {
+        this.props.closeNotifications()
+      } else if ((e.target.id === 'toggleNotifications') && this.props.showNotifications) {
+        this.props.closeNotifications()
+      } else if ((e.target.id === 'toggleNotifications') && !this.props.showNotifications) {
+        this.props.toggleShowNotifications()
+      }
+    })
   }
 
 
@@ -87,7 +97,8 @@ function msp(state) {
     timer: state.user.timer,
     chats: state.user.chats,
     currentUser: state.user.currentUser,
-    viewport: state.map.viewport
+    viewport: state.map.viewport,
+    showNotifications: state.user.showNotifications
   }
 }
 
@@ -102,5 +113,7 @@ export default connect(msp, {
   handleReceivedSpace,
   fetchUsers,
   fetchNotifications,
-  handleReceivedNotifications
+  handleReceivedNotifications,
+  toggleShowNotifications,
+  closeNotifications
 })(App);

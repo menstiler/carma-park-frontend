@@ -31,7 +31,10 @@ import {
   UPDATE_NOTIFICATIONS,
   TOGGLE_NOTIFICATIONS,
   ADD_NOTIFICATION,
-  UPDATE_ACTIVE_SPACE
+  UPDATE_ACTIVE_SPACE,
+  HIDE_CHAT,
+  MAP_STYLE,
+  CLOSE_NOTIFICATIONS
 } from './types'
 
 const API = "http://localhost:3005/"
@@ -40,6 +43,10 @@ const HEADERS = {
   'Content-Type': 'application/json',
   Accept: 'application/json',
 };
+
+function changeMapStyle(style) {
+  return {type: MAP_STYLE, payload: style}
+}
 
 function dispatchActiveSpace(space) {
   return {type: UPDATE_ACTIVE_SPACE, payload: space}
@@ -61,6 +68,10 @@ function handleAutoLogin(token) {
       }
     })
   }
+}
+
+function hideChat() {
+  return {type: HIDE_CHAT}
 }
 
 function logout(history) {
@@ -152,7 +163,6 @@ function handleReceivedSpace(response, router, currentUser) {
   const space = response.space;
   if (response.action === 'update') {
     if (currentUser === space.claimer) {
-      debugger
       router.history.push(`/spaces/${space.id}`)
     }
     return {type: CLAIM_SPACE, payload: space}
@@ -213,10 +223,6 @@ function fetchNotifications(user_id) {
       dispatch({type: UPDATE_NOTIFICATIONS, payload: notifications})
     })
   }
-}
-
-function toggleShowNotifications() {
-  return {type: TOGGLE_NOTIFICATIONS}
 }
 
 function toggleShowDirections() {
@@ -310,6 +316,14 @@ function calDistance(lat1, lon1, lat2, lon2, unit) {
     if (unit==="N") { dist = dist * 0.8684 }
     return dist;
   }
+}
+
+function closeNotifications() {
+  return {type: CLOSE_NOTIFICATIONS}
+}
+
+function toggleShowNotifications() {
+  return {type: TOGGLE_NOTIFICATIONS}
 }
 
 function claimSpace(user_id, space_id) {
@@ -474,5 +488,8 @@ export {
   handleNotificationDismiss,
   toggleShowNotifications,
   handleReceivedNotifications,
-  dispatchActiveSpace
+  dispatchActiveSpace,
+  hideChat,
+  changeMapStyle,
+  closeNotifications
 }

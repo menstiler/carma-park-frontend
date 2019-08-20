@@ -13,7 +13,8 @@ import {
   SET_POSITION,
   TOGGLE_SHOW_DIRECTIONS,
   TOGGLE_LOADING,
-  UPDATE_ACTIVE_SPACE
+  UPDATE_ACTIVE_SPACE,
+  MAP_STYLE
 } from '../types'
 
 const defaultState = {
@@ -38,7 +39,8 @@ const defaultState = {
   selectedSpace: null,
   activeSpace: null,
   showDirection: true,
-  loading: false
+  loading: false,
+  mapStyle: 'streets-v11',
 }
 
 function mapReducer(prevState=defaultState, action) {
@@ -97,6 +99,8 @@ function mapReducer(prevState=defaultState, action) {
       return {...prevState, currentPosition: {...prevState.currentPosition, longitude: action.payload[0], latitude: action.payload[1]}, viewport: {...prevState.viewport, longitude: action.payload[0], latitude: action.payload[1] }}
     case TOGGLE_SHOW_DIRECTIONS:
       return {...prevState, showDirection: !prevState.showDirection}
+    case MAP_STYLE:
+      return {...prevState, mapStyle: action.payload}
     default:
       return {...prevState}
   }

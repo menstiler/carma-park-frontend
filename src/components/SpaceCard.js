@@ -45,13 +45,26 @@ class SpaceCard extends Component {
   }
 
   render() {
+    const owner = this.props.users.find(user => user.id === this.props.space.owner)
     return (
-      <>
-        <button data-id={this.props.space.id} className="accordion" onClick={() => this.props.showSpace(this.props.space)}>
-          {this.props.space.address} - {this.props.users.find(user => user.id === this.props.space.owner).name}
-          <p>{this.renderDeadline()}</p>
-        </button>
-      </>
+      <div data-id={this.props.space.id} class={(this.props.selectedSpace && (this.props.selectedSpace.id === this.props.space.id)) ? "ui card on" : "ui card" } onClick={() => this.props.showSpace(this.props.space)}>
+        <div class="content">
+          <div class="header">{this.props.space.address}</div>
+          <div class="meta">
+          Created by
+          {
+            this.props.currentUser === owner.id
+            ?
+            " You"
+            :
+            ` ${owner.name}`
+          }
+          </div>
+          <div class="description">
+            <p>{this.renderDeadline()}</p>
+          </div>
+        </div>
+      </div>
     )
   }
 }

@@ -13,7 +13,9 @@ import {
   ALERT,
   UPDATE_NOTIFICATIONS,
   TOGGLE_NOTIFICATIONS,
-  ADD_NOTIFICATION
+  ADD_NOTIFICATION,
+  HIDE_CHAT,
+  CLOSE_NOTIFICATIONS
 } from '../types'
 
 const defaultState = {
@@ -46,6 +48,8 @@ function userReducer(prevState=defaultState, action) {
       return {...prevState, activeChat: foundChat.space}
     case ADD_CHAT:
       return {...prevState, chats: [...prevState.chats, action.payload.chatroom], activeChat: action.payload.chatroom.space}
+    case HIDE_CHAT:
+      return {...prevState, activeChat: null}
     case CLOSE_CHAT:
       if (action.payload !== null) {
         const filterChats = [...prevState.chats].filter(chat => chat.space !== action.payload.space)
@@ -65,8 +69,10 @@ function userReducer(prevState=defaultState, action) {
       return {...prevState, notifications: action.payload}
     case ADD_NOTIFICATION:
       return {...prevState, notifications: [...prevState.notifications, action.payload]}
+    case CLOSE_NOTIFICATIONS:
+      return {...prevState, showNotifications: false}
     case TOGGLE_NOTIFICATIONS:
-      return {...prevState, showNotifications: !prevState.showNotifications}
+      return {...prevState, showNotifications: true}
     default:
       return {...prevState}
   }

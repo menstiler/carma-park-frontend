@@ -85,13 +85,24 @@ class Map extends React.Component {
     )
   }
 
+  findStyle = () => {
+    if (this.props.parent === 'form' || this.props.createSpace) {
+      return "light-v10"
+    } else if (this.props.mapStyle === 'dark-v10') {
+      return "dark-v10"
+    } else {
+      return "streets-v11"
+    }
+  }
+
   render() {
+    const style = this.findStyle()
     return(
       <ReactMapGL
       ref={ map => this.mapRef = map }
       mapboxApiAccessToken={process.env.REACT_APP_MAPBOX_TOKEN}
       {...this.props.viewport}
-      mapStyle={`mapbox://styles/mapbox/${this.props.parent === 'form' ? "light" : "streets"}-v9`}
+      mapStyle={`mapbox://styles/mapbox/${style}`}
       onViewportChange={(viewport) => this.props.changeViewport(viewport)}
       >
       {
@@ -127,7 +138,7 @@ class Map extends React.Component {
         : null
       }
       </ReactMapGL>
-      )
+    )
   }
 }
 
@@ -141,7 +152,8 @@ function msp(state) {
     spaces: state.map.spaces,
     selectedSpace: state.map.selectedSpace,
     marker: state.form.marker,
-    currentUser: state.user.currentUser
+    currentUser: state.user.currentUser,
+    mapStyle: state.map.mapStyle
   }
 }
 

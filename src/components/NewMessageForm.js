@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux'
-
+import { Form, Button, Input } from 'semantic-ui-react'
 import { API_ROOT, HEADERS } from '../constants'
 
 
@@ -19,9 +19,13 @@ class NewMessageForm extends React.Component {
     this.setState({ content: e.target.value });
   };
 
+
   handleSubmit = e => {
     e.preventDefault();
-
+    var objDiv = document.querySelector(".chat-container");
+    if (objDiv) {
+      objDiv.scrollTop = objDiv.scrollHeight - objDiv.clientHeight;
+    }
     fetch(`${API_ROOT}/messages`, {
       method: 'POST',
       headers: HEADERS,
@@ -33,16 +37,16 @@ class NewMessageForm extends React.Component {
   render = () => {
     return (
       <div className="newMessageForm">
-        <form onSubmit={this.handleSubmit}>
-          <label>New Message:</label>
-          <br />
-          <input
-            type="text"
+        <Form onSubmit={this.handleSubmit}  >
+          <Form.Field>
+            <Input
+            label={<Button type="submit">Send</Button>}
+            labelPosition='right'
             value={this.state.content}
             onChange={this.handleChange}
-          />
-          <input type="submit" />
-        </form>
+            />
+          </Form.Field>
+        </Form>
       </div>
     );
   };

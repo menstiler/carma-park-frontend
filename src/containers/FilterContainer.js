@@ -1,11 +1,12 @@
 import React from 'react';
 import Search from '../components/Search'
 import { connect } from 'react-redux'
+import { Button } from 'semantic-ui-react'
 
-import { updateDistanceFilter } from '../actions'
+import { changeMapStyle, updateDistanceFilter } from '../actions'
 
 function FilterContainer(props) {
-
+  const style = (props.mapStyle === 'dark-v10' ? 'streets-v11' : 'dark-v10')
   return (
     <div className="filter-container">
       <div className="filter-column-1">
@@ -24,17 +25,20 @@ function FilterContainer(props) {
       <div className="filter-column-2">
         <Search />
       </div>
+      <div className="filter-column-3">
+        <Button floated='left' onClick={() => props.changeMapStyle(style)}>{props.mapStyle === 'dark-v10' ? "Light Mode" : "Night Mode"}</Button>
+      </div>
     </div>
   )
 }
-// <input type="number" min="0" max="10" onChange={props.updateDistanceFilter}/>
 
 function msp(state) {
   return {
-    distanceShow: state.form.distanceShow
+    distanceShow: state.form.distanceShow,
+    mapStyle: state.map.mapStyle
   }
 }
 
 export default connect(msp, {
-  updateDistanceFilter
+  updateDistanceFilter, changeMapStyle
 })(FilterContainer);

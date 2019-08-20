@@ -1,25 +1,52 @@
 import React from 'react';
-import NewMessageForm from './NewMessageForm';
+import { Card, Feed, Icon } from 'semantic-ui-react'
+import moment from 'moment'
 
 const MessagesArea = ({
-  chatroom: { id, title, messages },
+  chatroom: { id, title, messages},
+  currentUser
 }) => {
-  return (
-    <div className="messagesArea">
-      <h2>{title}</h2>
-      <ul>{orderedMessages(messages)}</ul>
-      <NewMessageForm chatroom_id={id} />
-    </div>
-  );
+  if (messages.length) {
+    return (
+      <Card.Content className="chat-container" >
+        <Feed>
+        <div className="messagesArea" >
+          {orderedMessages(messages, currentUser)}
+        </div>
+        </Feed>
+      </Card.Content>
+    );
+  } else {
+    return null
+  }
 };
 
 export default MessagesArea;
 
-const orderedMessages = (messages, users) => {
+const orderedMessages = (messages, currentUser) => {
   const sortedMessages = messages.sort(
     (a, b) => new Date(a.created_at) - new Date(b.created_at)
   );
   return sortedMessages.map(message => {
-    return <li key={message.id}>{message.content} - {message.user.name}</li>;
+    let received = message.user.id !== currentUser
+    let time = moment(message.created_at)
+    return (
+      <Feed.Event className={received ? "message-received" : null}>
+        <Feed.Content>
+          <Feed.Extra text>
+           {message.content}
+          </Feed.Extra>
+          <Feed.Meta>
+          {received
+            ?
+            <Feed.User>{message.user.name}</Feed.User>
+            :
+            null
+          }
+          </Feed.Meta>
+          <Feed.Meta>{moment(time, 'YYYY-MM-DD hh:mm:ss').fromNow()}</Feed.Meta>
+        </Feed.Content>
+      </Feed.Event>
+    )
   });
 };

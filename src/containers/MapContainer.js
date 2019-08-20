@@ -6,7 +6,6 @@ import ActiveSpace from '../components/ActiveSpace'
 import MapDirections from '../components/MapDirections'
 import FilterContainer from './FilterContainer'
 import { Route, Switch, Link } from 'react-router-dom'
-
 import { closePopup } from '../actions'
 import { Button, Popup } from 'semantic-ui-react'
 
@@ -16,14 +15,12 @@ function MapContainer(props) {
     <Switch>
       <Route path="/spaces/:id" render={(routerProps) => {
         if (props.loading) {
-          return <div>loading...</div>
+          return <div class="ui active centered inline loader"></div>
         } else {
           if (props.activeSpace) {
             return (
               <div className="action-container">
-                <div className="space-container">
-                  <ActiveSpace routerProps={routerProps} />
-                </div>
+                <ActiveSpace routerProps={routerProps} />
                 {
                   props.activeSpace.claimer !== props.activeSpace.owner
                   ?
@@ -75,7 +72,7 @@ function msp(state) {
     activeSpace: state.map.activeSpace,
     currentUser: state.user.currentUser,
     address: state.form.address,
-    loading: state.map.loading
+    loading: state.map.loading,
   }
 }
 
