@@ -15,7 +15,11 @@ import {
   TOGGLE_NOTIFICATIONS,
   ADD_NOTIFICATION,
   HIDE_CHAT,
-  CLOSE_NOTIFICATIONS
+  CLOSE_NOTIFICATIONS,
+  CLOSE_ACTIVE_NOTIFICATION,
+  SET_FAVORITES,
+  ADD_FAVORITE,
+  REMOVE_FAVORITE
 } from '../types'
 
 const defaultState = {
@@ -23,10 +27,13 @@ const defaultState = {
   timer: moment(new Date()),
   chats: [],
   users: [],
+  favorites: [],
   activeChat: null,
   alert: null,
   notifications: [],
-  showNotifications: false
+  showNotifications: false,
+  activeNotification: null,
+  showFavorites: false
 }
 
 function userReducer(prevState=defaultState, action) {
@@ -37,8 +44,21 @@ function userReducer(prevState=defaultState, action) {
       return {...prevState, alert: action.payload}
     case ADD_USER:
       return {...prevState, users: [...prevState.users, action.payload]}
+    case SET_FAVORITES:
+      if (prevState.currentUser) {
+        const currentUser = prevState.users.find(user => user.id === prevState.currentUser)
+        return {...prevState, favorites: currentUser.favorites}
+      } else {
+        return {...prevState}
+      }
+    case ADD_FAVORITE:
+      return {...prevState, favorites: [...prevState.favorites, action.payload]}
+    case REMOVE_FAVORITE:
+      debugger
+      const filteredFavorites = [...prevState.favorites].filter(favorite => favorite.id !== action.payload)
+      return {...prevState, favorites: filteredFavorites}
     case SET_USER:
-      return {...prevState, currentUser: action.payload}
+      return {...prevState, currentUser: action.payload }
     case UPDATE_TIMER:
       return {...prevState, timer: moment(new Date())}
     case UPDATE_CHATS:
@@ -68,11 +88,17 @@ function userReducer(prevState=defaultState, action) {
     case UPDATE_NOTIFICATIONS:
       return {...prevState, notifications: action.payload}
     case ADD_NOTIFICATION:
-      return {...prevState, notifications: [...prevState.notifications, action.payload]}
+      if (prevState.currentUser === action.payload.user_id) {
+        return {...prevState, notifications: [...prevState.notifications, action.payload], activeNotification: action.payload, showNotifications: false }
+      } else {
+        return {...prevState, notifications: [...prevState.notifications, action.payload] }
+      }
     case CLOSE_NOTIFICATIONS:
       return {...prevState, showNotifications: false}
     case TOGGLE_NOTIFICATIONS:
       return {...prevState, showNotifications: true}
+    case CLOSE_ACTIVE_NOTIFICATION:
+      return {...prevState, activeNotification: null}
     default:
       return {...prevState}
   }

@@ -25,31 +25,34 @@ class SignupForm extends React.Component {
   render() {
     return (
       <div className="login-page">
-        <div className="login-form">
-          {this.props.alert ? (
-           <div class="ui error message">
-             <i class="close icon" onClick={this.props.closeAlert}></i>
-             <div class="header">{this.props.alert}</div>
-           </div>
-            )
-            :
-            null
-          }
-          <Form onSubmit={(event) => this.props.handleSignupSubmit(event, this.state, this.props.routerProps.history)}>
-            <Form.Field>
-              <label>Name</label>
-              <input placeholder='Name' name="name" onChange={this.handleChange} />
-            </Form.Field>
-            <Form.Field>
-              <label>Username</label>
-              <input placeholder='Username' name="username" onChange={this.handleChange} />
-            </Form.Field>
-            <Form.Field>
-              <label>Password</label>
-              <input placeholder='Password' name="password" type="password" onChange={this.handleChange} />
-            </Form.Field>
-            <Button type='submit'>Sign Up</Button>
-          </Form>
+        <div className="form-container">
+          <div class="main-title">carma park</div>
+          <div className="login-form">
+            {this.props.alert ? (
+             <div class="ui error message">
+               <i class="close icon" onClick={this.props.closeAlert}></i>
+               <div class="header">{this.props.alert}</div>
+             </div>
+              )
+              :
+              null
+            }
+            <Form onSubmit={(event) => this.props.handleSignupSubmit(event, this.state, this.props.routerProps.history)}>
+              <Form.Field>
+                <label>Name</label>
+                <input placeholder='Name' name="name" onChange={this.handleChange} />
+              </Form.Field>
+              <Form.Field>
+                <label>Username</label>
+                <input placeholder='Username' name="username" onChange={this.handleChange} />
+              </Form.Field>
+              <Form.Field>
+                <label>Password</label>
+                <input placeholder='Password' name="password" type="password" onChange={this.handleChange} />
+              </Form.Field>
+              <Button type='submit'>Sign Up</Button>
+            </Form>
+          </div>
         </div>
         <Map parent="form" />
       </div>

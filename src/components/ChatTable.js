@@ -4,21 +4,32 @@ import MessagesArea from './MessagesArea'
 import NewMessageForm from './NewMessageForm';
 import { Card, Feed, Icon } from 'semantic-ui-react'
 
-function ChatTable(props) {
-  return (
-    <Card>
-      <MessagesArea
-        chatroom={findActiveChatroom(
-        props.chats,
-        props.activeChat
-        )}
-        currentUser={props.currentUser}
-      />
-      <NewMessageForm chatroom_id={findActiveChatroom(
-      props.chats,
-      props.activeChat).id} />
-    </Card>
-  )
+class ChatTable extends React.Component {
+
+  componentDidUpdate() {
+    let objDiv = document.querySelector(".chat-container");
+    if (objDiv) {
+      objDiv.scrollTop = objDiv.scrollHeight;
+    }
+  }
+
+  render() {
+    return (
+      <Card>
+        <MessagesArea
+          chatroom={findActiveChatroom(
+          this.props.chats,
+          this.props.activeChat
+          )}
+          currentUser={this.props.currentUser}
+        />
+        <NewMessageForm chatroom_id={findActiveChatroom(
+        this.props.chats,
+        this.props.activeChat).id} />
+      </Card>
+    )
+  }
+
 }
 
 const findActiveChatroom = (chatrooms, activeChatroom) => {

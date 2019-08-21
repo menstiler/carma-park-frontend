@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux'
 import moment from 'moment'
+import { Icon } from 'semantic-ui-react'
 import { showSpace, claimSpace, removeSpace } from '../actions'
 
 class SpaceCard extends Component {
@@ -28,17 +29,31 @@ class SpaceCard extends Component {
   }
 
   componentWillUpdate() {
-    if (this.state.time) {
-      if (moment(this.state.time.diff(this.props.timer)) < 0) {
-        this.props.removeSpace(this.props.space.id)
+    if (this.props.space.deadline) {
+      if (this.state.time) {
+        if (moment(this.state.time.diff(this.props.timer)) < 0) {
+          this.props.removeSpace(this.props.space.id)
+        }
       }
     }
   }
 
   renderDeadline = () => {
-    if (this.state.time) {
+    if (this.state.time && !this.props.space.claimed && this.props.space.deadline) {
       // console.log("TIMER", moment(this.state.time.diff(this.props.timer)))
-      return `Expiring in ${moment.duration(this.state.time.diff(this.props.timer)).humanize()}`
+      return (
+        <>
+          <Icon name='hourglass half' />
+          {`Expiring in ${moment.duration(this.state.time.diff(this.props.timer)).humanize()}`}
+        </>
+      )
+    } else if (this.props.space.claimed) {
+      const claimer = this.props.users.find(user => user.id === this.props.space.claimer)
+      if (this.props.currentUser === claimer.id) {
+        return "Claimed By You"
+      } else {
+        return `Claimed By ${claimer.name}`
+      }
     } else {
       return null
     }

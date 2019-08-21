@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css?family=Righteous&display=swap');
+
 .App {
   text-align: center;
 }
@@ -44,6 +46,7 @@
 .action-container {
   display: flex;
   flex-direction: row;
+  background-color: #fff
 }
 
 .map-container {
@@ -54,10 +57,14 @@
   width:25%
 }
 
+.space-form form {
+    background: white;
+}
+
 .space-container {
   width: 25%;
   overflow: auto;
-  height: 83vh;
+  height: 87vh;
 }
 
 div.map-container > div:nth-of-type(1) {
@@ -102,16 +109,26 @@ div.map-container > div:nth-of-type(1) {
   position: absolute;
   right:0;
   bottom: 0;
-  font-size: 1.5rem;
+  height:50px;
+  width:50px;
+  font-size: 1.3rem;
+  margin: 20px;
+  background-color: #d6a464;
+}
+
+.toggle-style.ui.icon.button {
+  position: absolute;
+  right:66px;
+  height:50px;
+  width:50px;
+  bottom: 0;
+  font-size: 1.3rem;
   margin: 20px;
   background-color: #d6a464;
 }
 
 .addSpace.ui.circular.button {
   border-radius: 5px
-}
-.addSpace.ui.icon.button:hover {
-  background-color: #ff8500;
 }
 
 input[type=number]::-webkit-inner-spin-button,
@@ -273,14 +290,14 @@ input[type=number]::-webkit-outer-spin-button {
 }
 
 .login-page .login-form {
-  width: 40%;
+  width: 75%;
   align-self:center;
-  margin:20px;
+  margin:10%;
 }
 
 .login-page > div:nth-of-type(2) {
   width: 60%!important;
-  height:750px!important;
+  height:95vh!important;
 }
 
 .space-form {
@@ -379,6 +396,7 @@ img.parking-image {
 
 .active-space-container {
   width: 25%;
+  height: 95vh
 }
 
 .active-space-container.double {
@@ -429,8 +447,151 @@ img.parking-image {
 .messagesArea > .event {
   display: flex;
   padding:3px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  margin: 3px
 }
 
 .messagesArea > .event.message-received {
   align-self: flex-start;
+}
+
+#active-message {
+  margin: 0px;
+  padding:13px;
+  border-radius:0px;
+  -webkit-box-shadow:none;
+  box-shadow:none
+}
+
+#active-message > i.close.icon {
+  right: 4px;
+  top:2px;
+}
+
+.ui.card:last-child {
+  margin-bottom: 10px
+}
+.parked-buttons a {
+  margin: 10px
+}
+
+.ui.card>.messagesArea > .event>.content {
+  padding: 7px
+}
+
+.messagesArea > .event > .content {
+  padding:3px
+}
+
+.main-title {
+  font-family: 'Righteous', cursive;
+  font-size:50pt;
+  font-size: 35pt;
+  text-transform: uppercase;
+}
+
+.form-container {
+  width: 40%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.loader {
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.car {
+  transform: scale(0.7);
+}
+.car__body {
+  animation: shake 0.2s ease-in-out infinite alternate;
+}
+.car__line {
+  transform-origin: center right;
+  stroke-dasharray: 22;
+  animation: line 0.8s ease-in-out infinite;
+  animation-fill-mode: both;
+}
+.car__line--top {
+  animation-delay: 0s;
+}
+.car__line--middle {
+  animation-delay: 0.2s;
+}
+.car__line--bottom {
+  animation-delay: 0.4s;
+}
+
+@keyframes shake {
+  0% {
+    transform: translateY(-1%);
+  }
+  100% {
+    transform: translateY(3%);
+  }
+}
+@keyframes line {
+  0% {
+    stroke-dashoffset: 22;
+  }
+  25% {
+    stroke-dashoffset: 22;
+  }
+  50% {
+    stroke-dashoffset: 0;
+  }
+  51% {
+    stroke-dashoffset: 0;
+  }
+  80% {
+    stroke-dashoffset: -22;
+  }
+  100% {
+    stroke-dashoffset: -22;
+  }
+}
+.loader {
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10
+}
+
+.ui.attached.bottom.button > .car, .addSpace > .car  {
+  font-size:1.3em;
+  transform: none;
+}
+
+body {
+  background: url(https://img.freepik.com/free-vector/silhouette-skyline-illustration_53876-78792.jpg?size=626&ext=jpg);
+  background-size: c;
+  background-repeat-y: no-repeat;
+  background-position: bottom;
+}
+
+.favorites-container {
+  display: flex;
+  justify-content:center;
+  align-items:center;
+  margin-bottom: 10px;
+}
+
+.favorites-form {
+  display: flex;
+  align-items: center;
+}
+
+.favorites-form >label {
+  margin-right:10px!important
+}
+
+.cancel-favorites {
+  margin-left:10px!important
 }

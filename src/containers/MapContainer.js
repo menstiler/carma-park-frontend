@@ -6,10 +6,12 @@ import ActiveSpace from '../components/ActiveSpace'
 import MapDirections from '../components/MapDirections'
 import FilterContainer from './FilterContainer'
 import { Route, Switch, Link } from 'react-router-dom'
-import { closePopup } from '../actions'
+import { closePopup, changeMapStyle } from '../actions'
 import { Button, Popup } from 'semantic-ui-react'
 
 function MapContainer(props) {
+
+  const style = (props.mapStyle === 'dark-v10' ? 'streets-v11' : 'dark-v10')
 
   return (
     <Switch>
@@ -60,6 +62,9 @@ function MapContainer(props) {
                 null
               }
             </div>
+            <div>
+              <Popup content={`Change to ${props.mapStyle === 'dark-v10' ? "Light Mode" : "Night Mode"}`} basic trigger={<Button icon={props.mapStyle === 'dark-v10' ? "lightbulb outline" : "lightbulb" } className="toggle-style"  onClick={() => props.changeMapStyle(style)} />} />
+            </div>
           </>
         )}} />
     </Switch>
@@ -73,9 +78,10 @@ function msp(state) {
     currentUser: state.user.currentUser,
     address: state.form.address,
     loading: state.map.loading,
+    mapStyle: state.map.mapStyle
   }
 }
 
 export default connect(msp, {
-  closePopup
+  closePopup, changeMapStyle
 })(MapContainer);

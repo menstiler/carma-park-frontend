@@ -32,20 +32,25 @@ class App extends Component {
     this.mainInterval = setInterval(() => {
       this.props.updateTimer()
     }, 1000)
-
     document.addEventListener('click', (e) => {
-      if ((e.target.id !== 'showNotifications' && e.target.parentNode.parentNode.id !== 'showNotifications' && e.target.id !== "toggleNotifications") && this.props.showNotifications) {
+      if (e.target.id) {
+        if ((e.target.id === 'toggleNotifications') && this.props.showNotifications) {
+          this.props.closeNotifications()
+        } else if ((e.target.id === 'toggleNotifications') && !this.props.showNotifications || (e.target.id === "dontToggleNotifications")) {
+          this.props.toggleShowNotifications()
+        }
+      } else {
         this.props.closeNotifications()
-      } else if ((e.target.id === 'toggleNotifications') && this.props.showNotifications) {
-        this.props.closeNotifications()
-      } else if ((e.target.id === 'toggleNotifications') && !this.props.showNotifications) {
-        this.props.toggleShowNotifications()
       }
     })
   }
 
 
   componentDidUpdate() {
+    if (document.querySelectorAll('.ui.message p:last-child')) {
+      document.querySelectorAll('.ui.message p:last-child').forEach(node => node.setAttribute("id", "dontToggleNotifications"))
+      document.querySelectorAll('#showNotifications > .close.icon').forEach(node => node.setAttribute("id", "dontToggleNotifications"))
+    }
     if (this.props.currentUser) {
       this.props.fetchNotifications(this.props.currentUser)
     }

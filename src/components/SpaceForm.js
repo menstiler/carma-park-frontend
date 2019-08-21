@@ -19,15 +19,29 @@ class SpaceForm extends Component {
     this.props.closePopup()
   }
 
+  nonDuplicate = (address) => {
+    let sharedAddress = this.props.spaces.find(space => space.address === address)
+    if (sharedAddress && sharedAddress.available) {
+      return false
+    }
+    return true
+  }
+
   saveAndContinue = (e) => {
     e.preventDefault()
-    if (this.props.address) {
+    let unique = this.nonDuplicate(this.props.address)
+    if (this.props.address && unique) {
       this.props.nextStep()
+    } else if (!unique) {
+      this.setState({
+        alert: "This location is already available"
+      })
     } else {
       this.setState({
         alert: "Please input a location"
       })
     }
+
   }
 
   back = (e) => {
@@ -192,7 +206,8 @@ function msp(state) {
     coords: state.form.coords,
     step: state.form.step,
     progress: state.form.progress,
-    loading: state.form.loading
+    loading: state.form.loading,
+    spaces: state.map.spaces
   }
 }
 

@@ -15,7 +15,7 @@ class SpaceShow extends Component {
       if (this.props.chats.find(chat => chat.space === this.props.selectedSpace.id)) {
         return <button class="ui button" onClick={() => this.props.openChat(this.props.selectedSpace.id)}><i class="talk icon"></i>Continue Chat</button>
       } else {
-        return <button  class="ui button" onClick={() => this.props.openNewChat(this.props.selectedSpace.id)}><i class="talk icon"></i>Chat</button>
+        return <button  class="ui button" onClick={() => this.props.openNewChat(this.props.selectedSpace.id, this.props.currentUser)}><i class="talk icon"></i>Chat</button>
       }
     }
   }

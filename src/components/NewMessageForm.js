@@ -18,14 +18,9 @@ class NewMessageForm extends React.Component {
   handleChange = e => {
     this.setState({ content: e.target.value });
   };
-
-
+  
   handleSubmit = e => {
     e.preventDefault();
-    var objDiv = document.querySelector(".chat-container");
-    if (objDiv) {
-      objDiv.scrollTop = objDiv.scrollHeight - objDiv.clientHeight;
-    }
     fetch(`${API_ROOT}/messages`, {
       method: 'POST',
       headers: HEADERS,

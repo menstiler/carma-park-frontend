@@ -14,8 +14,8 @@ import {
 
 class Map extends React.Component {
 
-  componentWillMount() {
-    if (this.props.parent === "form") {
+  componentDidMount() {
+    if (this.props.parent === "form" || this.props.createSpace) {
       this.props.closePopup()
       this.props.goToViewport(
         {
@@ -55,10 +55,10 @@ class Map extends React.Component {
     return filterSpaces.map(space => {
       let lat = parseFloat(space.latitude)
       let lng = parseFloat(space.longitude)
-      if (this.props.selectedSpace && (this.props.selectedSpace.id === space.id) && this.props.selectedSpace.owner === this.props.selectedSpace.claimer) {
+      if (this.props.activeSpace && (this.props.activeSpace.id === space.id) && this.props.activeSpace.owner === this.props.activeSpace.claimer) {
         return (
-          <Marker key={space.id} latitude={parseFloat(this.props.selectedSpace.latitude)} longitude={parseFloat(this.props.selectedSpace.longitude)} >
-            <div onClick={() => this.props.openSpace(space)} onMouseOut={this.props.closePopup} onMouseOver={() => this.props.openPopup([parseFloat(this.props.selectedSpace.latitude), parseFloat(this.props.selectedSpace.longitude)], space.address)} className="mapUserMarkerStyle"></div>
+          <Marker key={space.id} latitude={parseFloat(this.props.activeSpace.latitude)} longitude={parseFloat(this.props.activeSpace.longitude)} >
+            <div onClick={() => this.props.openSpace(space)} onMouseOut={this.props.closePopup} onMouseOver={() => this.props.openPopup([parseFloat(this.props.activeSpace.latitude), parseFloat(this.props.activeSpace.longitude)], space.address)} className="mapUserMarkerStyle"></div>
           </Marker>
         )
       } else {
@@ -86,7 +86,7 @@ class Map extends React.Component {
   }
 
   findStyle = () => {
-    if (this.props.parent === 'form' || this.props.createSpace) {
+    if (this.props.parent === 'form') {
       return "light-v10"
     } else if (this.props.mapStyle === 'dark-v10') {
       return "dark-v10"
@@ -153,7 +153,8 @@ function msp(state) {
     selectedSpace: state.map.selectedSpace,
     marker: state.form.marker,
     currentUser: state.user.currentUser,
-    mapStyle: state.map.mapStyle
+    mapStyle: state.map.mapStyle,
+    activeSpace: state.map.activeSpace
   }
 }
 

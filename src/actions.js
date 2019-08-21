@@ -34,7 +34,11 @@ import {
   UPDATE_ACTIVE_SPACE,
   HIDE_CHAT,
   MAP_STYLE,
-  CLOSE_NOTIFICATIONS
+  CLOSE_NOTIFICATIONS,
+  CLOSE_ACTIVE_NOTIFICATION,
+  SET_FAVORITES,
+  ADD_FAVORITE,
+  REMOVE_FAVORITE
 } from './types'
 
 const API = "http://localhost:3005/"
@@ -43,6 +47,37 @@ const HEADERS = {
   'Content-Type': 'application/json',
   Accept: 'application/json',
 };
+
+function addToFavorites(coords, user_id, name) {
+  return function(dispatch) {
+    let favorite = {
+      longitude: coords[0],
+      latitude: coords[1],
+      user_id: user_id,
+      name: name
+    }
+    return fetch(API + 'add_favorites', {
+      method: "POST",
+      headers: HEADERS,
+      body: JSON.stringify(favorite)
+    })
+    .then(resp => resp.json())
+    .then(favorite => {
+      dispatch({type: ADD_FAVORITE, payload: favorite})
+    })
+  }
+}
+
+function deleteFavorite(favorite) {
+  return function(dispatch) {
+    return fetch(API + 'remove_favorite/' + favorite.id, {
+      method: "DELETE"
+    })
+    .then(resp => {
+      dispatch({type: REMOVE_FAVORITE, payload: favorite.id})
+    })
+  }
+}
 
 function changeMapStyle(style) {
   return {type: MAP_STYLE, payload: style}
@@ -67,6 +102,7 @@ function handleAutoLogin(token) {
         dispatch({type: SET_USER, payload: response.id})
       }
     })
+    dispatch({type: SET_FAVORITES})
   }
 }
 
@@ -191,9 +227,9 @@ function openChat(space_id) {
   return {type: OPEN_CHAT, payload: space_id}
 }
 
-function openNewChat(space_id) {
+function openNewChat(space_id, currentUser) {
   return function(dispatch) {
-    const chatroom = { space: space_id }
+    const chatroom = { space: space_id, creator: currentUser }
     return fetch(API + "chatrooms", {
       method: "POST",
       headers: HEADERS,
@@ -289,6 +325,7 @@ function fetchUsers() {
     .then(resp => resp.json())
     .then(users => {
       dispatch({type: FETCH_USERS, payload: users})
+      dispatch({type: SET_FAVORITES})
       dispatch({type: TOGGLE_LOADING})
     })
   }
@@ -324,6 +361,10 @@ function closeNotifications() {
 
 function toggleShowNotifications() {
   return {type: TOGGLE_NOTIFICATIONS}
+}
+
+function closeActiveNotification() {
+  return {type: CLOSE_ACTIVE_NOTIFICATION}
 }
 
 function claimSpace(user_id, space_id) {
@@ -491,5 +532,8 @@ export {
   dispatchActiveSpace,
   hideChat,
   changeMapStyle,
-  closeNotifications
+  closeNotifications,
+  closeActiveNotification,
+  addToFavorites,
+  deleteFavorite
 }
