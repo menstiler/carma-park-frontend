@@ -18,6 +18,7 @@ class App extends Component {
     const token = localStorage.token
     if (token) {
       this.props.handleAutoLogin(token)
+      // .then(() => )
     }
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(this.displayLocationInfo);

@@ -16,6 +16,7 @@ class FilterContainer extends React.Component {
   openForm = () => {
     this.setState({
       form: !this.state.form,
+      name: ''
     })
   }
 
@@ -36,7 +37,8 @@ class FilterContainer extends React.Component {
     .then(resp => {
       this.setState({
         form: false,
-        showFavorites: true
+        showFavorites: true,
+        name: ''
       })
     })
   }
@@ -62,37 +64,43 @@ class FilterContainer extends React.Component {
         <div className="filter-column-2">
           <Search />
         </div>
-        <div className="filter-column-3">
-          {
-            !this.state.form
-            ?
-            <Button floated='left' onClick={this.openForm}>Add to Favorites</Button>
-            :
-            <>
-            <Form onSubmit={this.handleSubmit}>
-              <Form.Field  className="favorites-form">
-                <label>Name</label>
-                <Input
-                required
-                placeholder="e.g., Work, Home"
-                label={<Button type="submit" onClick={this.handleClick}>Add</Button>}
-                labelPosition='right'
-                value={this.state.name}
-                onChange={this.handleChange}
-                />
-              </Form.Field>
-            </Form>
-            <Button floated='left' className="cancel-favorites" onClick={this.openForm}>Cancel</Button>
-            </>
-          }
-          {
-            this.props.favorites.length && !this.state.form
-            ?
-            <Button floated='left' onClick={this.toggleViewFavorites}>{this.state.showFavorites ? "Hide Favorites" : "Show Favorites"}</Button>
-            :
-            null
-          }
-        </div>
+        {
+          this.props.currentUser
+          ?
+          <div className="filter-column-3">
+            {
+              !this.state.form
+              ?
+              <Button floated='left' onClick={this.openForm}>Add to Favorites</Button>
+              :
+              <>
+              <Form onSubmit={this.handleSubmit}>
+                <Form.Field className="favorites-form">
+                  <label>Name</label>
+                  <Input
+                  required
+                  placeholder="e.g., Work, Home"
+                  label={<Button type="submit" onClick={this.handleClick}>Add</Button>}
+                  labelPosition='right'
+                  value={this.state.name}
+                  onChange={this.handleChange}
+                  />
+                </Form.Field>
+              </Form>
+              <Button floated='left' className="cancel-favorites" onClick={this.openForm}>Cancel</Button>
+              </>
+            }
+            {
+              this.props.favorites.length && !this.state.form
+              ?
+              <Button floated='left' onClick={this.toggleViewFavorites}>{this.state.showFavorites ? "Hide Favorites" : "Show Favorites"}</Button>
+              :
+              null
+            }
+          </div>
+          :
+          null
+        }
       </div>
         {
           this.state.showFavorites

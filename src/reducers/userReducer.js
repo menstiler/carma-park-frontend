@@ -19,7 +19,9 @@ import {
   CLOSE_ACTIVE_NOTIFICATION,
   SET_FAVORITES,
   ADD_FAVORITE,
-  REMOVE_FAVORITE
+  REMOVE_FAVORITE,
+  REMOVE_NOTIFICATIONS,
+  REMOVE_NOTIFICATION
 } from '../types'
 
 const defaultState = {
@@ -54,7 +56,6 @@ function userReducer(prevState=defaultState, action) {
     case ADD_FAVORITE:
       return {...prevState, favorites: [...prevState.favorites, action.payload]}
     case REMOVE_FAVORITE:
-      debugger
       const filteredFavorites = [...prevState.favorites].filter(favorite => favorite.id !== action.payload)
       return {...prevState, favorites: filteredFavorites}
     case SET_USER:
@@ -93,6 +94,11 @@ function userReducer(prevState=defaultState, action) {
       } else {
         return {...prevState, notifications: [...prevState.notifications, action.payload] }
       }
+    case REMOVE_NOTIFICATION:
+      const filteredNotifications = [...prevState.notifications].filter(notication => notication.id !== action.payload.id)
+      return {...prevState, notifications: filteredNotifications}
+    case REMOVE_NOTIFICATIONS:
+      return {...prevState, notifications: [], activeNotification: null }
     case CLOSE_NOTIFICATIONS:
       return {...prevState, showNotifications: false}
     case TOGGLE_NOTIFICATIONS:

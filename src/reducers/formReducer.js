@@ -18,7 +18,7 @@ const defaultState = {
 function formReducer(prevState=defaultState, action) {
   switch (action.type) {
     case HANDLE_FORM_CHANGE:
-      return {...prevState, address: action.payload.address, coords: action.payload.coords, marker: {address: action.payload.address, latitude: action.payload.coords.lat, longitude: action.payload.coords.lng} }
+      return {...prevState, address: action.payload.address, coords: action.payload.coords, marker: {address: action.payload.address, latitude: action.payload.coords.latitude, longitude: action.payload.coords.longitude} }
     case HANDLE_SUBMIT:
       return {...prevState, query: null, address: null, coords: null, marker: null, progress: null, step: 1}
     case SHOW_DISTANCE:

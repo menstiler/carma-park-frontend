@@ -26,12 +26,12 @@ class SignupForm extends React.Component {
     return (
       <div className="login-page">
         <div className="form-container">
-          <div class="main-title">carma park</div>
+          <div className="main-title">carma park</div>
           <div className="login-form">
             {this.props.alert ? (
-             <div class="ui error message">
-               <i class="close icon" onClick={this.props.closeAlert}></i>
-               <div class="header">{this.props.alert}</div>
+             <div className="ui error message">
+               <i className="close icon" onClick={this.props.closeAlert}></i>
+               <div className="header">{this.props.alert}</div>
              </div>
               )
               :

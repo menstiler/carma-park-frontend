@@ -47,12 +47,15 @@ class SpaceForm extends Component {
   back = (e) => {
     e.preventDefault();
     this.props.prevStep();
-    if (this.props.step === 1) {
+    if (this.props.step === 2) {
       this.setState({
-        image: null
+        image: null,
+        hours: 0,
+        minutes: 0
       })
     }
   }
+
 
   closeAlert = () => {
     this.setState({
@@ -63,7 +66,7 @@ class SpaceForm extends Component {
   grabGoogleStreetView = (e) => {
     e.preventDefault()
     this.setState({
-      image: `https://maps.googleapis.com/maps/api/streetview?size=400x400&location=${parseFloat(this.props.coords.lat)},${parseFloat(this.props.coords.lng)}&fov=90&heading=200&pitch=5&key=${process.env.REACT_APP_GOOGLE_TOKEN}`
+      image: `https://maps.googleapis.com/maps/api/streetview?size=400x400&location=${parseFloat(this.props.coords.latitude)},${parseFloat(this.props.coords.longitude)}&fov=90&heading=200&pitch=5&key=${process.env.REACT_APP_GOOGLE_TOKEN}`
     })
   }
 
@@ -101,14 +104,6 @@ class SpaceForm extends Component {
     }
   }
 
-  renderFileUpload = (e) => {
-    e.preventDefault()
-    this.setState({
-      upload: true
-    })
-  }
-
-
   render() {
     const {step} = this.props;
     switch(step) {
@@ -126,7 +121,9 @@ class SpaceForm extends Component {
               null
             }
               <label><strong>Step 1:</strong> Add Location</label>
-              <Search createSpace={true} />
+              <div className="input-container">
+                <Search createSpace={true} />
+              </div>
               <Map createSpace={true} />
               <Button animated floated='right' onClick={this.saveAndContinue}>
                 <Button.Content visible>Next</Button.Content>

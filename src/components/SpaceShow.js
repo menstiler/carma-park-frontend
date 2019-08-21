@@ -13,9 +13,9 @@ class SpaceShow extends Component {
   renderChatButtons = () => {
     if (!this.props.activeChat || (this.props.activeChat !== this.props.selectedSpace.id)) {
       if (this.props.chats.find(chat => chat.space === this.props.selectedSpace.id)) {
-        return <button class="ui button" onClick={() => this.props.openChat(this.props.selectedSpace.id)}><i class="talk icon"></i>Continue Chat</button>
+        return <button className="ui button" onClick={() => this.props.openChat(this.props.selectedSpace.id)}><i className="talk icon"></i>Continue Chat</button>
       } else {
-        return <button  class="ui button" onClick={() => this.props.openNewChat(this.props.selectedSpace.id, this.props.currentUser)}><i class="talk icon"></i>Chat</button>
+        return <button  className="ui button" onClick={() => this.props.openNewChat(this.props.selectedSpace.id, this.props.currentUser)}><i className="talk icon"></i>Chat</button>
       }
     }
   }
@@ -31,12 +31,12 @@ class SpaceShow extends Component {
     const image = this.props.selectedSpace.image
     return (
       <>
-        <div class="ui card">
-          <div class="content">
-            <div class="header">{this.props.selectedSpace.address}</div>
+        <div className="ui card">
+          <div className="content">
+            <div className="header">{this.props.selectedSpace.address}</div>
           </div>
-          <div class="content">
-            <h4 class="ui sub header">
+          <div className="content">
+            <h4 className="ui sub header">
               Created by
               {
                 owner.id === this.props.currentUser
@@ -46,16 +46,16 @@ class SpaceShow extends Component {
                 ` ${owner.name}`
               }
             </h4>
-            <div class="ui small feed">
-              <div class="event">
-                <div class="content">
+            <div className="ui small feed">
+              <div className="event">
+                <div className="content">
                     {image
                     ?
                     <img src={image} className="parking-image" alt={this.props.selectedSpace.address} />
                     :
                     null
                     }
-                  <div class="summary">
+                  <div className="summary">
                     {
                       this.props.selectedSpace.claimed && this.props.selectedSpace.owner === this.props.currentUser
                       ?
@@ -73,8 +73,8 @@ class SpaceShow extends Component {
           {
             this.props.selectedSpace.claimed && this.props.selectedSpace.claimer === this.props.currentUser
             ?
-            <button class="ui bottom attached button" onClick={this.goToActiveSpace}>
-              <i class="car icon"></i>
+            <button className="ui bottom attached button" onClick={this.goToActiveSpace}>
+              <i className="car icon"></i>
               Continue Parking
             </button>
             :
@@ -90,8 +90,8 @@ class SpaceShow extends Component {
           {
             !this.props.selectedSpace.claimed && this.props.selectedSpace.owner !== this.props.currentUser
             ?
-              <button class="ui bottom attached button" onClick={this.claimAction}>
-                <i class="car icon"></i>
+              <button className="ui bottom attached button" onClick={this.claimAction}>
+                <i className="car icon"></i>
                 Claim
               </button>
             :
@@ -101,8 +101,8 @@ class SpaceShow extends Component {
             !this.props.selectedSpace.claimed && this.props.selectedSpace.owner === this.props.currentUser
             ?
             <Link to={'/'}>
-              <div class="ui bottom attached button" onClick={() => this.props.removeSpace(this.props.selectedSpace.id)}>
-                  <i class="trash alternate outline icon"></i>
+              <div className="ui bottom attached button" onClick={() => this.props.removeSpace(this.props.selectedSpace.id)}>
+                  <i className="trash alternate outline icon"></i>
                   Cancel
               </div>
             </Link>

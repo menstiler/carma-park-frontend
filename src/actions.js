@@ -38,7 +38,9 @@ import {
   CLOSE_ACTIVE_NOTIFICATION,
   SET_FAVORITES,
   ADD_FAVORITE,
-  REMOVE_FAVORITE
+  REMOVE_FAVORITE,
+  REMOVE_NOTIFICATION,
+  REMOVE_NOTIFICATIONS
 } from './types'
 
 const API = "http://localhost:3005/"
@@ -47,6 +49,16 @@ const HEADERS = {
   'Content-Type': 'application/json',
   Accept: 'application/json',
 };
+
+function deleteAllNotifications(user_id) {
+  return function(dispatch) {
+    return fetch(API + 'remove_all', {
+      method: "POST",
+      headers: HEADERS,
+      body: JSON.stringify({user_id: user_id})
+    })
+  }
+}
 
 function addToFavorites(coords, user_id, name) {
   return function(dispatch) {
@@ -102,8 +114,12 @@ function handleAutoLogin(token) {
         dispatch({type: SET_USER, payload: response.id})
       }
     })
-    dispatch({type: SET_FAVORITES})
+    dispatchSetFavorites()
   }
+}
+
+function dispatchSetFavorites() {
+  return {type: SET_FAVORITES}
 }
 
 function hideChat() {
@@ -168,6 +184,7 @@ function handleLoginSubmit(event, user, history) {
         history.push('/')
       }
     })
+    dispatchSetFavorites()
   }
 }
 
@@ -404,8 +421,8 @@ function prevStep() {
 function createNewSpace(user_id, address, location, time, image) {
   let space = {
     owner: user_id,
-    longitude: location.lng,
-    latitude: location.lat,
+    longitude: location.longitude,
+    latitude: location.latitude,
     address: address,
     deadline: time,
     image: image
@@ -535,5 +552,6 @@ export {
   closeNotifications,
   closeActiveNotification,
   addToFavorites,
-  deleteFavorite
+  deleteFavorite,
+  deleteAllNotifications
 }

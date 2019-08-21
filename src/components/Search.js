@@ -2,31 +2,64 @@ import React from "react";
 import { connect } from 'react-redux'
 import { handleFormChange, goToViewport } from '../actions'
 import MapboxAutocomplete from 'react-mapbox-autocomplete';
+import AlgoliaPlaces from 'algolia-places-react';
 
-function Search(props) {
+class Search extends React.Component {
 
-  const handleChange = (result, lat, lng, text) => {
-    props.goToViewport({latitude: lat, longitude: lng}, props.spaces)
-    if (props.createSpace) {
-      props.handleFormChange(result, {lat, lng})
+  handleChange = (result, lat, lng, text, spaces) => {
+    let address;
+    if (result.suburb !== undefined) {
+      address = result.name + ', ' + result.suburb + ', ' + result.administrative
+    } else {
+      address = result.name + ', ' + result.city + ', ' + result.administrative
     }
+    
+    fetch(`https://api.mapbox.com/geocoding/v5/mapbox.places/${result.value}.json?country=US&access_token=${process.env.REACT_APP_MAPBOX_TOKEN}`)
+    .then(resp => resp.json())
+    .then(geocodeResult => {
+      this.props.goToViewport({latitude: geocodeResult.features[0].center[1], longitude: geocodeResult.features[0].center[0]}, spaces)
+      if (this.props.createSpace) {
+        this.props.handleFormChange(address, {latitude: geocodeResult.features[0].center[1], longitude: geocodeResult.features[0].center[0]})
+      }
+    })
   }
+  // return (
+  //     <MapboxAutocomplete
+  //       style={{
+  //         width: '200px',
+  //         margin: '0 auto',
+  //         maxWidth: 800,
+  //         background: 'black'
+  //       }}
+  //       publicKey={process.env.REACT_APP_MAPBOX_TOKEN}
+  //       inputClass='form-control search'
+  //       onSuggestionSelect={handleChange}
+  //       country='us'
+  //       resetSearch={false}
+  //     />
+  // );
+  // }
 
-  return (
-      <MapboxAutocomplete
-        style={{
-          width: '200px',
-          margin: '0 auto',
-          maxWidth: 800,
-          background: 'black'
+  render() {
+    const spaces = this.props.spaces
+    return (
+      <AlgoliaPlaces
+
+        placeholder='Write an address here'
+        options={{
+          appId: process.env.REACT_APP_ALGOLIA_APP_ID,
+          apiKey: process.env.REACT_APP_ALGOLIA_API_KEY,
+          language: 'sv',
+          countries: ['us'],
+          type: 'address',
+          // Other options from https://community.algolia.com/places/documentation.html#options
         }}
-        publicKey={process.env.REACT_APP_MAPBOX_TOKEN}
-        inputClass='form-control search'
-        onSuggestionSelect={handleChange}
-        country='us'
-        resetSearch={false}
+
+        onChange={({suggestion}) => this.handleChange(suggestion, suggestion.latlng.lat, suggestion.latlng.lng, suggestion.value, this.props.spaces)}
+
       />
-  );
+    );
+  }
 }
 
 function msp(state) {

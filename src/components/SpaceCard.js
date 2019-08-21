@@ -62,10 +62,10 @@ class SpaceCard extends Component {
   render() {
     const owner = this.props.users.find(user => user.id === this.props.space.owner)
     return (
-      <div data-id={this.props.space.id} class={(this.props.selectedSpace && (this.props.selectedSpace.id === this.props.space.id)) ? "ui card on" : "ui card" } onClick={() => this.props.showSpace(this.props.space)}>
-        <div class="content">
-          <div class="header">{this.props.space.address}</div>
-          <div class="meta">
+      <div data-id={this.props.space.id} className={(this.props.selectedSpace && (this.props.selectedSpace.id === this.props.space.id)) ? "ui card on" : "ui card" } onClick={() => this.props.showSpace(this.props.space)}>
+        <div className="content">
+          <div className="header">{this.props.space.address}</div>
+          <div className="meta">
           Created by
           {
             this.props.currentUser === owner.id
@@ -75,7 +75,7 @@ class SpaceCard extends Component {
             ` ${owner.name}`
           }
           </div>
-          <div class="description">
+          <div className="description">
             <p>{this.renderDeadline()}</p>
           </div>
         </div>
