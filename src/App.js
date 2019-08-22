@@ -7,7 +7,7 @@ import { connect } from 'react-redux'
 import { ActionCableConsumer } from 'react-actioncable-provider'
 import Cable from './components/Cable'
 
-import { closeNotifications, toggleShowNotifications, handleReceivedNotifications, fetchNotifications, fetchUsers, handleReceivedSpace, handleAutoLogin, fetchSpots, setCurrentPosition, updateTimer, fetchChats, handleReceivedMessage, handleReceivedChatroom } from './actions'
+import { handleReceivedUser, closeNotifications, toggleShowNotifications, handleReceivedNotifications, fetchNotifications, fetchUsers, handleReceivedSpace, handleAutoLogin, fetchSpots, setCurrentPosition, updateTimer, fetchChats, handleReceivedMessage, handleReceivedChatroom } from './actions'
 
 class App extends Component {
 
@@ -83,6 +83,10 @@ class App extends Component {
           channel={{ channel: 'SpacesChannel' }}
           onReceived={(response) =>this.props.handleReceivedSpace(response, this.props.routerProps, this.props.currentUser)}
         />
+        <ActionCableConsumer
+          channel={{ channel: 'UsersChannel' }}
+          onReceived={(response) => this.props.handleReceivedUser(response, this.props.routerProps, this.props.currentUser)}
+        />
         {this.props.chats.length ? (
           <Cable
           chatrooms={this.props.chats}
@@ -121,5 +125,6 @@ export default connect(msp, {
   fetchNotifications,
   handleReceivedNotifications,
   toggleShowNotifications,
-  closeNotifications
+  closeNotifications,
+  handleReceivedUser
 })(App);

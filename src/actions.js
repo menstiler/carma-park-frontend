@@ -147,18 +147,18 @@ function handleSignupSubmit(event, user, history) {
       },
       body: JSON.stringify({user: user})
     })
-    .then(res => res.json())
-    .then(response => {
-      if (response.errors){
-        dispatch({type: ALERT, payload: response.errors.join(', ')})
-      } else {
-        dispatch({type: ADD_USER, payload: response.user})
-        dispatch({type: SET_USER, payload: response.user.id})
-        dispatch({type: ALERT, payload: null})
-        localStorage.token = response.token
-        history.push('/')
-      }
-    })
+    // .then(res => res.json())
+    // .then(response => {
+      // if (response.errors){
+        // dispatch({type: ALERT, payload: response.errors.join(', ')})
+      // } else {
+        // dispatch({type: ADD_USER, payload: response.user})
+        // dispatch({type: SET_USER, payload: response.user.id})
+    //     dispatch({type: ALERT, payload: null})
+    //     localStorage.token = response.token
+    //     history.push('/')
+    //   }
+    // })
   }
 }
 
@@ -215,6 +215,20 @@ function handleReceivedNotifications(response) {
   } else {
     const notification = response;
     return {type: ADD_NOTIFICATION, payload: notification}
+  }
+}
+
+function handleReceivedUser(response, routerProps, currentUser) {
+  if (response.errors) {
+    return {type: ALERT, payload: response.errors.join(', ')}
+  } else {
+    if (!currentUser) {
+      localStorage.token = response.token
+      routerProps.history.push('/')
+      return {type: ADD_USER, payload: response.user}
+    } else {
+      return {type: ADD_USER, payload: response.user}
+    }
   }
 }
 
@@ -559,5 +573,6 @@ export {
   closeActiveNotification,
   addToFavorites,
   deleteFavorite,
-  deleteAllNotifications
+  deleteAllNotifications,
+  handleReceivedUser
 }

@@ -8,12 +8,14 @@ class Search extends React.Component {
 
   handleChange = (result, lat, lng, text, spaces) => {
     let address;
+
     if (result.suburb !== undefined) {
       address = result.name + ', ' + result.suburb + ', ' + result.administrative
-    } else {
+    } else if (result.city !== undefined) {
       address = result.name + ', ' + result.city + ', ' + result.administrative
+    } else {
+      address = result.name + ', ' + result.administrative
     }
-    
     fetch(`https://api.mapbox.com/geocoding/v5/mapbox.places/${result.value}.json?country=US&access_token=${process.env.REACT_APP_MAPBOX_TOKEN}`)
     .then(resp => resp.json())
     .then(geocodeResult => {
@@ -49,14 +51,12 @@ class Search extends React.Component {
         options={{
           appId: process.env.REACT_APP_ALGOLIA_APP_ID,
           apiKey: process.env.REACT_APP_ALGOLIA_API_KEY,
-          language: 'sv',
           countries: ['us'],
           type: 'address',
           // Other options from https://community.algolia.com/places/documentation.html#options
         }}
 
         onChange={({suggestion}) => this.handleChange(suggestion, suggestion.latlng.lat, suggestion.latlng.lng, suggestion.value, this.props.spaces)}
-
       />
     );
   }

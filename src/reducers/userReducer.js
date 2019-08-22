@@ -45,7 +45,11 @@ function userReducer(prevState=defaultState, action) {
     case ALERT:
       return {...prevState, alert: action.payload}
     case ADD_USER:
-      return {...prevState, users: [...prevState.users, action.payload]}
+      if (prevState.currentUser) {
+        return {...prevState, users: [...prevState.users, action.payload]}
+      } else {
+        return {...prevState, users: [...prevState.users, action.payload], currentUser: action.payload.id, notifications: [], activeNotification: null}
+      }
     case SET_FAVORITES:
       if (prevState.currentUser) {
         const currentUser = prevState.users.find(user => user.id === prevState.currentUser)
