@@ -79,11 +79,13 @@ class Map extends React.Component {
       closeButton={false}
       anchor="bottom" >
       <div>
-      {this.props.popupDets.text.split(' ').slice(0, 2).join(' ').replace(/,/g, '')}
+      {this.props.popupDets.text}
       </div>
       </Popup>
     )
   }
+
+  //this.props.popupDets.text.split(' ').slice(0, 2).join(' ').replace(/,/g, '')
 
   findStyle = () => {
     if (this.props.parent === 'form') {

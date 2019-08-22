@@ -75,7 +75,7 @@ function mapReducer(prevState=defaultState, action) {
     case UPDATE_ACTIVE_SPACE:
       return {...prevState, activeSpace: action.payload}
     case NEW_SPACE:
-      return {...prevState, spaces: [...prevState.spaces, action.payload], selectedSpace: action.payload, loading: false}
+      return {...prevState, spaces: [...prevState.spaces, action.payload], loading: false}
     case SHOW_SPACE:
       if (prevState.selectedSpace && action.payload === prevState.selectedSpace) {
         return {...prevState, selectedSpace: null}

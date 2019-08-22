@@ -3,6 +3,7 @@ import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
 import { dispatchActiveSpace, openNewChat, claimSpace, cancelClaim, removeSpace, openChat } from '../actions'
 import ChatTable from './ChatTable'
+import { Card } from 'semantic-ui-react'
 
 class SpaceShow extends Component {
 
@@ -49,22 +50,22 @@ class SpaceShow extends Component {
             <div className="ui small feed">
               <div className="event">
                 <div className="content">
-                    {image
+                  {
+                    this.props.selectedSpace.claimed && this.props.selectedSpace.owner === this.props.currentUser
                     ?
-                    <img src={image} className="parking-image" alt={this.props.selectedSpace.address} />
+                    <h4>
+                      Claimed by {this.props.users.find(user => user.id === this.props.selectedSpace.claimer).name}
+                    </h4>
                     :
                     null
-                    }
+                  }
+                  {image
+                  ?
+                  <Card raised image={image} className="parking-image" alt={this.props.selectedSpace.address} />
+                  :
+                  null
+                  }
                   <div className="summary">
-                    {
-                      this.props.selectedSpace.claimed && this.props.selectedSpace.owner === this.props.currentUser
-                      ?
-                      <div>
-                        Claimed by {this.props.users.find(user => user.id === this.props.selectedSpace.claimer).name}
-                      </div>
-                      :
-                      null
-                    }
                   </div>
                 </div>
               </div>

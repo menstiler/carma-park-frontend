@@ -63,6 +63,13 @@ class SpaceForm extends Component {
     })
   }
 
+  removeGoogleStreetView = (e) => {
+    e.preventDefault()
+    this.setState({
+      image: null
+    })
+  }
+  
   grabGoogleStreetView = (e) => {
     e.preventDefault()
     this.setState({
@@ -173,7 +180,13 @@ class SpaceForm extends Component {
             <form >
               <label><strong>Step 2:</strong> Add an Image (optional)</label>
               <div className="streetview-image">
-                <Button onClick={this.grabGoogleStreetView}>Use Street View Image</Button>
+              {
+                this.state.image
+                ?
+                <Button onClick={this.removeGoogleStreetView}>Remove Street View Image</Button>
+                :
+                <Button onClick={this.grabGoogleStreetView}>Add Street View Image</Button>
+              }
                 {
                   this.state.image
                   ?

@@ -47,8 +47,8 @@ class ActiveSpace extends React.Component {
             this.props.activeSpace.owner !== this.props.currentUser
             ?
             <>
-              <h5>Created By: {this.props.users.find(user => user.id === this.props.activeSpace.owner).name}</h5>
-              <h5>Claimed By: {this.props.users.find(user => user.id === this.props.activeSpace.claimer).name}</h5>
+              <h4>Created By: {this.props.users.find(user => user.id === this.props.activeSpace.owner).name}</h4>
+              <p>Claimed By: {this.props.users.find(user => user.id === this.props.activeSpace.claimer).name}</p>
               {image
               ?
               <Card raised image={image} />

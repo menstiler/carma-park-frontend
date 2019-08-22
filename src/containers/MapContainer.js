@@ -17,7 +17,7 @@ function MapContainer(props) {
     <Switch>
       <Route path="/spaces/:id" render={(routerProps) => {
         if (props.loading) {
-          return <div class="ui active centered inline loader"></div>
+          return <div className="ui active centered inline loader"></div>
         } else {
           if (props.activeSpace) {
             return (
