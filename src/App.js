@@ -18,7 +18,7 @@ class App extends Component {
     const token = localStorage.token
     if (token) {
       this.props.handleAutoLogin(token)
-      // .then(() => )
+      .then(() => this.props.fetchNotifications(this.props.currentUser))
     }
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(this.displayLocationInfo);
@@ -52,9 +52,9 @@ class App extends Component {
       document.querySelectorAll('.ui.message p:last-child').forEach(node => node.setAttribute("id", "dontToggleNotifications"))
       document.querySelectorAll('#showNotifications > .close.icon').forEach(node => node.setAttribute("id", "dontToggleNotifications"))
     }
-    if (this.props.currentUser) {
-      this.props.fetchNotifications(this.props.currentUser)
-    }
+    // if (this.props.currentUser) {
+    //
+    // }
   }
 
   componentWillUnmount() {

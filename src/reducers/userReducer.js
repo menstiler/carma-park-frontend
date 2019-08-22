@@ -98,7 +98,12 @@ function userReducer(prevState=defaultState, action) {
       const filteredNotifications = [...prevState.notifications].filter(notication => notication.id !== action.payload.id)
       return {...prevState, notifications: filteredNotifications}
     case REMOVE_NOTIFICATIONS:
-      return {...prevState, notifications: [], activeNotification: null }
+      const removedNotifications = [...prevState.notifications].filter(notication => notication.user_id !== action.payload)
+      if (prevState.currentUser === action.payload) {
+        return {...prevState, notifications: removedNotifications, activeNotification: null }
+      } else {
+        return {...prevState, notifications: removedNotifications}
+      }
     case CLOSE_NOTIFICATIONS:
       return {...prevState, showNotifications: false}
     case TOGGLE_NOTIFICATIONS:

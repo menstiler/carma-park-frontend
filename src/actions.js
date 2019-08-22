@@ -208,8 +208,14 @@ function fetchChats() {
 }
 
 function handleReceivedNotifications(response) {
-  const notification = response;
-  return {type: ADD_NOTIFICATION, payload: notification}
+  if (response.delete) {
+    return {type: REMOVE_NOTIFICATION, payload: response.notification}
+  } else if (response.delete_all) {
+    return {type: REMOVE_NOTIFICATIONS, payload: response.user}
+  } else {
+    const notification = response;
+    return {type: ADD_NOTIFICATION, payload: notification}
+  }
 }
 
 function handleReceivedSpace(response, router, currentUser) {

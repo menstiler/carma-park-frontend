@@ -142,6 +142,15 @@ input[type=number]::-webkit-outer-spin-button {
   margin:18px
 }
 
+.main-title.logo {
+  font-size: 22px;
+  margin: 10px;
+  padding: -1px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 .setTime input {
   border: 1px solid #e5d0d0;
   text-align: center;

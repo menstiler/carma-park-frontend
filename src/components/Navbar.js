@@ -52,7 +52,7 @@ class Navbar extends React.Component{
               </Menu.Item>
               <Menu.Item id="toggleNotifications" >
               {
-                this.props.notifications.length
+                this.props.notifications.filter(notication => notication.user_id === this.props.currentUser).length
                 ?
                 <>
                   <Icon name='bell' id="toggleNotifications" />
@@ -63,7 +63,7 @@ class Navbar extends React.Component{
                 <>
                   <Icon name='bell slash' />
                   Notifications
-                  <Label>{this.props.notifications.length}</Label>
+                  <Label>0</Label>
                 </>
               }
               </Menu.Item>
