@@ -40,7 +40,8 @@ import {
   ADD_FAVORITE,
   REMOVE_FAVORITE,
   REMOVE_NOTIFICATION,
-  REMOVE_NOTIFICATIONS
+  REMOVE_NOTIFICATIONS,
+  REMOVE_SHOW
 } from './types'
 
 const API = "http://localhost:3005/"
@@ -147,18 +148,6 @@ function handleSignupSubmit(event, user, history) {
       },
       body: JSON.stringify({user: user})
     })
-    // .then(res => res.json())
-    // .then(response => {
-      // if (response.errors){
-        // dispatch({type: ALERT, payload: response.errors.join(', ')})
-      // } else {
-        // dispatch({type: ADD_USER, payload: response.user})
-        // dispatch({type: SET_USER, payload: response.user.id})
-    //     dispatch({type: ALERT, payload: null})
-    //     localStorage.token = response.token
-    //     history.push('/')
-    //   }
-    // })
   }
 }
 
@@ -180,11 +169,11 @@ function handleLoginSubmit(event, user, history) {
       } else {
         dispatch({type: SET_USER, payload: response.user.id})
         dispatch({type: ALERT, payload: null})
+        dispatch({type: SET_FAVORITES})
         localStorage.token = response.token
         history.push('/')
       }
     })
-    dispatchSetFavorites()
   }
 }
 
@@ -574,5 +563,6 @@ export {
   addToFavorites,
   deleteFavorite,
   deleteAllNotifications,
-  handleReceivedUser
+  handleReceivedUser,
+  dispatchSetFavorites
 }

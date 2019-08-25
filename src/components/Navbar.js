@@ -114,7 +114,7 @@ class Navbar extends React.Component{
             }
             </Menu>
           {
-            this.props.showNotifications && this.props.notifications.length
+            this.props.showNotifications && (this.props.notifications.filter(notication => notication.user_id === this.props.currentUser).length)
             ?
             <div className="notifications" id="showNotifications">
               <Dropdown.Menu id="showNotifications">

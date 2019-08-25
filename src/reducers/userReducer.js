@@ -58,12 +58,40 @@ function userReducer(prevState=defaultState, action) {
         return {...prevState}
       }
     case ADD_FAVORITE:
-      return {...prevState, favorites: [...prevState.favorites, action.payload]}
+      const addFavoritesToUsers = [...prevState.users].map(user => {
+        if (user.id !== prevState.currentUser) {
+          return user
+        } else {
+          if (user.favorites) {
+            const changeFavs = [...user.favorites, action.payload]
+            return {...user, favorites: changeFavs}
+          } else {
+            return user
+          }
+        }
+      })
+      if (prevState.favorites) {
+        return {...prevState, favorites: [...prevState.favorites, action.payload], users: addFavoritesToUsers}
+      } else {
+        return {...prevState, favorites: [action.payload], users: addFavoritesToUsers}
+      }
     case REMOVE_FAVORITE:
       const filteredFavorites = [...prevState.favorites].filter(favorite => favorite.id !== action.payload)
-      return {...prevState, favorites: filteredFavorites}
+      const filteredUsers = [...prevState.users].map(user => {
+        if (user.id !== prevState.currentUser) {
+          return user
+        } else {
+          if (user.favorites) {
+            const changeFavs = user.favorites.filter(fav => fav.id !== action.payload)
+            return {...user, favorites: changeFavs}
+          } else {
+            return user
+          }
+        }
+      })
+      return {...prevState, favorites: filteredFavorites, users: filteredUsers}
     case SET_USER:
-      return {...prevState, currentUser: action.payload }
+      return {...prevState, currentUser: action.payload, activeNotification: null, favorites: null }
     case UPDATE_TIMER:
       return {...prevState, timer: moment(new Date())}
     case UPDATE_CHATS:
@@ -104,7 +132,7 @@ function userReducer(prevState=defaultState, action) {
     case REMOVE_NOTIFICATIONS:
       const removedNotifications = [...prevState.notifications].filter(notication => notication.user_id !== action.payload)
       if (prevState.currentUser === action.payload) {
-        return {...prevState, notifications: removedNotifications, activeNotification: null }
+        return {...prevState, notifications: removedNotifications, activeNotification: null}
       } else {
         return {...prevState, notifications: removedNotifications}
       }

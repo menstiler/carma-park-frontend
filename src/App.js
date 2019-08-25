@@ -7,7 +7,7 @@ import { connect } from 'react-redux'
 import { ActionCableConsumer } from 'react-actioncable-provider'
 import Cable from './components/Cable'
 
-import { handleReceivedUser, closeNotifications, toggleShowNotifications, handleReceivedNotifications, fetchNotifications, fetchUsers, handleReceivedSpace, handleAutoLogin, fetchSpots, setCurrentPosition, updateTimer, fetchChats, handleReceivedMessage, handleReceivedChatroom } from './actions'
+import { dispatchSetFavorites, handleReceivedUser, closeNotifications, toggleShowNotifications, handleReceivedNotifications, fetchNotifications, fetchUsers, handleReceivedSpace, handleAutoLogin, fetchSpots, setCurrentPosition, updateTimer, fetchChats, handleReceivedMessage, handleReceivedChatroom } from './actions'
 
 class App extends Component {
 
@@ -28,6 +28,7 @@ class App extends Component {
     this.props.fetchUsers()
     .then(resp => {
       this.props.fetchSpots(this.props.viewport)
+      .then(() => this.props.dispatchSetFavorites())
     })
     this.props.fetchChats()
     this.mainInterval = setInterval(() => {
@@ -45,7 +46,6 @@ class App extends Component {
       }
     })
   }
-
 
   componentDidUpdate() {
     if (document.querySelectorAll('.ui.message p:last-child')) {
@@ -126,5 +126,6 @@ export default connect(msp, {
   handleReceivedNotifications,
   toggleShowNotifications,
   closeNotifications,
-  handleReceivedUser
+  handleReceivedUser,
+  dispatchSetFavorites
 })(App);

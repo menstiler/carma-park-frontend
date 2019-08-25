@@ -14,7 +14,7 @@ import {
   TOGGLE_SHOW_DIRECTIONS,
   TOGGLE_LOADING,
   UPDATE_ACTIVE_SPACE,
-  MAP_STYLE
+  MAP_STYLE,
 } from '../types'
 
 const defaultState = {

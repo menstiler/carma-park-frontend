@@ -91,7 +91,7 @@ class FilterContainer extends React.Component {
               </>
             }
             {
-              this.props.favorites.length && !this.state.form
+              this.props.favorites && (this.props.favorites.length && !this.state.form)
               ?
               <Button floated='left' onClick={this.toggleViewFavorites}>{this.state.showFavorites ? "Hide Favorites" : "Show Favorites"}</Button>
               :
