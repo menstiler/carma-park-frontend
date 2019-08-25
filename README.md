@@ -38,8 +38,11 @@ Enter **Carma Park** where city commuters can offer a helping hand - or parking 
 ### Demo
 Coming soon...
 
+### Resources:
 ##### Carma Park Backend:
 https://github.com/menstiler/carma-park-backend
+#### Planning and mockups:
+https://docs.google.com/presentation/d/1XRjUd8v46Tqe51Zmz_4H56qrbIbO7PPHItwouZRJ2aw/edit#slide=id.p
 
 In the project directory, you can run:
 
