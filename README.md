@@ -31,7 +31,7 @@ Enter **Carma Park** where city commuters can offer a helping hand - or parking 
 - Mapbox
 - Google Street View API
 
-### Styled With:
+### Styled with:
 - Semantic UI React
 - Custom CSS
 
