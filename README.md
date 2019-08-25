@@ -11,7 +11,7 @@ Enter **Carma Park** where city commuters can offer a helping hand - or parking 
 
 
 #### Additional features
-- Chat between creator and claimer of spot
+- Chat between creator and claimer of parking spot
 - Parking spots sorted by map viewport
 - Save frequent viewports by identifiers (e.g. home, work)
 - User login and sign up
@@ -31,21 +31,23 @@ Enter **Carma Park** where city commuters can offer a helping hand - or parking 
 - Mapbox
 - Google Street View API
 
-### Style
+### Styled with:
 - Semantic UI React
 - Custom CSS
 
 ### Demo
 Coming soon...
 
+### Resources:
 ##### Carma Park Backend:
 https://github.com/menstiler/carma-park-backend
+#### Planning and mockups:
+https://docs.google.com/presentation/d/1XRjUd8v46Tqe51Zmz_4H56qrbIbO7PPHItwouZRJ2aw/edit?usp=sharing
 
-In the project directory, you can run:
+You are welcome to clone this repository and in the project directory, you can run:
 
 ### `npm start`
 
-Runs the app in the development mode.<br>
 Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 
-Made by Mendel Stillerman
+Made by [Mendel Stillerman](https://github.com/menstiler)
