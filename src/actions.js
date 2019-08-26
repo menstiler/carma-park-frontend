@@ -44,7 +44,8 @@ import {
   REMOVE_SHOW
 } from './types'
 
-const API = "http://localhost:3005/"
+// const API = "http://localhost:3005/"
+const API = "https://guarded-fjord-26437.herokuapp.com/"
 
 const HEADERS = {
   'Content-Type': 'application/json',
