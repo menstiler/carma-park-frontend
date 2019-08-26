@@ -52,9 +52,6 @@ class App extends Component {
       document.querySelectorAll('.ui.message p:last-child').forEach(node => node.setAttribute("id", "dontToggleNotifications"))
       document.querySelectorAll('#showNotifications > .close.icon').forEach(node => node.setAttribute("id", "dontToggleNotifications"))
     }
-    // if (this.props.currentUser) {
-    //
-    // }
   }
 
   componentWillUnmount() {

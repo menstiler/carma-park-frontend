@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { handleLoginSubmit, closeAlert } from '../actions'
-import { Button, Form } from 'semantic-ui-react'
+import { Button, Form, Modal, Header } from 'semantic-ui-react'
 import Map from './Map'
 
 class LoginForm extends React.Component {
@@ -9,6 +9,13 @@ class LoginForm extends React.Component {
   state = {
     username: '',
     password: '',
+    modelOpen: true
+  }
+
+  handleDone = () => {
+    this.setState({
+      modelOpen: false
+    })
   }
 
   componentDidMount() {
@@ -36,6 +43,24 @@ class LoginForm extends React.Component {
               :
               null
             }
+            <Modal
+              onClose={this.handleDone}
+              open={this.state.modelOpen}
+            >
+              <Header icon='car' content='Welcome!' />
+              <Modal.Content>
+                <p>
+                  Hi! Welcome to Carma Park, Feel free to sign up, or login with the test account:<br/>
+                  Username: test<br/>
+                  Password: test
+                </p>
+              </Modal.Content>
+              <Modal.Actions>
+               <Button color='green' onClick={this.handleDone} inverted>
+                 Continue
+               </Button>
+             </Modal.Actions>
+            </Modal>
             <Form onSubmit={(event) => this.props.handleLoginSubmit(event, this.state, this.props.routerProps.history)}>
               <Form.Field>
                 <label>Username</label>
