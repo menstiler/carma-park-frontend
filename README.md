@@ -35,7 +35,7 @@ Enter **Carma Park** where city commuters can offer a helping hand - or parking 
 - Semantic UI React
 - Custom CSS
 
-### Demo
+### Demo:
 https://carma-park.herokuapp.com/login
 
 ### Resources:
