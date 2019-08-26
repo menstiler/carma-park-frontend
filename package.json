@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "dotenv": "^8.0.0",
     "@mapbox/mapbox-gl-directions": "^4.0.2",
     "@mapbox/react-geocoder": "^2.5.0",
     "algolia-places-react": "^1.5.0",
@@ -50,8 +51,5 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  },
-  "devDependencies": {
-    "dotenv": "^8.0.0"
   }
 }
