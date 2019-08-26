@@ -39,9 +39,7 @@ Enter **Carma Park** where city commuters can offer a helping hand - or parking 
 https://carma-park.herokuapp.com/login
 
 Feel free to Sign up, or Login using the test account:
-
 Username: test 
-
 Password: test
 
 ### Resources:
