@@ -12,7 +12,7 @@ import { Provider } from 'react-redux'
 import { ActionCableProvider } from 'react-actioncable-provider';
 import { API_WS_ROOT } from './constants'
 
-require('dotenv').config()
+require('dotenv').config({path: __dirname + '/.env'})
 
 // combine all reducers, add them as key-value pairs to combineReducers
 const rootReducer = combineReducers({map: mapReducer, form: formReducer, user: userReducer})
