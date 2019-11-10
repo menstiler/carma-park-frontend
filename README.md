@@ -36,7 +36,7 @@ Enter **Carma Park** where city commuters can offer a helping hand - or parking 
 - Custom CSS
 
 ### Demo:
-https://carma-park.herokuapp.com/login
+https://carmapark.netlify.com/login
 
 ### Resources:
 ##### Carma Park Backend:
