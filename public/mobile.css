@@ -43,7 +43,9 @@
 
 .filter-column-2 {
     display: block;
-    margin:1em;
+    padding:1em;
+    z-index: 2;
+    background: white;
 }
 
 .filter-column-2 input {
