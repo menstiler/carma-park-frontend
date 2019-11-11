@@ -9,7 +9,9 @@
 .space-container {
     width:100%;
     display: flex;
-    height: auto;
+    max-height: 175px;
+    background:#fff;
+    z-index:3;
 }
 
 .space-container .ui.card {
@@ -29,8 +31,8 @@
 
 .map-container {
     width:100%;
-    height: 61vh;
-    position: relative;
+    height: 68%;
+    position: absolute;
     bottom: 0;
 }
 
@@ -46,6 +48,11 @@
 
 .filter-column-2 input {
     width:100%;
+}
+
+.space-show .ui.card {
+    width:100%;
+    z-index: 3;
 }
 
 .space-show .ui.card .content {
@@ -65,6 +72,7 @@
 .space-show .ui.card .content img {
     width:100px;
 }
+
 
 
 /* Need solution for these */
