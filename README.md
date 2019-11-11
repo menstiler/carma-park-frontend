@@ -1,6 +1,6 @@
 # Carma Park
 
-Finding a parking spot in the city can be a daunting task. But cars are always on the move, when leaving a parking spot it is very likely that someone nearby is looking for one in the area, why not let him know of it's availability?  
+Finding a parking spot in the city can be a daunting task. But cars are always on the move, when leaving a parking spot it is very likely that someone nearby is looking for one in the area, why not let him know of its availability?  
 
 Enter **Carma Park** where city commuters can offer a helping hand - or parking spot, pulling out of a spot? Let others know that the spot is available so they can easily claim it and park freely, parking doesn't have to be a frustrating task if we can look out for one another.
 
