@@ -22,6 +22,15 @@ class Navbar extends React.Component{
     }
   }
 
+  renderMenu = (e) => {
+    if (!e.target.parentNode.parentNode.classList.contains("mobile")) {
+      e.target.parentNode.parentNode.classList.add("mobile");
+    } else {
+      e.target.parentNode.parentNode.classList.remove("mobile");
+    }
+  }
+
+
   renderNavbar = () => {
     if (this.props.loading) {
       return (
@@ -42,89 +51,94 @@ class Navbar extends React.Component{
         return (
           <>
           <Menu>
-            {
-              this.props.currentUser
-              ?
-              <>
-              <Menu.Item>
-                <Icon name='user' />
-                {this.props.users.find(user => user.id === this.props.currentUser).name}
-              </Menu.Item>
-              <Menu.Item id="toggleNotifications" >
+            <Menu.Item className="burger-icon" onClick={this.renderMenu} >
+              <Icon name='bars'  />
+            </Menu.Item>
+            <div className="sub-menu">
               {
-                this.props.notifications.filter(notication => notication.user_id === this.props.currentUser).length
+                this.props.currentUser
                 ?
                 <>
-                  <Icon name='bell' id="toggleNotifications" />
-                  Notifications
-                  <Label color='teal' id="toggleNotifications">{this.props.notifications.filter(notication => notication.user_id === this.props.currentUser).length}</Label>
-                </>
-                :
-                <>
-                  <Icon name='bell slash' />
-                  Notifications
-                  <Label>0</Label>
-                </>
-              }
-              </Menu.Item>
-              </>
-              :
-              null
-            }
-            {
-              this.props.currentUser && this.props.activeNotification
-              ?
-              <Message
-                id="active-message"
-                onDismiss={this.props.closeActiveNotification}
-                content={this.props.activeNotification.message}
-               />
-              :
-              null
-            }
-            <div id="active-notification"></div>
-            {
-              this.props.currentUser
-              ?
-              <Menu.Menu position='right'>
-              {
-                this.props.routerProps.location.pathname === "/add_space"
-                ?
-                <Link to={"/"} className="item" >
-                  Find Parking Spot
-                </Link>
-                :
-                <Link to={"/add_space"} className="item" >
-                  Add Parking Spot
-                </Link>
-              }
-                <Menu.Item name='logout' onClick={() => this.props.logout(this.props.routerProps.history)}>
-                  Logout
+                <Menu.Item>
+                  <Icon name='user' />
+                  {this.props.users.find(user => user.id === this.props.currentUser).name}
                 </Menu.Item>
-              </Menu.Menu>
+                <Menu.Item id="toggleNotifications" >
+                {
+                  this.props.notifications.filter(notication => notication.user_id === this.props.currentUser).length
+                  ?
+                  <>
+                    <Icon name='bell' id="toggleNotifications" />
+                    Notifications
+                    <Label color='teal' id="toggleNotifications">{this.props.notifications.filter(notication => notication.user_id === this.props.currentUser).length}</Label>
+                  </>
+                  :
+                  <>
+                    <Icon name='bell slash' />
+                    Notifications
+                    <Label>0</Label>
+                  </>
+                }
+                </Menu.Item>
+                </>
+                :
+                null
+              }
+              {
+                this.props.currentUser && this.props.activeNotification
+                ?
+                <Message
+                  id="active-message"
+                  onDismiss={this.props.closeActiveNotification}
+                  content={this.props.activeNotification.message}
+                />
+                :
+                null
+              }
+              <div id="active-notification"></div>
+              {
+                this.props.currentUser
+                ?
+                <Menu.Menu position='right'>
+                {
+                  this.props.routerProps.location.pathname === "/add_space"
+                  ?
+                  <Link to={"/"} className="item" >
+                    Find Parking Spot
+                  </Link>
+                  :
+                  <Link to={"/add_space"} className="item" >
+                    Add Parking Spot
+                  </Link>
+                }
+                  <Menu.Item name='logout' onClick={() => this.props.logout(this.props.routerProps.history)}>
+                    Logout
+                  </Menu.Item>
+                </Menu.Menu>
+                :
+                <Menu.Menu position='right' >
+                  <Link to='/login' className="item"  onClick={this.handleItemClick} >
+                      Login
+                  </Link>
+                  <Link to='/sign_up' className="item">
+                      Sign Up
+                  </Link>
+                </Menu.Menu>
+              }
+              </div>
+              </Menu>
+            {
+              this.props.showNotifications && (this.props.notifications.filter(notication => notication.user_id === this.props.currentUser).length)
+              ?
+              <div className="notifications" id="showNotifications">
+                <Dropdown.Menu id="showNotifications">
+                  {this.renderNotifications()}
+                  <Button  inverted color='red' onClick={() => this.props.deleteAllNotifications(this.props.currentUser)}>Delete All</Button>
+                </Dropdown.Menu>
+              </div>
               :
-              <Menu.Menu position='right' >
-                <Link to='/login' className="item"  onClick={this.handleItemClick} >
-                    Login
-                </Link>
-                <Link to='/sign_up' className="item">
-                    Sign Up
-                </Link>
-              </Menu.Menu>
+              null
             }
-            </Menu>
-          {
-            this.props.showNotifications && (this.props.notifications.filter(notication => notication.user_id === this.props.currentUser).length)
-            ?
-            <div className="notifications" id="showNotifications">
-              <Dropdown.Menu id="showNotifications">
-                {this.renderNotifications()}
-                <Button  inverted color='red' onClick={() => this.props.deleteAllNotifications(this.props.currentUser)}>Delete All</Button>
-              </Dropdown.Menu>
-            </div>
-            :
-            null
-          }
         </>
       )
     }

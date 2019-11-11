@@ -80,3 +80,18 @@
     flex-direction: column;
     margin-left: 0!important;
 }
+
+.ui.menu .item.burger-icon {
+    display:block;
+}
+
+.ui.menu .sub-menu {
+    display: block;
+    max-height:0;
+    overflow: hidden;
+    transition: max-height 1s ease-in-out;
+} 
+
+.ui.menu.mobile .sub-menu {
+    max-height: 1000px;
+}

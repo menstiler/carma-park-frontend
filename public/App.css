@@ -1,5 +1,12 @@
 @import url('https://fonts.googleapis.com/css?family=Righteous&display=swap');
 
+.ui.menu .item.burger-icon {
+  display: none;
+}
+
+.ui.menu .sub-menu {
+  display: contents;
+}
 .App {
   text-align: center;
 }
