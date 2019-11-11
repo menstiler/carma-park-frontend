@@ -374,7 +374,7 @@ div.map-container.directions  > div:nth-of-type(1) {
 
 .notifications {
   padding: 10px;
-  z-index: 3;
+  z-index: 5;
   position: absolute;
   width: 100%;
   background: white;
