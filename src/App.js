@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import './App.css';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import MainContainer from './containers/MainContainer'
 import Navbar from './components/Navbar'
@@ -34,6 +33,8 @@ class App extends Component {
     this.mainInterval = setInterval(() => {
       this.props.updateTimer()
     }, 1000)
+
+    // toggle notification tab
     document.addEventListener('click', (e) => {
       if (e.target.id) {
         if ((e.target.id === 'toggleNotifications') && this.props.showNotifications) {
@@ -48,6 +49,7 @@ class App extends Component {
   }
 
   componentDidUpdate() {
+    // check status of notification tab display
     if (document.querySelectorAll('.ui.message p:last-child')) {
       document.querySelectorAll('.ui.message p:last-child').forEach(node => node.setAttribute("id", "dontToggleNotifications"))
       document.querySelectorAll('#showNotifications > .close.icon').forEach(node => node.setAttribute("id", "dontToggleNotifications"))

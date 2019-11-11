@@ -1,0 +1,82 @@
+.ui.menu {
+    flex-direction: column;
+}
+
+.action-container {
+    flex-direction: column;
+}
+
+.space-container {
+    width:100%;
+    display: flex;
+    height: auto;
+}
+
+.space-container .ui.card {
+    min-width: 175px;
+    margin: 0.5em;
+}
+
+.space-container .ui.card:first-child {
+    margin-left:1em;
+}
+
+.space-show {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.map-container {
+    width:100%;
+    height: 61vh;
+    position: relative;
+    bottom: 0;
+}
+
+.filter-container {
+    display: flex;
+    flex-direction: column-reverse;
+}
+
+.filter-column-2 {
+    display: block;
+    margin:1em;
+}
+
+.filter-column-2 input {
+    width:100%;
+}
+
+.space-show .ui.card .content {
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+    padding:0px;
+}
+.space-show .ui.card .content .header {
+    padding: 10px;
+}
+
+.space-show .ui.card .content .ui.feed {
+    margin: 0;
+}
+
+.space-show .ui.card .content img {
+    width:100px;
+}
+
+
+/* Need solution for these */
+
+.filter-column-1, .filter-column-3 {
+    display: none
+}
+
+
+/* navbar */
+
+.ui.menu:not(.vertical) .right.menu {
+    flex-direction: column;
+    margin-left: 0!important;
+}

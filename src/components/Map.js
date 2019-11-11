@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactMapGL, { Marker, Popup, GeolocateControl } from 'react-map-gl';
 import { connect } from 'react-redux'
+import { MAPBOX_TOKEN } from '../constants';
 
 // import actions!
 import {
@@ -35,7 +36,8 @@ class Map extends React.Component {
       )
     }
   }
-
+  
+  // filtering which spots to mark on map
   renderMarkers = () => {
     let filterSpaces = this.props.spaces.filter(space =>
       (!space.claimed && space.available)
@@ -85,8 +87,8 @@ class Map extends React.Component {
     )
   }
 
-  //this.props.popupDets.text.split(' ').slice(0, 2).join(' ').replace(/,/g, '')
 
+  // change style of map 
   findStyle = () => {
     if (this.props.parent === 'form') {
       return "light-v10"
@@ -102,7 +104,7 @@ class Map extends React.Component {
     return(
       <ReactMapGL
       ref={ map => this.mapRef = map }
-      mapboxApiAccessToken={process.env.REACT_APP_MAPBOX_TOKEN}
+      mapboxApiAccessToken={MAPBOX_TOKEN}
       {...this.props.viewport}
       mapStyle={`mapbox://styles/mapbox/${style}`}
       onViewportChange={(viewport) => this.props.changeViewport(viewport)}

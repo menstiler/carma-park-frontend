@@ -64,7 +64,7 @@
 .space-container {
   width: 25%;
   overflow: auto;
-  height: 87vh;
+  height: 90vh;
 }
 
 div.map-container > div:nth-of-type(1) {
