@@ -103,3 +103,26 @@
 .ui.menu.mobile .sub-menu {
     max-height: 1000px;
 }
+
+/* create space page */
+
+.space-form form > div:nth-of-type(2),
+.space-form form {
+    width:100%!important;
+    border-radius: 0px;
+}
+
+/* login page */
+.login-page {
+    flex-direction: column;
+}
+
+.form-container {
+    width:100%;
+    height: 600px;
+}
+
+.login-page > div:nth-of-type(2) {
+    width: 100%!important;
+    height: auto!important;
+}
