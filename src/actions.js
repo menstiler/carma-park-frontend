@@ -44,13 +44,10 @@ import {
   REMOVE_SHOW
 } from './types'
 
-// const API = "http://localhost:3005/"
-const API = "https://guarded-fjord-26437.herokuapp.com/"
-
-const HEADERS = {
-  'Content-Type': 'application/json',
-  Accept: 'application/json',
-};
+import {
+  API,
+  HEADERS
+} from './constants'
 
 function deleteAllNotifications(user_id) {
   return function(dispatch) {

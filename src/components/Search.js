@@ -3,7 +3,6 @@ import { connect } from 'react-redux'
 import { handleFormChange, goToViewport } from '../actions'
 import MapboxAutocomplete from 'react-mapbox-autocomplete';
 import AlgoliaPlaces from 'algolia-places-react';
-import { MAPBOX_TOKEN } from '../constants';
 
 class Search extends React.Component {
 
@@ -18,7 +17,7 @@ class Search extends React.Component {
       address = result.name + ', ' + result.administrative
     }
     debugger;
-    fetch(`https://api.mapbox.com/geocoding/v5/mapbox.places/${result.value}.json?country=US&access_token=${MAPBOX_TOKEN}`)
+    fetch(`https://api.mapbox.com/geocoding/v5/mapbox.places/${result.value}.json?country=US&access_token=${process.env.REACT_APP_MAPBOX_TOKEN}`)
     .then(resp => resp.json())
     .then(geocodeResult => {
       this.props.goToViewport({latitude: geocodeResult.features[0].center[1], longitude: geocodeResult.features[0].center[0]}, spaces)

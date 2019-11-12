@@ -27,6 +27,11 @@
     width: 100%;
     display: flex;
     justify-content: center;
+    flex-direction: column;
+}
+
+.space-show .ui.card  .content .chat-container .ui.feed {
+    width:100%;
 }
 
 .map-container {
@@ -53,15 +58,15 @@
 }
 
 .space-show .ui.card {
-    width:100%;
     z-index: 3;
+    margin:0;
 }
+
 
 .space-show .ui.card .content {
     display: flex;
     align-items: center;
     justify-content: space-evenly;
-    padding:0px;
 }
 .space-show .ui.card .content .header {
     padding: 10px;
@@ -69,6 +74,10 @@
 
 .space-show .ui.card .content .ui.feed {
     margin: 0;
+}
+
+.chat-container .ui.feed {
+    width:100%;
 }
 
 .space-show .ui.card .content img {
@@ -85,6 +94,9 @@
 
 
 /* navbar */
+.ui.menu {
+    border:0px;
+}
 
 .ui.menu:not(.vertical) .right.menu {
     flex-direction: column;
