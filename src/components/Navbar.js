@@ -6,7 +6,7 @@ import { Dropdown, Menu, Message, Icon, Label, Button } from 'semantic-ui-react'
 import { deleteAllNotifications, closeActiveNotification, logout, handleNotificationDismiss, toggleShowNotifications} from '../actions'
 
 class Navbar extends React.Component{
-
+  
   renderNotifications = () => {
     let notifications = this.props.notifications
     let filteredNotifications = notifications.filter(notication => notication.user_id === this.props.currentUser)
@@ -133,7 +133,13 @@ class Navbar extends React.Component{
               <div className="notifications" id="showNotifications">
                 <Dropdown.Menu id="showNotifications">
                   {this.renderNotifications()}
-                  <Button  inverted color='red' onClick={() => this.props.deleteAllNotifications(this.props.currentUser)}>Delete All</Button>
+                  {
+                    this.props.notifications.filter(notication => notication.user_id === this.props.currentUser).length > 1
+                    ?
+                    <Button  inverted color='red' onClick={() => this.props.deleteAllNotifications(this.props.currentUser)}>Delete All</Button>
+                    :
+                    null
+                  }
                 </Dropdown.Menu>
               </div>
               :

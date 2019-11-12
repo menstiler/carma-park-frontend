@@ -121,7 +121,6 @@ function userReducer(prevState=defaultState, action) {
     case UPDATE_NOTIFICATIONS:
       return {...prevState, notifications: action.payload}
     case ADD_NOTIFICATION:
-      debugger
       if (prevState.currentUser === action.payload.user_id) {
         return {...prevState, notifications: [...prevState.notifications, action.payload], activeNotification: action.payload, showNotifications: false }
       } else {

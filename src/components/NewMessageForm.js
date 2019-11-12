@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux'
 import { Form, Button, Input } from 'semantic-ui-react'
-import { API_ROOT, HEADERS } from '../constants'
+import { API, HEADERS } from '../constants'
 
 
 class NewMessageForm extends React.Component {
@@ -21,7 +21,7 @@ class NewMessageForm extends React.Component {
   
   handleSubmit = e => {
     e.preventDefault();
-    fetch(`${API_ROOT}/messages`, {
+    fetch(`${API}/messages`, {
       method: 'POST',
       headers: HEADERS,
       body: JSON.stringify(this.state)

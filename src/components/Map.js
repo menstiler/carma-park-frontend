@@ -1,7 +1,6 @@
 import React from 'react';
 import ReactMapGL, { Marker, Popup, GeolocateControl } from 'react-map-gl';
 import { connect } from 'react-redux'
-import { MAPBOX_TOKEN } from '../constants';
 
 // import actions!
 import {
@@ -104,7 +103,9 @@ class Map extends React.Component {
     return(
       <ReactMapGL
       ref={ map => this.mapRef = map }
-      mapboxApiAccessToken={MAPBOX_TOKEN}
+      mapboxApiAccessToken = {
+        process.env.REACT_APP_MAPBOX_TOKEN
+      }
       {...this.props.viewport}
       mapStyle={`mapbox://styles/mapbox/${style}`}
       onViewportChange={(viewport) => this.props.changeViewport(viewport)}

@@ -27,11 +27,16 @@
     width: 100%;
     display: flex;
     justify-content: center;
+    flex-direction: column;
+}
+
+.space-show .ui.card  .content .chat-container .ui.feed {
+    width:100%;
 }
 
 .map-container {
     width:100%;
-    height: 68%;
+    height: 67%;
     position: absolute;
     bottom: 0;
 }
@@ -43,7 +48,9 @@
 
 .filter-column-2 {
     display: block;
-    margin:1em;
+    padding:1em;
+    z-index: 2;
+    background: white;
 }
 
 .filter-column-2 input {
@@ -51,15 +58,15 @@
 }
 
 .space-show .ui.card {
-    width:100%;
     z-index: 3;
+    margin:0;
 }
+
 
 .space-show .ui.card .content {
     display: flex;
     align-items: center;
     justify-content: space-evenly;
-    padding:0px;
 }
 .space-show .ui.card .content .header {
     padding: 10px;
@@ -67,6 +74,10 @@
 
 .space-show .ui.card .content .ui.feed {
     margin: 0;
+}
+
+.chat-container .ui.feed {
+    width:100%;
 }
 
 .space-show .ui.card .content img {
@@ -83,6 +94,9 @@
 
 
 /* navbar */
+.ui.menu {
+    border:0px;
+}
 
 .ui.menu:not(.vertical) .right.menu {
     flex-direction: column;
