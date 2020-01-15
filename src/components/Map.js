@@ -99,6 +99,7 @@ class Map extends React.Component {
   }
 
   render() {
+    console.log(process.env.REACT_APP_MAPBOX_TOKEN)
     const style = this.findStyle()
     return(
       <ReactMapGL
@@ -115,18 +116,18 @@ class Map extends React.Component {
         this.props.selectedSpace && props.selectedSpace.owner === props.selectedSpace.claimer
         ?
         <Marker latitude={parseFloat(props.selectedSpace.latitude)} longitude={parseFloat(props.selectedSpace.longitude)} >
-        <div onMouseOut={props.closePopup} onMouseOver={() => props.openPopup([parseFloat(props.selectedSpace.latitude), parseFloat(props.selectedSpace.longitude)], "Me")} className="mapUserMarkerStyle"></div>
+        <div onMouseOut={props.closePopup} onMouseOver={() => props.openPopup([parseFloat(props.selectedSpace.latitude), parseFloat(props.selectedSpace.longitude)], "Me")} className="mapMarkerStyle userMarkerStyle"></div>
         </Marker>
         :
         <Marker draggable={true} onDragEnd={(event) => props.updateUserMarker(event, event.lngLat)} latitude={props.currentPosition.latitude} longitude={props.currentPosition.longitude} >
-        <div onMouseOut={props.closePopup} onMouseOver={() => props.openPopup([props.currentPosition.latitude, props.currentPosition.longitude], "Me")} className="mapUserMarkerStyle"></div>
+        <div onMouseOut={props.closePopup} onMouseOver={() => props.openPopup([props.currentPosition.latitude, props.currentPosition.longitude], "Me")} className="mapMarkerStyle userMarkerStyle"></div>
         </Marker>
         */
         /*
         <GeolocateControl
-        className="geolocate-user"
-        positionOptions={{enableHighAccuracy: false}}
-        trackUserLocation={true}
+          className="geolocate-user"
+          positionOptions={{enableHighAccuracy: false}}
+          trackUserLocation={true}
         />
         */
       }

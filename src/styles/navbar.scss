@@ -1,0 +1,65 @@
+.navbar {
+  .ui.menu {   
+    border-radius: 0px;
+    margin-bottom:0px;
+    
+    .item.burger-icon {
+      display: none;
+    }
+    .sub-menu {
+      display: contents;
+    }
+  } 
+
+  #active-message {
+    margin: 0px;
+    padding:13px;
+    border-radius:0px;
+    -webkit-box-shadow:none;
+    box-shadow:none;
+
+    i.close.icon {
+      right: 4px;
+      top:2px;
+    }
+  }
+  
+  .notifications {
+    padding: 10px;
+    z-index: 5;
+    position: absolute;
+    width: 100%;
+    background: white;
+    border-bottom: 5px solid #b38282;
+  }
+}
+
+@media screen and (max-width: 750px) {
+  .navbar {
+    .ui.menu {
+      flex-direction: column;
+      border:0px;
+
+      .item.burger-icon {
+        display:block;
+      }
+
+      .sub-menu {
+        display: block;
+        max-height:0;
+        overflow: hidden;
+        transition: max-height 1s ease-in-out;
+      }
+
+      &.mobile .sub-menu {
+        max-height: 1000px;
+      }
+
+      :not(.vertical) .right.menu {
+        flex-direction: column;
+        margin-left: 0!important;
+      }
+    }
+  }
+}
+

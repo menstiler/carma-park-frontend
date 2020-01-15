@@ -10,7 +10,7 @@ const MessagesArea = ({
     return (
       <Card.Content className="chat-container" >
         <Feed>
-        <div className="messagesArea" >
+        <div className="messages-area" >
           {orderedMessages(messages, currentUser)}
         </div>
         </Feed>

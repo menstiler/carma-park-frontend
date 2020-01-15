@@ -1,0 +1,76 @@
+.active-space-container {
+  width: 25%;
+  height: 95vh;
+
+  &.double {
+    width: 50%;
+    display: flex
+  }
+
+  .active-space-info {
+    padding:10px;
+
+    .parked-buttons a {
+      margin: 10px;
+
+      .ui.fluid {
+        margin: 0px;
+      }
+    }
+
+    .ui.fluid {
+      margin: 10px 0px
+    }
+  }
+
+  .active-space-chattable {
+    width:50%;
+
+    .chat-container {
+      max-height: 85vh;
+      overflow: auto;
+      display:flex;
+      flex-direction: column-reverse!important;
+
+      .messages-area {
+        display: flex;
+        flex-flow: column;
+        align-items: flex-end;
+
+        .event {
+          display: flex;
+          padding:3px;
+          border: 1px solid #ccc;
+          border-radius: 6px;
+          margin: 3px;
+
+          .content {
+            padding: 3px;
+          }
+        }
+
+        .event.message-received {
+          align-self: flex-start;
+        }
+      }
+    }
+
+    .message-form {
+      padding: 10px
+    }
+
+    .ui.card {
+      height: 90vh;
+      justify-content: flex-end;
+    }
+  }
+}
+
+@media screen and (max-width: 750px) {
+  .map-container-directions {
+    width: 100%;
+    height: 67%;
+    position: absolute;
+    bottom: 0;
+  }
+}

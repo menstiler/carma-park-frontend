@@ -6,7 +6,7 @@ import SignupForm from '../components/SignupForm'
 import { connect } from 'react-redux'
 import { Route, Switch } from 'react-router-dom'
 import { Progress } from 'semantic-ui-react'
-import {  } from '../actions'
+import '../styles/mainContainer.scss';
 
 function MainContainer(props) {
 

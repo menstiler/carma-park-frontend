@@ -2,9 +2,9 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
 import { Dropdown, Menu, Message, Icon, Label, Button } from 'semantic-ui-react'
-
 import { deleteAllNotifications, closeActiveNotification, logout, handleNotificationDismiss, toggleShowNotifications} from '../actions'
-
+import '../styles/navbar.scss';
+import '../styles/loader.scss';
 class Navbar extends React.Component{
   
   renderNotifications = () => {
@@ -48,8 +48,8 @@ class Navbar extends React.Component{
         </div>
       )
     } else {
-        return (
-          <>
+      return (
+        <div className="navbar">
           <Menu>
             <Menu.Item className="burger-icon" onClick={this.renderMenu} >
               <Icon name='bars'  />
@@ -59,27 +59,27 @@ class Navbar extends React.Component{
                 this.props.currentUser
                 ?
                 <>
-                <Menu.Item>
-                  <Icon name='user' />
-                  {this.props.users.find(user => user.id === this.props.currentUser).name}
-                </Menu.Item>
-                <Menu.Item id="toggleNotifications" >
-                {
-                  this.props.notifications.filter(notication => notication.user_id === this.props.currentUser).length
-                  ?
-                  <>
-                    <Icon name='bell' id="toggleNotifications" />
-                    Notifications
-                    <Label color='teal' id="toggleNotifications">{this.props.notifications.filter(notication => notication.user_id === this.props.currentUser).length}</Label>
-                  </>
-                  :
-                  <>
-                    <Icon name='bell slash' />
-                    Notifications
-                    <Label>0</Label>
-                  </>
-                }
-                </Menu.Item>
+                  <Menu.Item>
+                    <Icon name='user' />
+                    {this.props.users.find(user => user.id === this.props.currentUser).name}
+                  </Menu.Item>
+                  <Menu.Item id="toggleNotifications" >
+                    {
+                      this.props.notifications.filter(notication => notication.user_id === this.props.currentUser).length
+                      ?
+                      <>
+                        <Icon name='bell' id="toggleNotifications" />
+                        Notifications
+                        <Label color='teal' id="toggleNotifications">{this.props.notifications.filter(notication => notication.user_id === this.props.currentUser).length}</Label>
+                      </>
+                      :
+                      <>
+                        <Icon name='bell slash' />
+                        Notifications
+                        <Label>0</Label>
+                      </>
+                    }
+                  </Menu.Item>
                 </>
                 :
                 null
@@ -100,17 +100,17 @@ class Navbar extends React.Component{
                 this.props.currentUser
                 ?
                 <Menu.Menu position='right'>
-                {
-                  this.props.routerProps.location.pathname === "/add_space"
-                  ?
-                  <Link to={"/"} className="item" >
-                    Find Parking Spot
-                  </Link>
-                  :
-                  <Link to={"/add_space"} className="item" >
-                    Add Parking Spot
-                  </Link>
-                }
+                  {
+                    this.props.routerProps.location.pathname === "/add_space"
+                    ?
+                    <Link to={"/"} className="item" >
+                      Find Parking Spot
+                    </Link>
+                    :
+                    <Link to={"/add_space"} className="item" >
+                      Add Parking Spot
+                    </Link>
+                  }
                   <Menu.Item name='logout' onClick={() => this.props.logout(this.props.routerProps.history)}>
                     Logout
                   </Menu.Item>
@@ -125,27 +125,27 @@ class Navbar extends React.Component{
                   </Link>
                 </Menu.Menu>
               }
-              </div>
-              </Menu>
-            {
-              this.props.showNotifications && (this.props.notifications.filter(notication => notication.user_id === this.props.currentUser).length)
-              ?
-              <div className="notifications" id="showNotifications">
-                <Dropdown.Menu id="showNotifications">
-                  {this.renderNotifications()}
-                  {
-                    this.props.notifications.filter(notication => notication.user_id === this.props.currentUser).length > 1
-                    ?
-                    <Button  inverted color='red' onClick={() => this.props.deleteAllNotifications(this.props.currentUser)}>Delete All</Button>
-                    :
-                    null
-                  }
-                </Dropdown.Menu>
-              </div>
-              :
-              null
-            }
-        </>
+            </div>
+          </Menu>
+          {
+            this.props.showNotifications && (this.props.notifications.filter(notication => notication.user_id === this.props.currentUser).length)
+            ?
+            <div className="notifications" id="showNotifications">
+              <Dropdown.Menu id="showNotifications">
+                {this.renderNotifications()}
+                {
+                  this.props.notifications.filter(notication => notication.user_id === this.props.currentUser).length > 1
+                  ?
+                  <Button  inverted color='red' onClick={() => this.props.deleteAllNotifications(this.props.currentUser)}>Delete All</Button>
+                  :
+                  null
+                }
+              </Dropdown.Menu>
+            </div>
+            :
+            null
+          }
+        </div>
       )
     }
   }

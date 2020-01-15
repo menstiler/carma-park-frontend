@@ -5,7 +5,7 @@ import Map from './Map'
 import { Button, Form, Icon, Progress} from 'semantic-ui-react'
 import ReactFilestack from 'filestack-react';
 import { createSpace, prevStep, nextStep, closePopup  } from '../actions'
-
+import '../styles/spaceForm.scss';
 class SpaceForm extends Component {
 
   state = {
@@ -119,9 +119,9 @@ class SpaceForm extends Component {
           <div className="space-form">
           <form>
             {this.state.alert ? (
-             <section class="ui message">
-               <i class="close icon" onClick={this.closeAlert}></i>
-               <div class="header">{this.state.alert}</div>
+             <section className="ui message">
+               <i className="close icon" onClick={this.closeAlert}></i>
+               <div className="header">{this.state.alert}</div>
              </section>
               )
               :

@@ -5,7 +5,6 @@ import Navbar from './components/Navbar'
 import { connect } from 'react-redux'
 import { ActionCableConsumer } from 'react-actioncable-provider'
 import Cable from './components/Cable'
-
 import { dispatchSetFavorites, handleReceivedUser, closeNotifications, toggleShowNotifications, handleReceivedNotifications, fetchNotifications, fetchUsers, handleReceivedSpace, handleAutoLogin, fetchSpots, setCurrentPosition, updateTimer, fetchChats, handleReceivedMessage, handleReceivedChatroom } from './actions'
 
 class App extends Component {

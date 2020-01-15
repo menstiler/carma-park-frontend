@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import { handleLoginSubmit, closeAlert } from '../actions'
 import { Button, Form, Modal, Header } from 'semantic-ui-react'
 import Map from './Map'
-
+import '../styles/loginPage.scss';
 class LoginForm extends React.Component {
 
   state = {

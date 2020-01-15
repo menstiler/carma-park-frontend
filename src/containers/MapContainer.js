@@ -8,6 +8,7 @@ import FilterContainer from './FilterContainer'
 import { Route, Switch, Link } from 'react-router-dom'
 import { closePopup, changeMapStyle } from '../actions'
 import { Button, Popup } from 'semantic-ui-react'
+import '../styles/loader.scss';
 
 function MapContainer(props) {
 
@@ -26,7 +27,7 @@ function MapContainer(props) {
                 {
                   props.activeSpace.claimer !== props.activeSpace.owner
                   ?
-                  <div className="map-container directions">
+                  <div className="map-container-directions">
                     <MapDirections />
                   </div>
                   :
@@ -53,20 +54,18 @@ function MapContainer(props) {
                 <div className="map-container">
                   <Map />
                 </div>
-                {
-                  props.currentUser
-                  ?
-                  <Link to={'/add_space'} >
-                  <div>
-                    <Popup content='Add Parking Spot' basic trigger={<Button className="addSpace" icon='car' circular onClick={props.closePopup} />} />
-                  </div>
-                  </Link>
-                  :
-                  null
-                }
-              </div>
-              <div>
-                <Popup content={`Change to ${props.mapStyle === 'dark-v10' ? "Light Mode" : "Night Mode"}`} basic trigger={<Button icon={props.mapStyle === 'dark-v10' ? "lightbulb outline" : "lightbulb" } className="toggle-style"  onClick={() => props.changeMapStyle(style)} />} />
+                <div className="icon-buttons">
+                  {
+                    props.currentUser
+                    ?
+                    <Link to={'/add_space'} >
+                      <Popup content='Add Parking Spot' basic trigger={<Button className="add-space" icon='car' onClick={props.closePopup} />} />
+                    </Link>
+                    :
+                    null
+                  }
+                  <Popup content={`Change to ${props.mapStyle === 'dark-v10' ? "Light Mode" : "Night Mode"}`} basic trigger={<Button icon={props.mapStyle === 'dark-v10' ? "lightbulb outline" : "lightbulb" } className="toggle-style"  onClick={() => props.changeMapStyle(style)} />} />
+                </div>  
               </div>
             </>
           )

@@ -55,7 +55,7 @@ class MapDirections extends React.Component {
       width: '100%'
     };
 
-      return (
+    return (
       <>
         <div style={style} ref={el => (this.mapContainer = el)}></div>
       </>

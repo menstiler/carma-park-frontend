@@ -1,0 +1,96 @@
+.filter-bar {
+  .filter-container {
+    display: flex;
+    
+    .filter-column-1 {
+      width: 25%;
+      display: flex;
+      align-items: center;
+
+      .filter-field {
+        display: flex;
+        flex-direction: column;
+        margin: 10px;
+      }
+
+      button {
+        margin: 10px;
+        padding: 10px;
+      }
+    }
+
+    .filter-column-2 {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      input {
+        width: 673px;
+        border: 1px solid #dfd9d9;
+        border-radius: 3px;
+        padding: 10px;
+      }    
+
+      .algolia-places {
+        > .ap-input-icon.ap-icon-clear, 
+        >.ap-input-icon.ap-icon-pin {
+          margin:0px!important
+        }
+      }      
+    }
+
+    .filter-column-3  {
+      display: flex;
+      align-items: center;
+      margin-left:10px;
+
+      .favorites-form {
+        display: flex;
+        align-items: center;
+
+        label {
+          margin-right:10px!important
+        }
+      }
+          
+      .cancel-favorites {
+        margin-left:10px!important
+      }
+    }
+  }
+
+  .favorites-container {
+    display: flex;
+    justify-content:center;
+    align-items:center;
+    margin-bottom: 10px;
+  }  
+}
+
+
+@media screen and (max-width: 750px) {
+  .filter-bar {
+
+    .filter-container {
+      display: flex;
+      flex-direction: column-reverse;
+    
+      .filter-column-2 {
+        display: block;
+        padding:1em;
+        z-index: 2;
+        background: white;
+      }
+    
+      .filter-column-2 input {
+        width:100%;
+      }
+
+      /* Need solution for these */
+      .filter-column-1, 
+      .filter-column-3 {
+        display: none
+      }      
+    }
+  }
+}
