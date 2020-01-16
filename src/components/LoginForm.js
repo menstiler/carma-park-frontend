@@ -4,6 +4,10 @@ import { handleLoginSubmit, closeAlert } from '../actions'
 import { Button, Form, Modal, Header } from 'semantic-ui-react'
 import Map from './Map'
 import '../styles/loginPage.scss';
+import {
+  NODE_ENV as inDevelopment
+} from '../constants';
+
 class LoginForm extends React.Component {
 
   state = {
@@ -43,24 +47,30 @@ class LoginForm extends React.Component {
               :
               null
             }
-            <Modal
-              onClose={this.handleDone}
-              open={this.state.modelOpen}
-            >
-              <Header icon='car' content='Welcome!' />
-              <Modal.Content>
-                <p>
-                  Hi! Welcome to Carma Park, Feel free to sign up, or login with the test account:<br/>
-                  Username: test<br/>
-                  Password: test
-                </p>
-              </Modal.Content>
-              <Modal.Actions>
-               <Button color='green' onClick={this.handleDone} inverted>
-                 Continue
-               </Button>
-             </Modal.Actions>
-            </Modal>
+            { 
+              inDevelopment === "production"
+              ? 
+                <Modal
+                  onClose={this.handleDone}
+                  open={this.state.modelOpen}
+                >
+                  <Header icon='car' content='Welcome!' />
+                  <Modal.Content>
+                    <p>
+                      Hi! Welcome to Carma Park, Feel free to sign up, or login with the test account:<br/>
+                      Username: test<br/>
+                      Password: test
+                    </p>
+                  </Modal.Content>
+                  <Modal.Actions>
+                  <Button color='green' onClick={this.handleDone} inverted>
+                    Continue
+                  </Button>
+                </Modal.Actions>
+                </Modal>
+              : 
+              null
+            }
             <Form onSubmit={(event) => this.props.handleLoginSubmit(event, this.state, this.props.routerProps.history)}>
               <Form.Field>
                 <label>Username</label>

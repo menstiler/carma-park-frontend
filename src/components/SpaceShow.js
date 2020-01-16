@@ -8,7 +8,7 @@ import { Card } from 'semantic-ui-react'
 class SpaceShow extends Component {
 
   claimAction = () => {
-    this.props.claimSpace(this.props.currentUser, this.props.selectedSpace.id)
+    this.props.claimSpace(this.props.currentUser.id, this.props.selectedSpace.id)
   }
 
   renderChatButtons = () => {
@@ -16,7 +16,7 @@ class SpaceShow extends Component {
       if (this.props.chats.find(chat => chat.space === this.props.selectedSpace.id)) {
         return <button className="ui button" onClick={() => this.props.openChat(this.props.selectedSpace.id)}><i className="talk icon"></i>Continue Chat</button>
       } else {
-        return <button  className="ui button" onClick={() => this.props.openNewChat(this.props.selectedSpace.id, this.props.currentUser)}><i className="talk icon"></i>Chat</button>
+        return <button  className="ui button" onClick={() => this.props.openNewChat(this.props.selectedSpace.id, this.props.currentUser.id)}><i className="talk icon"></i>Chat</button>
       }
     }
   }
@@ -40,7 +40,7 @@ class SpaceShow extends Component {
             <h4 className="ui sub header">
               Created by
               {
-                owner.id === this.props.currentUser
+                owner.id === this.props.currentUser.id
                 ?
                 " you"
                 :
@@ -51,7 +51,7 @@ class SpaceShow extends Component {
               <div className="event">
                 <div className="content">
                   {
-                    this.props.selectedSpace.claimed && this.props.selectedSpace.owner === this.props.currentUser
+                    this.props.selectedSpace.claimed && this.props.selectedSpace.owner === this.props.currentUser.id
                     ?
                     <h4>
                       Claimed by {this.props.users.find(user => user.id === this.props.selectedSpace.claimer).name}
@@ -72,7 +72,7 @@ class SpaceShow extends Component {
             </div>
           </div>
           {
-            this.props.selectedSpace.claimed && this.props.selectedSpace.claimer === this.props.currentUser
+            this.props.selectedSpace.claimed && this.props.selectedSpace.claimer === this.props.currentUser.id
             ?
             <button className="ui bottom attached button" onClick={this.goToActiveSpace}>
               <i className="car icon"></i>
@@ -82,14 +82,14 @@ class SpaceShow extends Component {
             null
           }
           {
-            this.props.selectedSpace.claimed && this.props.selectedSpace.owner === this.props.currentUser
+            this.props.selectedSpace.claimed && this.props.selectedSpace.owner === this.props.currentUser.id
             ?
             this.renderChatButtons()
             :
             null
           }
           {
-            !this.props.selectedSpace.claimed && this.props.selectedSpace.owner !== this.props.currentUser
+            !this.props.selectedSpace.claimed && this.props.selectedSpace.owner !== this.props.currentUser.id
             ?
               <button className="ui bottom attached button" onClick={this.claimAction}>
                 <i className="car icon"></i>
@@ -99,7 +99,7 @@ class SpaceShow extends Component {
             null
           }
           {
-            !this.props.selectedSpace.claimed && this.props.selectedSpace.owner === this.props.currentUser
+            !this.props.selectedSpace.claimed && this.props.selectedSpace.owner === this.props.currentUser.id
             ?
             <Link to={'/'}>
               <div className="ui bottom attached button" onClick={() => this.props.removeSpace(this.props.selectedSpace.id)}>

@@ -1,4 +1,4 @@
-const NODE_ENV = 'production'
+export const NODE_ENV = 'development'
 
 console.log(`we are in ${NODE_ENV} mode!`);
 export const API = (NODE_ENV === 'production') ? 'https://guarded-fjord-26437.herokuapp.com/' : 'http://localhost:3005/';

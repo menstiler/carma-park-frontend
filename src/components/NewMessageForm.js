@@ -8,7 +8,7 @@ class NewMessageForm extends React.Component {
   state = {
     content: '',
     chatroom_id: this.props.chatroom_id,
-    user_id: this.props.currentUser
+    user_id: this.props.currentUser.id
   };
 
   componentWillReceiveProps = nextProps => {

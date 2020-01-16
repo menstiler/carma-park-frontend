@@ -7,6 +7,7 @@ import { connect } from 'react-redux'
 import { Route, Switch } from 'react-router-dom'
 import { Progress } from 'semantic-ui-react'
 import '../styles/mainContainer.scss';
+import Profile from '../components/Profile'
 
 function MainContainer(props) {
 
@@ -15,6 +16,7 @@ function MainContainer(props) {
       <Switch>
         <Route path="/login" render={(routerProps) => <LoginForm routerProps={routerProps}/>} />
         <Route path="/sign_up" render={(routerProps) => <SignupForm routerProps={routerProps}/>} />
+        <Route path="/profile" render={(routerProps) => <Profile routerProps={routerProps}/>} />
         <Route path="/add_space" render={(routerProps) => {
           return (
             <>

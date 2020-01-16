@@ -5,7 +5,7 @@ import Navbar from './components/Navbar'
 import { connect } from 'react-redux'
 import { ActionCableConsumer } from 'react-actioncable-provider'
 import Cable from './components/Cable'
-import { dispatchSetFavorites, handleReceivedUser, closeNotifications, toggleShowNotifications, handleReceivedNotifications, fetchNotifications, fetchUsers, handleReceivedSpace, handleAutoLogin, fetchSpots, setCurrentPosition, updateTimer, fetchChats, handleReceivedMessage, handleReceivedChatroom } from './actions'
+import { dispatchSetFavorites, handleReceivedUser, closeNotifications, toggleShowNotifications, handleReceivedNotifications, fetchUsers, handleReceivedSpace, handleAutoLogin, fetchSpots, setCurrentPosition, updateTimer, fetchChats, handleReceivedMessage, handleReceivedChatroom } from './actions'
 
 class App extends Component {
 
@@ -16,7 +16,7 @@ class App extends Component {
     const token = localStorage.token
     if (token) {
       this.props.handleAutoLogin(token)
-      .then(() => this.props.fetchNotifications(this.props.currentUser))
+      // .then(() => this.props.fetchNotifications(this.props.currentUser.id))
     }
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(this.displayLocationInfo);
@@ -69,22 +69,32 @@ class App extends Component {
   render() {
     return (
       <>
-        <ActionCableConsumer
-          channel={{ channel: 'ChatroomsChannel' }}
-          onReceived={this.props.handleReceivedChatroom}
-        />
-        <ActionCableConsumer
-          channel={{ channel: 'NotificationsChannel' }}
-          onReceived={this.props.handleReceivedNotifications}
-        />
-        <ActionCableConsumer
-          channel={{ channel: 'SpacesChannel' }}
-          onReceived={(response) =>this.props.handleReceivedSpace(response, this.props.routerProps, this.props.currentUser)}
-        />
-        <ActionCableConsumer
-          channel={{ channel: 'UsersChannel' }}
-          onReceived={(response) => this.props.handleReceivedUser(response, this.props.routerProps, this.props.currentUser)}
-        />
+        {
+          this.props.currentUser
+          ?
+          <>
+            <ActionCableConsumer
+              channel={{ channel: 'ChatroomsChannel' }}
+              onReceived={this.props.handleReceivedChatroom}
+            />
+            <ActionCableConsumer
+              channel={{ channel: 'NotificationsChannel' }}
+              onReceived = {
+                (response) => this.props.handleReceivedNotifications(response)
+              }
+            />
+            <ActionCableConsumer
+              channel={{ channel: 'SpacesChannel' }}
+              onReceived={(response) => this.props.handleReceivedSpace(response, this.props.routerProps, this.props.currentUser)}
+            />
+            <ActionCableConsumer
+              channel={{ channel: 'UsersChannel' }}
+              onReceived={(response) => this.props.handleReceivedUser(response, this.props.routerProps, this.props.currentUser)}
+            />
+          </>
+          :
+          null
+        }
         {this.props.chats.length ? (
           <Cable
           chatrooms={this.props.chats}
@@ -120,7 +130,6 @@ export default connect(msp, {
   handleAutoLogin,
   handleReceivedSpace,
   fetchUsers,
-  fetchNotifications,
   handleReceivedNotifications,
   toggleShowNotifications,
   closeNotifications,
