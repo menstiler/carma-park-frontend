@@ -44,11 +44,7 @@ https://github.com/menstiler/carma-park-backend
 #### Planning and mockups:
 https://docs.google.com/presentation/d/1XRjUd8v46Tqe51Zmz_4H56qrbIbO7PPHItwouZRJ2aw/edit?usp=sharing
 
-You are welcome to clone this repository and in the project directory, you can run:
-
-### `npm start`
-
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+You are welcome to clone this repository and in the project directory, you can run `npm start` and open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 
 Clone the [backend repo](https://github.com/menstiler/carma-park-backend) and run `rails s -p '3005` to run the rails api on port 3005.
 
