@@ -16,7 +16,13 @@ class SpaceForm extends Component {
   }
 
   componentWillMount() {
-    this.props.closePopup()
+    this.props.closePopup();
+  }
+
+  componentWillReceiveProps() {
+    if (!this.props.currentUser) {
+      this.props.routerProps.history.push('/')
+    }
   }
 
   nonDuplicate = (address) => {
@@ -83,7 +89,7 @@ class SpaceForm extends Component {
       minutes: this.state.minutes,
       hours: this.state.hours
     }
-    this.props.createSpace(this.props.currentUser, this.props.address, this.props.coords, time, this.state.image)
+    this.props.createSpace(this.props.currentUser.id, this.props.address, this.props.coords, time, this.state.image)
     if (!this.props.loading) {
       this.props.routerProps.history.push('/')
     }

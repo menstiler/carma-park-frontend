@@ -28,7 +28,7 @@ const orderedMessages = (messages, currentUser) => {
     (a, b) => new Date(a.created_at) - new Date(b.created_at)
   );
   return sortedMessages.map(message => {
-    let received = message.user.id !== currentUser
+    let received = message.user.id !== currentUser.id
     let time = moment(message.created_at)
     return (
       <Feed.Event key={message.id} className={received ? "message-received" : null}>

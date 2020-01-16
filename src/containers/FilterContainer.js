@@ -34,7 +34,7 @@ class FilterContainer extends React.Component {
   }
 
   handleClick = () => {
-    this.props.addToFavorites([this.props.viewport.longitude, this.props.viewport.latitude], this.props.currentUser, this.state.name)
+    this.props.addToFavorites([this.props.viewport.longitude, this.props.viewport.latitude], this.props.currentUser.id, this.state.name)
     .then(resp => {
       this.setState({
         form: false,

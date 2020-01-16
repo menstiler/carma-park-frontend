@@ -38,8 +38,11 @@ class Map extends React.Component {
   
   // filtering which spots to mark on map
   renderMarkers = () => {
-    let filterSpaces = this.props.spaces.filter(space =>
-      (!space.claimed && space.available)
+    let filterSpaces = this.props.spaces.filter(space => {
+      if (!space.claimed) {
+        return space;
+      }
+      /* (!space.claimed && space.available)
       ||
       (
         (space.claimed && space.available)
@@ -47,12 +50,13 @@ class Map extends React.Component {
         (
           (space.owner !== space.claimer)
           &&
-          (space.owner === this.props.currentUser || space.claimer === this.props.currentUser)
+          (space.owner === this.props.currentUser.id || space.claimer === this.props.currentUser.id)
         )
       )
       ||
-      (space.claimed && ((space.owner === space.claimer) && (space.owner === this.props.currentUser)))
-    )
+      (space.claimed && ((space.owner === space.claimer) && (space.owner === this.props.currentUser.id)))
+          */
+    })
     return filterSpaces.map(space => {
       let lat = parseFloat(space.latitude)
       let lng = parseFloat(space.longitude)
