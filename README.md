@@ -50,6 +50,6 @@ You are welcome to clone this repository and in the project directory, you can r
 
 Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 
-Clone the [backend repo](https://github.com/menstiler/carma-park-backend) and run `rails -s -p '3005` to run the rails api.
+Clone the [backend repo](https://github.com/menstiler/carma-park-backend) and run `rails s -p '3005` to run the rails api on port 3005.
 
 Made by [Mendel Stillerman](https://github.com/menstiler)
