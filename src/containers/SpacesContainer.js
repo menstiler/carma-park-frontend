@@ -12,7 +12,8 @@ function SpacesContainer(props) {
     if (props.distanceShow) {
       sortedSpaces = sortedSpaces.filter(space => parseInt(space.distance) <= parseInt(props.distanceShow))
     }
-    let filterSpaces = sortedSpaces.filter(space => !space.claimed && space.available || (space.available && ((space.owner !== space.claimer) && ((space.owner === props.currentUser) || (space.claimer === props.currentUser)))))
+    let filterSpaces = sortedSpaces.filter(space => !space.claimed);
+      // && space.available || (space.available && ((space.owner !== space.claimer) && ((space.owner === props.currentUser.id) || (space.claimer === props.currentUser.id)))))
     return filterSpaces.map(space => <SpaceCard key={space.id} space={space} routerProps={props.routerProps} />)
   }
 

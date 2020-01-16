@@ -48,18 +48,18 @@ function userReducer(prevState=defaultState, action) {
       if (prevState.currentUser) {
         return {...prevState, users: [...prevState.users, action.payload]}
       } else {
-        return {...prevState, users: [...prevState.users, action.payload], currentUser: action.payload.id, notifications: [], activeNotification: null}
+        return {...prevState, users: [...prevState.users, action.payload], currentUser: action.payload, notifications: [], activeNotification: null}
       }
     case SET_FAVORITES:
       if (prevState.currentUser) {
-        const currentUser = prevState.users.find(user => user.id === prevState.currentUser)
+        const currentUser = prevState.users.find(user => user.id === prevState.currentUser.id)
         return {...prevState, favorites: currentUser.favorites}
       } else {
         return {...prevState}
       }
     case ADD_FAVORITE:
       const addFavoritesToUsers = [...prevState.users].map(user => {
-        if (user.id !== prevState.currentUser) {
+        if (user.id !== prevState.currentUser.id) {
           return user
         } else {
           if (user.favorites) {
@@ -78,7 +78,7 @@ function userReducer(prevState=defaultState, action) {
     case REMOVE_FAVORITE:
       const filteredFavorites = [...prevState.favorites].filter(favorite => favorite.id !== action.payload)
       const filteredUsers = [...prevState.users].map(user => {
-        if (user.id !== prevState.currentUser) {
+        if (user.id !== prevState.currentUser.id) {
           return user
         } else {
           if (user.favorites) {
@@ -91,7 +91,23 @@ function userReducer(prevState=defaultState, action) {
       })
       return {...prevState, favorites: filteredFavorites, users: filteredUsers}
     case SET_USER:
-      return {...prevState, currentUser: action.payload, activeNotification: null, favorites: null }
+      if (action.payload) {
+        return {
+          ...prevState,
+          currentUser: action.payload,
+          activeNotification: null,
+          favorites: action.payload.favorites,
+          notifications: action.payload.notifications
+        }
+      } else {
+        return {
+          ...prevState,
+          currentUser: action.payload,
+          activeNotification: null,
+          favorites: [],
+          notifications: []
+        }
+      } 
     case UPDATE_TIMER:
       return {...prevState, timer: moment(new Date())}
     case UPDATE_CHATS:
@@ -121,21 +137,17 @@ function userReducer(prevState=defaultState, action) {
     case UPDATE_NOTIFICATIONS:
       return {...prevState, notifications: action.payload}
     case ADD_NOTIFICATION:
-      if (prevState.currentUser === action.payload.user_id) {
-        return {...prevState, notifications: [...prevState.notifications, action.payload], activeNotification: action.payload, showNotifications: false }
-      } else {
-        return {...prevState, notifications: [...prevState.notifications, action.payload] }
+      return {
+        ...prevState,
+        notifications: [...prevState.notifications, action.payload],
+        activeNotification: action.payload,
+        showNotifications: false
       }
     case REMOVE_NOTIFICATION:
-      const filteredNotifications = [...prevState.notifications].filter(notication => notication.id !== action.payload.id)
+      const filteredNotifications = [...prevState.notifications].filter(notification => notification.id !== action.payload.id)
       return {...prevState, notifications: filteredNotifications}
-    case REMOVE_NOTIFICATIONS:
-      const removedNotifications = [...prevState.notifications].filter(notication => notication.user_id !== action.payload)
-      if (prevState.currentUser === action.payload) {
-        return {...prevState, notifications: removedNotifications, activeNotification: null}
-      } else {
-        return {...prevState, notifications: removedNotifications}
-      }
+    case REMOVE_NOTIFICATIONS:      
+      return {...prevState, notifications: []}
     case CLOSE_NOTIFICATIONS:
       return {...prevState, showNotifications: false}
     case TOGGLE_NOTIFICATIONS:

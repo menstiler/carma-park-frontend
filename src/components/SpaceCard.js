@@ -18,11 +18,12 @@ class SpaceCard extends Component {
         let expiration = new Date(this.props.space.deadline)
 
         let momentExpiration =  moment(expiration)
-        console.log(momentExpiration)
+        // console.log(momentExpiration)
         this.setState({
           time: momentExpiration
         })
       } else {
+        debugger
         this.props.removeSpace(this.props.space.id)
       }
     }
@@ -49,7 +50,7 @@ class SpaceCard extends Component {
       )
     } else if (this.props.space.claimed) {
       const claimer = this.props.users.find(user => user.id === this.props.space.claimer)
-      if (this.props.currentUser === claimer.id) {
+      if (this.props.currentUser.id === claimer.id) {
         return "Claimed By You"
       } else {
         return `Claimed By ${claimer.name}`
@@ -59,8 +60,12 @@ class SpaceCard extends Component {
     }
   }
 
-  render() {
+  renderCreatedBy() {
     const owner = this.props.users.find(user => user.id === this.props.space.owner)
+    return (this.props.currentUser && this.props.currentUser.id === owner.id) ? " You" : ` ${owner.name}`
+  }
+
+  render() {
     return (
       <div data-id={this.props.space.id} className={(this.props.selectedSpace && (this.props.selectedSpace.id === this.props.space.id)) ? "ui card on" : "ui card" } onClick={() => this.props.showSpace(this.props.space)}>
         <div className="content">
@@ -68,11 +73,7 @@ class SpaceCard extends Component {
           <div className="meta">
           Created by
           {
-            this.props.currentUser === owner.id
-            ?
-            " You"
-            :
-            ` ${owner.name}`
+            this.renderCreatedBy()
           }
           </div>
           <div className="description">

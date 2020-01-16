@@ -51,11 +51,11 @@ import {
 
 function deleteAllNotifications(user_id) {
   return function(dispatch) {
-    return fetch(API + 'remove_all', {
+    fetch(API + 'remove_all', {
       method: "POST",
       headers: HEADERS,
       body: JSON.stringify({user_id: user_id})
-    })
+    });
   }
 }
 
@@ -110,10 +110,9 @@ function handleAutoLogin(token) {
       if (response.errors){
         dispatch({type: ALERT, payload: response.errors})
       } else {
-        dispatch({type: SET_USER, payload: response.id})
+        dispatch({type: SET_USER, payload: response})
       }
     })
-    dispatchSetFavorites()
   }
 }
 
@@ -165,9 +164,8 @@ function handleLoginSubmit(event, user, history) {
       if (response.errors){
         dispatch({type: ALERT, payload: response.errors})
       } else {
-        dispatch({type: SET_USER, payload: response.user.id})
+        dispatch({type: SET_USER, payload: response.user})
         dispatch({type: ALERT, payload: null})
-        dispatch({type: SET_FAVORITES})
         localStorage.token = response.token
         history.push('/')
       }
@@ -198,10 +196,9 @@ function handleReceivedNotifications(response) {
   if (response.delete) {
     return {type: REMOVE_NOTIFICATION, payload: response.notification}
   } else if (response.delete_all) {
-    return {type: REMOVE_NOTIFICATIONS, payload: response.user}
+    return {type: REMOVE_NOTIFICATIONS, payload: response.user_id}
   } else {
-    const notification = response;
-    return {type: ADD_NOTIFICATION, payload: notification}
+    return {type: ADD_NOTIFICATION, payload: response }
   }
 }
 
@@ -222,7 +219,7 @@ function handleReceivedUser(response, routerProps, currentUser) {
 function handleReceivedSpace(response, router, currentUser) {
   const space = response.space;
   if (response.action === 'update') {
-    if (currentUser === space.claimer) {
+    if (currentUser.id === space.claimer) {
       router.history.push(`/spaces/${space.id}`)
     }
     return {type: CLAIM_SPACE, payload: space}
@@ -251,9 +248,9 @@ function openChat(space_id) {
   return {type: OPEN_CHAT, payload: space_id}
 }
 
-function openNewChat(space_id, currentUser) {
+function openNewChat(space_id, user_id) {
   return function(dispatch) {
-    const chatroom = { space: space_id, creator: currentUser }
+    const chatroom = { space: space_id, creator: user_id }
     return fetch(API + "chatrooms", {
       method: "POST",
       headers: HEADERS,
@@ -270,17 +267,6 @@ function handleNotificationDismiss(notification_id) {
   return function(dispatch) {
     return fetch(API + "notifications/" + notification_id, {
       method: "DELETE"
-    })
-  }
-}
-
-function fetchNotifications(user_id) {
-  return function(dispatch) {
-    return fetch(API + "users/" + user_id)
-    .then(resp => resp.json())
-    .then(user => {
-      let notifications = user.notifications
-      dispatch({type: UPDATE_NOTIFICATIONS, payload: notifications})
     })
   }
 }
@@ -514,7 +500,6 @@ function finishedParking(user_id, space_id) {
   }
 }
 
-
 export {
   changeViewport,
   openPopup,
@@ -549,7 +534,6 @@ export {
   closeAlert,
   nextStep,
   prevStep,
-  fetchNotifications,
   handleNotificationDismiss,
   toggleShowNotifications,
   handleReceivedNotifications,
