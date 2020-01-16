@@ -1,6 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { handleLoginSubmit, closeAlert } from '../actions'
+import { handleLoginSubmit, closeAlert } from '../actions/actions'
 import { Button, Form, Modal, Header } from 'semantic-ui-react'
 import Map from './Map'
 import '../styles/loginPage.scss';

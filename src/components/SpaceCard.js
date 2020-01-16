@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux'
 import moment from 'moment'
 import { Icon } from 'semantic-ui-react'
-import { showSpace, claimSpace, removeSpace } from '../actions'
+import { showSpace, claimSpace, removeSpace } from '../actions/actions'
 
 class SpaceCard extends Component {
 
@@ -23,7 +23,6 @@ class SpaceCard extends Component {
           time: momentExpiration
         })
       } else {
-        debugger
         this.props.removeSpace(this.props.space.id)
       }
     }

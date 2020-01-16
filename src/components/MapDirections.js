@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import mapboxgl from 'mapbox-gl';
 import MapboxDirections from '@mapbox/mapbox-gl-directions/dist/mapbox-gl-directions'
 
-import {  } from '../actions'
+import {  } from '../actions/actions'
 
 class MapDirections extends React.Component {
 

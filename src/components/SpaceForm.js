@@ -4,7 +4,7 @@ import Search from './Search'
 import Map from './Map'
 import { Button, Form, Icon, Progress} from 'semantic-ui-react'
 import ReactFilestack from 'filestack-react';
-import { createSpace, prevStep, nextStep, closePopup  } from '../actions'
+import { createSpace, prevStep, nextStep, closePopup  } from '../actions/actions'
 import '../styles/spaceForm.scss';
 class SpaceForm extends Component {
 

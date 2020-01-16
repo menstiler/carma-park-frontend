@@ -20,7 +20,7 @@ import {
   SET_FAVORITES,
   ADD_FAVORITE,
   REMOVE_FAVORITE,
-  REMOVE_NOTIFICATIONS,
+  REMOVE_ALL_NOTIFICATIONS,
   REMOVE_NOTIFICATION
 } from '../types'
 
@@ -137,17 +137,34 @@ function userReducer(prevState=defaultState, action) {
     case UPDATE_NOTIFICATIONS:
       return {...prevState, notifications: action.payload}
     case ADD_NOTIFICATION:
-      return {
-        ...prevState,
-        notifications: [...prevState.notifications, action.payload],
-        activeNotification: action.payload,
-        showNotifications: false
+      if (action.payload.user_id === prevState.currentUser.id) {
+        if (prevState.notifications) {
+          return {
+            ...prevState,
+            notifications: [...prevState.notifications, action.payload],
+            activeNotification: action.payload,
+            showNotifications: false
+          }
+        } else {
+          return {
+            ...prevState,
+            notifications: [action.payload],
+            activeNotification: action.payload,
+            showNotifications: false
+          }
+        }
+      } else {
+        return {...prevState}
       }
     case REMOVE_NOTIFICATION:
       const filteredNotifications = [...prevState.notifications].filter(notification => notification.id !== action.payload.id)
       return {...prevState, notifications: filteredNotifications}
-    case REMOVE_NOTIFICATIONS:      
-      return {...prevState, notifications: []}
+    case REMOVE_ALL_NOTIFICATIONS:   
+      if (action.payload.user === prevState.currentUser.id) {
+        return {...prevState, notifications: [] }
+      } else  {
+        return {...prevState }
+      }
     case CLOSE_NOTIFICATIONS:
       return {...prevState, showNotifications: false}
     case TOGGLE_NOTIFICATIONS:

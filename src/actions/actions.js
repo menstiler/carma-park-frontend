@@ -30,7 +30,6 @@ import {
   UPDATE_PROGRESS_NEXT,
   UPDATE_NOTIFICATIONS,
   TOGGLE_NOTIFICATIONS,
-  ADD_NOTIFICATION,
   UPDATE_ACTIVE_SPACE,
   HIDE_CHAT,
   MAP_STYLE,
@@ -39,24 +38,29 @@ import {
   SET_FAVORITES,
   ADD_FAVORITE,
   REMOVE_FAVORITE,
-  REMOVE_NOTIFICATION,
-  REMOVE_NOTIFICATIONS,
   REMOVE_SHOW
-} from './types'
+} from '../types'
 
 import {
   API,
   HEADERS
-} from './constants'
+} from '../constants'
 
-function deleteAllNotifications(user_id) {
-  return function(dispatch) {
-    fetch(API + 'remove_all', {
-      method: "POST",
-      headers: HEADERS,
-      body: JSON.stringify({user_id: user_id})
-    });
-  }
+function filterData(spaces, currentUser) {
+  let filteredSpaces = spaces.filter(space => {
+    if (!space.claimed) {
+      return space;
+    } else if (space.claimed) {
+      if (currentUser) {
+        if (space.owner === currentUser.id) {    
+          return space;
+        } else if (space.claimer === currentUser.id) {
+          return space;
+        }
+      }
+    } 
+  })
+  return filteredSpaces;
 }
 
 function addToFavorites(coords, user_id, name) {
@@ -192,15 +196,7 @@ function fetchChats() {
   }
 }
 
-function handleReceivedNotifications(response) {
-  if (response.delete) {
-    return {type: REMOVE_NOTIFICATION, payload: response.notification}
-  } else if (response.delete_all) {
-    return {type: REMOVE_NOTIFICATIONS, payload: response.user_id}
-  } else {
-    return {type: ADD_NOTIFICATION, payload: response }
-  }
-}
+
 
 function handleReceivedUser(response, routerProps, currentUser) {
   if (response.errors) {
@@ -261,14 +257,6 @@ function openNewChat(space_id, user_id) {
 
 function updateTimer() {
   return {type: UPDATE_TIMER}
-}
-
-function handleNotificationDismiss(notification_id) {
-  return function(dispatch) {
-    return fetch(API + "notifications/" + notification_id, {
-      method: "DELETE"
-    })
-  }
 }
 
 function toggleShowDirections() {
@@ -363,18 +351,6 @@ function calDistance(lat1, lon1, lat2, lon2, unit) {
     if (unit==="N") { dist = dist * 0.8684 }
     return dist;
   }
-}
-
-function closeNotifications() {
-  return {type: CLOSE_NOTIFICATIONS}
-}
-
-function toggleShowNotifications() {
-  return {type: TOGGLE_NOTIFICATIONS}
-}
-
-function closeActiveNotification() {
-  return {type: CLOSE_ACTIVE_NOTIFICATION}
 }
 
 function claimSpace(user_id, space_id) {
@@ -534,17 +510,12 @@ export {
   closeAlert,
   nextStep,
   prevStep,
-  handleNotificationDismiss,
-  toggleShowNotifications,
-  handleReceivedNotifications,
   dispatchActiveSpace,
   hideChat,
   changeMapStyle,
-  closeNotifications,
-  closeActiveNotification,
   addToFavorites,
   deleteFavorite,
-  deleteAllNotifications,
   handleReceivedUser,
-  dispatchSetFavorites
+  dispatchSetFavorites,
+  filterData
 }

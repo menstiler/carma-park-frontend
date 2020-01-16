@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux'
 import { ActionCable } from 'react-actioncable-provider';
-import { handleReceivedMessage } from '../actions'
+import { handleReceivedMessage } from '../actions/actions'
 
 const Cable = ({ chatrooms, handleReceivedMessage }) => {
   return (

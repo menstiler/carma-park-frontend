@@ -2,7 +2,8 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
 import { Dropdown, Menu, Message, Icon, Label, Button } from 'semantic-ui-react'
-import { deleteAllNotifications, closeActiveNotification, logout, handleNotificationDismiss, toggleShowNotifications} from '../actions'
+import { deleteAllNotifications, handleNotificationDismiss, closeActiveNotification, toggleShowNotifications } from '../actions/notification'
+import { logout } from '../actions/actions'
 import '../styles/navbar.scss';
 import '../styles/loader.scss';
 import Loader from './Loader'
@@ -47,10 +48,19 @@ class Navbar extends React.Component{
                 this.props.currentUser
                 ?
                 <>
-                  <Menu.Item as={Link} to='profile' >
-                    <Icon name='user' />
-                    {this.props.currentUser.name}
-                  </Menu.Item>
+                  { 
+                    this.props.routerProps.location.pathname !== "/profile"
+                    ?
+                    <Menu.Item as={Link} to='/profile' >
+                      <Icon name='user' />
+                      {this.props.currentUser.name}
+                    </Menu.Item>
+                    :
+                    <Menu.Item as={Link} to='/' >
+                      <Icon name='car' />
+                      Find Parking
+                    </Menu.Item>
+                  }
                   <Menu.Item id="toggleNotifications" >
                     {
                       this.props.notifications 
@@ -162,5 +172,9 @@ function msp(state) {
 }
 
 export default connect(msp, {
-  logout, handleNotificationDismiss, toggleShowNotifications, closeActiveNotification, deleteAllNotifications
+  logout, 
+  handleNotificationDismiss, 
+  toggleShowNotifications, 
+  closeActiveNotification, 
+  deleteAllNotifications
 })(Navbar);

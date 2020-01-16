@@ -1,6 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { handleSignupSubmit, closeAlert } from '../actions'
+import { handleSignupSubmit, closeAlert } from '../actions/actions'
 import { Button, Form } from 'semantic-ui-react'
 
 import Map from './Map'

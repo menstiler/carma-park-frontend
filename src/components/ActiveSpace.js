@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
 import ChatTable from './ChatTable'
 import { Image, Segment, Button, Card } from 'semantic-ui-react'
-import {  hideChat, openSpace, openNewChat, cancelClaim, finishedParking, addSpaceAfterParking, removeSpace, toggleShowDirections, openChat } from '../actions'
+import {  hideChat, openSpace, openNewChat, cancelClaim, finishedParking, addSpaceAfterParking, removeSpace, toggleShowDirections, openChat } from '../actions/actions'
 import '../styles/activeSpace.scss';
 import '../styles/loader.scss';
 import Loader from './Loader'

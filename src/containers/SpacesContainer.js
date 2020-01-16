@@ -2,19 +2,14 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux'
 import SpaceCard from '../components/SpaceCard'
 import SpaceShow from '../components/SpaceShow'
-import { claimSpace } from '../actions'
+import { claimSpace, filterData as filterSpaces } from '../actions/actions'
 
 
 function SpacesContainer(props) {
 
   const renderSpaces = () => {
-    let sortedSpaces = props.spaces
-    if (props.distanceShow) {
-      sortedSpaces = sortedSpaces.filter(space => parseInt(space.distance) <= parseInt(props.distanceShow))
-    }
-    let filterSpaces = sortedSpaces.filter(space => !space.claimed);
-      // && space.available || (space.available && ((space.owner !== space.claimer) && ((space.owner === props.currentUser.id) || (space.claimer === props.currentUser.id)))))
-    return filterSpaces.map(space => <SpaceCard key={space.id} space={space} routerProps={props.routerProps} />)
+    let filteredSpaces = filterSpaces(props.spaces, props.currentUser)
+    return filteredSpaces.map(space => <SpaceCard key={space.id} space={space} routerProps={props.routerProps} />)
   }
 
   return(
