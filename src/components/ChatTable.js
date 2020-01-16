@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import MessagesArea from './MessagesArea'
 import NewMessageForm from './NewMessageForm';
 import { Card, Feed, Icon } from 'semantic-ui-react'
-
+import '../styles/messaging.scss'
 class ChatTable extends React.Component {
 
   componentDidUpdate() {

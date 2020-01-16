@@ -6,14 +6,14 @@ import ActiveSpace from '../components/ActiveSpace'
 import MapDirections from '../components/MapDirections'
 import FilterContainer from './FilterContainer'
 import { Route, Switch, Link } from 'react-router-dom'
-import { closePopup, changeMapStyle } from '../actions'
+import { closePopup, changeMapStyle } from '../actions/actions'
 import { Button, Popup } from 'semantic-ui-react'
 import '../styles/loader.scss';
 
 function MapContainer(props) {
 
   const style = (props.mapStyle === 'dark-v10' ? 'streets-v11' : 'dark-v10')
-
+  
   return (
     <Switch>
       <Route path="/spaces/:id" render={(routerProps) => {
@@ -28,7 +28,7 @@ function MapContainer(props) {
                   props.activeSpace.claimer !== props.activeSpace.owner
                   ?
                   <div className="map-container-directions">
-                    <MapDirections />
+                    <MapDirections  />
                   </div>
                   :
                   <div className="map-container">
@@ -50,7 +50,7 @@ function MapContainer(props) {
             <>
               <FilterContainer />
               <div className="action-container">
-                <SpacesContainer routerProps={routerProps} />
+                <SpacesContainer routerProps={routerProps}  />
                 <div className="map-container">
                   <Map />
                 </div>

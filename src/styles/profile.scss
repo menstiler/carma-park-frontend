@@ -1,0 +1,15 @@
+.active-space {
+  .content {
+    display: flex!important;
+    flex-direction: column;   
+  }
+
+  .map {
+    width: 25%;
+
+    > div:nth-of-type(1) {
+      width: 100%!important;
+      height: 150px!important;
+    }
+  }
+}

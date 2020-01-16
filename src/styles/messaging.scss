@@ -1,0 +1,34 @@
+
+.chat-container {
+  max-height: 85vh;
+  overflow: auto;
+  display:flex;
+  flex-direction: column-reverse!important;
+
+  .messages-area {
+    display: flex;
+    flex-flow: column;
+    align-items: flex-end;
+
+    .event {
+      display: flex;
+      padding:3px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      margin: 3px;
+
+      .content {
+        padding: 3px;
+      }
+    }
+
+    .event.message-received {
+      align-self: flex-start;
+    }
+  }
+
+  + .message-form {
+    padding: 10px
+  }
+}
+

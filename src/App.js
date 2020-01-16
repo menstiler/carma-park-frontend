@@ -5,7 +5,8 @@ import Navbar from './components/Navbar'
 import { connect } from 'react-redux'
 import { ActionCableConsumer } from 'react-actioncable-provider'
 import Cable from './components/Cable'
-import { dispatchSetFavorites, handleReceivedUser, closeNotifications, toggleShowNotifications, handleReceivedNotifications, fetchUsers, handleReceivedSpace, handleAutoLogin, fetchSpots, setCurrentPosition, updateTimer, fetchChats, handleReceivedMessage, handleReceivedChatroom } from './actions'
+import { handleReceivedNotifications, closeNotifications, toggleShowNotifications } from './actions/notification'
+import { dispatchSetFavorites, handleReceivedUser, fetchUsers, handleReceivedSpace, handleAutoLogin, fetchSpots, setCurrentPosition, updateTimer, fetchChats, handleReceivedMessage, handleReceivedChatroom } from './actions/actions'
 
 class App extends Component {
 
@@ -16,7 +17,6 @@ class App extends Component {
     const token = localStorage.token
     if (token) {
       this.props.handleAutoLogin(token)
-      // .then(() => this.props.fetchNotifications(this.props.currentUser.id))
     }
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(this.displayLocationInfo);
@@ -79,9 +79,7 @@ class App extends Component {
             />
             <ActionCableConsumer
               channel={{ channel: 'NotificationsChannel' }}
-              onReceived = {
-                (response) => this.props.handleReceivedNotifications(response)
-              }
+              onReceived = {(response) => this.props.handleReceivedNotifications(response)}
             />
             <ActionCableConsumer
               channel={{ channel: 'SpacesChannel' }}

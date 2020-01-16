@@ -1,7 +1,6 @@
 import React from "react";
 import { connect } from 'react-redux'
-import { handleFormChange, goToViewport } from '../actions'
-import MapboxAutocomplete from 'react-mapbox-autocomplete';
+import { handleFormChange, goToViewport } from '../actions/actions'
 import AlgoliaPlaces from 'algolia-places-react';
 
 class Search extends React.Component {
@@ -16,7 +15,6 @@ class Search extends React.Component {
     } else {
       address = result.name + ', ' + result.administrative
     }
-    debugger;
     fetch(`https://api.mapbox.com/geocoding/v5/mapbox.places/${result.value}.json?country=US&access_token=${process.env.REACT_APP_MAPBOX_TOKEN}`)
     .then(resp => resp.json())
     .then(geocodeResult => {
@@ -26,22 +24,6 @@ class Search extends React.Component {
       }
     })
   }
-  // return (
-  //     <MapboxAutocomplete
-  //       style={{
-  //         width: '200px',
-  //         margin: '0 auto',
-  //         maxWidth: 800,
-  //         background: 'black'
-  //       }}
-  //       publicKey={process.env.REACT_APP_MAPBOX_TOKEN}
-  //       inputClass='form-control search'
-  //       onSuggestionSelect={handleChange}
-  //       country='us'
-  //       resetSearch={false}
-  //     />
-  // );
-  // }
 
   render() {
     const spaces = this.props.spaces

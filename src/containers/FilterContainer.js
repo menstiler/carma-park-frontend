@@ -4,7 +4,7 @@ import { connect } from 'react-redux'
 import { Button, Dropdown, Menu, Label, Icon, Form, Input } from 'semantic-ui-react'
 import '../styles/filterContainer.scss';
 
-import { changeMapStyle, updateDistanceFilter, addToFavorites, goToViewport, deleteFavorite} from '../actions'
+import { changeMapStyle, updateDistanceFilter, addToFavorites, goToViewport, deleteFavorite} from '../actions/actions'
 
 class FilterContainer extends React.Component {
 
