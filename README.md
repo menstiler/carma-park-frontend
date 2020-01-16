@@ -33,7 +33,7 @@ Enter **Carma Park** where city commuters can offer a helping hand - or parking 
 
 ### Styled with:
 - Semantic UI React
-- Custom CSS
+- Custom SCSS
 
 ### Demo:
 https://carmapark.netlify.com/login
@@ -49,5 +49,7 @@ You are welcome to clone this repository and in the project directory, you can r
 ### `npm start`
 
 Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+
+Clone the [backend repo](https://github.com/menstiler/carma-park-backend) and run `rails -s -p '3005` to run the rails api.
 
 Made by [Mendel Stillerman](https://github.com/menstiler)
