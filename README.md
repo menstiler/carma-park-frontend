@@ -20,6 +20,10 @@ Enter **Carma Park** where city commuters can offer a helping hand - or parking 
 - Option to change map style
 - Displays street view of parking spot
 
+To see upcoming features, please checkout this repos [projects pane](https://github.com/menstiler/carma-park-frontend/projects/1)
+
+To request a feature or report a bug please open a new issue in this repos [issues pane](https://github.com/menstiler/carma-park-frontend/issues)
+
 ### Built with:
 - React
 - Redux
