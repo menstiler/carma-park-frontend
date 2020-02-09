@@ -28,17 +28,14 @@ import {
   ALERT,
   UPDATE_PROGRESS_PREV,
   UPDATE_PROGRESS_NEXT,
-  UPDATE_NOTIFICATIONS,
-  TOGGLE_NOTIFICATIONS,
   UPDATE_ACTIVE_SPACE,
   HIDE_CHAT,
   MAP_STYLE,
-  CLOSE_NOTIFICATIONS,
-  CLOSE_ACTIVE_NOTIFICATION,
   SET_FAVORITES,
   ADD_FAVORITE,
   REMOVE_FAVORITE,
-  REMOVE_SHOW
+  REMOVE_SHOW,
+  UPDATE_USER_SPACE
 } from '../types'
 
 import {
@@ -48,7 +45,7 @@ import {
 
 function filterData(spaces, currentUser) {
   let filteredSpaces = spaces.filter(space => {
-    if (!space.claimed) {
+    if (!space.claimed && space.available) {
       return space;
     } else if (space.claimed) {
       if (currentUser) {
@@ -128,12 +125,6 @@ function hideChat() {
   return {type: HIDE_CHAT}
 }
 
-function logout(history) {
-  history.push("/login")
-  localStorage.removeItem("token")
-  return {type: SET_USER, payload: null}
-}
-
 function closeAlert() {
   return {type: ALERT, payload: null}
 }
@@ -196,8 +187,6 @@ function fetchChats() {
   }
 }
 
-
-
 function handleReceivedUser(response, routerProps, currentUser) {
   if (response.errors) {
     return {type: ALERT, payload: response.errors.join(', ')}
@@ -214,15 +203,20 @@ function handleReceivedUser(response, routerProps, currentUser) {
 
 function handleReceivedSpace(response, router, currentUser) {
   const space = response.space;
-  if (response.action === 'update') {
-    if (currentUser.id === space.claimer) {
-      router.history.push(`/spaces/${space.id}`)
+  return async function (dispatch) {
+    if (response.action === 'update') {
+      if (currentUser.id === space.claimer) {
+        router.history.push(`/spaces/${space.id}`)
+      }
+      await dispatch({type: CLAIM_SPACE, payload: space})
+      dispatch({ type: UPDATE_USER_SPACE, payload: response.user_space})
+    } else if (response.action === 'delete') {
+      await dispatch({type: REMOVE_SPACE, payload: space})
+      dispatch({type: UPDATE_USER_SPACE, payload: response.user_space})
+    } else if (response.action === 'create') {
+      await dispatch({type: NEW_SPACE, payload: space})
+      dispatch({type: UPDATE_USER_SPACE, payload: response.user_space})
     }
-    return {type: CLAIM_SPACE, payload: space}
-  } else if (response.action === 'delete') {
-    return {type: REMOVE_SPACE, payload: space}
-  } else if (response.action === 'create') {
-    return {type: NEW_SPACE, payload: space}
   }
 }
 
@@ -505,7 +499,6 @@ export {
   handleAutoLogin,
   handleReceivedSpace,
   fetchUsers,
-  logout,
   handleSignupSubmit,
   closeAlert,
   nextStep,
@@ -517,5 +510,5 @@ export {
   deleteFavorite,
   handleReceivedUser,
   dispatchSetFavorites,
-  filterData
+  filterData,
 }

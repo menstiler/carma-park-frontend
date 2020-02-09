@@ -15,6 +15,7 @@ import {
   TOGGLE_LOADING,
   UPDATE_ACTIVE_SPACE,
   MAP_STYLE,
+  UPDATE_SPACE
 } from '../types'
 
 const defaultState = {

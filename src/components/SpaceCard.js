@@ -14,11 +14,10 @@ class SpaceCard extends Component {
     if (this.props.space.deadline) {
       let deadline = this.props.space.deadline
       if (deadline > Date.now()) {
-        let totalMinutes = (new Date(this.props.space.deadline).getHours() * 60) + (new Date(this.props.space.deadline).getMinutes()) - (new Date().getHours() * 60 + new Date().getMinutes())
+        // let totalMinutes = (new Date(this.props.space.deadline).getHours() * 60) + (new Date(this.props.space.deadline).getMinutes()) - (new Date().getHours() * 60 + new Date().getMinutes())
         let expiration = new Date(this.props.space.deadline)
 
         let momentExpiration =  moment(expiration)
-        // console.log(momentExpiration)
         this.setState({
           time: momentExpiration
         })
@@ -40,7 +39,6 @@ class SpaceCard extends Component {
 
   renderDeadline = () => {
     if (this.state.time && !this.props.space.claimed && this.props.space.deadline) {
-      // console.log("TIMER", moment(this.state.time.diff(this.props.timer)))
       return (
         <>
           <Icon name='hourglass half' />
@@ -50,7 +48,11 @@ class SpaceCard extends Component {
     } else if (this.props.space.claimed) {
       const claimer = this.props.users.find(user => user.id === this.props.space.claimer)
       if (this.props.currentUser.id === claimer.id) {
-        return "Claimed By You"
+        if (claimer.id !== this.props.space.owner) {
+          return "Claimed By You"
+        } else {
+          return "You have parked here"
+        }
       } else {
         return `Claimed By ${claimer.name}`
       }
@@ -61,16 +63,24 @@ class SpaceCard extends Component {
 
   renderCreatedBy() {
     const owner = this.props.users.find(user => user.id === this.props.space.owner)
-    return (this.props.currentUser && this.props.currentUser.id === owner.id) ? " You" : ` ${owner.name}`
+    let createdBy;
+    if (owner.id !== this.props.space.claimer) {
+      createdBy = (this.props.currentUser && this.props.currentUser.id === owner.id) ? "You" : `${owner.name}`
+    } else {
+      return null
+    }
+    return `Created by ${createdBy}` 
   }
 
   render() {
     return (
-      <div data-id={this.props.space.id} className={(this.props.selectedSpace && (this.props.selectedSpace.id === this.props.space.id)) ? "ui card on" : "ui card" } onClick={() => this.props.showSpace(this.props.space)}>
+      <div 
+        data-id={this.props.space.id} 
+        className={(this.props.selectedSpace && (this.props.selectedSpace.id === this.props.space.id)) ? "ui card on" : "ui card" } 
+        onClick={() => this.props.showSpace(this.props.space)}>
         <div className="content">
           <div className="header">{this.props.space.address}</div>
           <div className="meta">
-          Created by
           {
             this.renderCreatedBy()
           }
