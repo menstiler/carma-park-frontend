@@ -21,7 +21,10 @@ import {
   ADD_FAVORITE,
   REMOVE_FAVORITE,
   REMOVE_ALL_NOTIFICATIONS,
-  REMOVE_NOTIFICATION
+  REMOVE_NOTIFICATION,
+  UPDATE_USER_SPACE,
+  REMOVE_USER_SPACE,
+  REMOVE_ALL_USER_SPACES
 } from '../types'
 
 const defaultState = {
@@ -35,27 +38,41 @@ const defaultState = {
   notifications: [],
   showNotifications: false,
   activeNotification: null,
-  showFavorites: false
+  showFavorites: false,
+  userSpaces: []
 }
 
 function userReducer(prevState=defaultState, action) {
   switch(action.type) {
     case FETCH_USERS:
       return {...prevState, users: action.payload}
+    case UPDATE_USER_SPACE:
+      let record = prevState.userSpaces.find(userSpace => userSpace.id === action.payload.id)
+      if (record) {
+        let filteredUserSpaces = prevState.userSpaces.map(userSpace => {
+          if (userSpace.id === record.id) {
+            userSpace.status = action.payload.status
+            return userSpace
+          } else {  
+            return userSpace
+          }
+        })
+        return {...prevState, userSpaces: filteredUserSpaces}
+      } else {
+        return {...prevState, userSpaces: [...prevState.userSpaces, action.payload] }
+      }
+    case REMOVE_USER_SPACE:
+      let filteredUserSpaces = prevState.userSpaces.filter(userSpace => userSpace.id !== action.payload);
+      return {...prevState, userSpaces: filteredUserSpaces}
+    case REMOVE_ALL_USER_SPACES:
+      return {...prevState, userSpaces: []}
     case ALERT:
       return {...prevState, alert: action.payload}
-    case ADD_USER:
+    case ADD_USER:  
       if (prevState.currentUser) {
         return {...prevState, users: [...prevState.users, action.payload]}
       } else {
         return {...prevState, users: [...prevState.users, action.payload], currentUser: action.payload, notifications: [], activeNotification: null}
-      }
-    case SET_FAVORITES:
-      if (prevState.currentUser) {
-        const currentUser = prevState.users.find(user => user.id === prevState.currentUser.id)
-        return {...prevState, favorites: currentUser.favorites}
-      } else {
-        return {...prevState}
       }
     case ADD_FAVORITE:
       const addFavoritesToUsers = [...prevState.users].map(user => {
@@ -97,7 +114,8 @@ function userReducer(prevState=defaultState, action) {
           currentUser: action.payload,
           activeNotification: null,
           favorites: action.payload.favorites,
-          notifications: action.payload.notifications
+          notifications: action.payload.notifications,
+          userSpaces: action.payload.user_spaces
         }
       } else {
         return {

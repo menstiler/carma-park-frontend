@@ -9,51 +9,30 @@ import { handleReceivedNotifications, closeNotifications, toggleShowNotification
 import { dispatchSetFavorites, handleReceivedUser, fetchUsers, handleReceivedSpace, handleAutoLogin, fetchSpots, setCurrentPosition, updateTimer, fetchChats, handleReceivedMessage, handleReceivedChatroom } from './actions/actions'
 
 class App extends Component {
-
+  
   notificationId = 0
   mainInterval = 0
-
-  componentDidMount() {
+  
+  async componentDidMount() {
     const token = localStorage.token
     if (token) {
-      this.props.handleAutoLogin(token)
+      await this.props.handleAutoLogin(token)
     }
+    this.props.fetchUsers()
+    this.props.fetchSpots(this.props.viewport)
+    this.props.dispatchSetFavorites()
+    this.props.fetchChats()
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(this.displayLocationInfo);
     } else {
       this.props.setCurrentPosition([-74.01500, 40.705341])
     }
-    this.props.fetchUsers()
-    .then(resp => {
-      this.props.fetchSpots(this.props.viewport)
-      .then(() => this.props.dispatchSetFavorites())
-    })
-    this.props.fetchChats()
+    
     this.mainInterval = setInterval(() => {
       this.props.updateTimer()
     }, 1000)
-
-    // toggle notification tab
-    document.addEventListener('click', (e) => {
-      if (e.target.id) {
-        if ((e.target.id === 'toggleNotifications') && this.props.showNotifications) {
-          this.props.closeNotifications()
-        } else if ((e.target.id === 'toggleNotifications') && !this.props.showNotifications || (e.target.id === "dontToggleNotifications")) {
-          this.props.toggleShowNotifications()
-        }
-      } else {
-        this.props.closeNotifications()
-      }
-    })
   }
 
-  componentDidUpdate() {
-    // check status of notification tab display
-    if (document.querySelectorAll('.ui.message p:last-child')) {
-      document.querySelectorAll('.ui.message p:last-child').forEach(node => node.setAttribute("id", "dontToggleNotifications"))
-      document.querySelectorAll('#showNotifications > .close.icon').forEach(node => node.setAttribute("id", "dontToggleNotifications"))
-    }
-  }
 
   componentWillUnmount() {
     clearInterval(this.mainInterval)
@@ -95,8 +74,8 @@ class App extends Component {
         }
         {this.props.chats.length ? (
           <Cable
-          chatrooms={this.props.chats}
-          handleReceivedMessage={this.props.handleReceivedMessage}
+            chatrooms={this.props.chats}
+            handleReceivedMessage={this.props.handleReceivedMessage}
           />
         ) : null}
         <Navbar routerProps={this.props.routerProps} />
@@ -132,5 +111,5 @@ export default connect(msp, {
   toggleShowNotifications,
   closeNotifications,
   handleReceivedUser,
-  dispatchSetFavorites
+  dispatchSetFavorites,
 })(App);

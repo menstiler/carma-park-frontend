@@ -1,7 +1,14 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
-import { dispatchActiveSpace, openNewChat, claimSpace, cancelClaim, removeSpace, openChat } from '../actions/actions'
+import { 
+  dispatchActiveSpace, 
+  openNewChat, 
+  claimSpace, 
+  cancelClaim, 
+  removeSpace, 
+  openChat,
+  addSpaceAfterParking } from '../actions/actions'
 import ChatTable from './ChatTable'
 import { Card } from 'semantic-ui-react'
 
@@ -26,8 +33,35 @@ class SpaceShow extends Component {
     this.props.routerProps.history.push(`/spaces/${this.props.selectedSpace.id}`)
   }
 
-   render() {
+  renderCreatedBy(owner) {
+    let createdBy;
+    if (owner.id !== this.props.selectedSpace.claimer) {
+      createdBy = (this.props.currentUser.id === owner.id) ? "You" : `${owner.name}`
+    } else {
+      return "You have parked here";
+    }
+    return `Created by ${createdBy}`
+  }
+  
+  renderClaimedBy() {
+    if (this.props.selectedSpace.claimed) {
+      if ((this.props.selectedSpace.owner === this.props.currentUser.id) || (this.props.selectedSpace.claimer === this.props.currentUser.id)) {
+        if (this.props.selectedSpace.owner !== this.props.selectedSpace.claimer) {
+          if (this.props.selectedSpace.claimer === this.props.currentUser.id) {
+            return <h4>Claimed By You</h4>  
+          }
+          return (
+            <h4>
+              Claimed by {this.props.users.find(user => user.id === this.props.selectedSpace.claimer).name}
+            </h4>
+          )
+        } 
+      }
+    }
+    return null
+  }
 
+  render() {
     const owner = this.props.users.find(user => user.id === this.props.selectedSpace.owner)
     const image = this.props.selectedSpace.image
     return (
@@ -38,26 +72,15 @@ class SpaceShow extends Component {
           </div>
           <div className="content">
             <h4 className="ui sub header">
-              Created by
               {
-                owner.id === this.props.currentUser.id
-                ?
-                " you"
-                :
-                ` ${owner.name}`
+                this.renderCreatedBy(owner)
               }
             </h4>
             <div className="ui small feed">
               <div className="event">
                 <div className="content">
                   {
-                    this.props.selectedSpace.claimed && this.props.selectedSpace.owner === this.props.currentUser.id
-                    ?
-                    <h4>
-                      Claimed by {this.props.users.find(user => user.id === this.props.selectedSpace.claimer).name}
-                    </h4>
-                    :
-                    null
+                    this.renderClaimedBy()
                   }
                   {image
                   ?
@@ -72,7 +95,9 @@ class SpaceShow extends Component {
             </div>
           </div>
           {
-            this.props.selectedSpace.claimed && this.props.selectedSpace.claimer === this.props.currentUser.id
+            this.props.selectedSpace.claimed 
+              && this.props.selectedSpace.claimer === this.props.currentUser.id
+                && this.props.selectedSpace.claimer !== this.props.selectedSpace.owner
             ?
             <button className="ui bottom attached button" onClick={this.goToActiveSpace}>
               <i className="car icon"></i>
@@ -82,7 +107,20 @@ class SpaceShow extends Component {
             null
           }
           {
-            this.props.selectedSpace.claimed && this.props.selectedSpace.owner === this.props.currentUser.id
+            this.props.selectedSpace.claimed
+              && this.props.selectedSpace.claimer === this.props.selectedSpace.owner
+            ?
+              <button className="ui bottom attached button" onClick={() => this.props.addSpaceAfterParking(this.props.currentUser.id, this.props.selectedSpace.id)}>
+              <i className="car icon"></i>
+              Add Parking Spot
+            </button>
+              :
+              null
+          }
+          {
+            this.props.selectedSpace.claimed 
+              && this.props.selectedSpace.owner === this.props.currentUser.id
+                && this.props.selectedSpace.owner !== this.props.selectedSpace.claimer
             ?
             this.renderChatButtons()
             :
@@ -112,7 +150,8 @@ class SpaceShow extends Component {
           }
         </div>
       {
-        this.props.activeChat && (this.props.activeChat === this.props.selectedSpace.id)
+        this.props.activeChat 
+          && (this.props.activeChat === this.props.selectedSpace.id)
         ?
         <ChatTable />
         :
@@ -139,5 +178,6 @@ export default connect(msp, {
   removeSpace,
   openChat,
   openNewChat,
-  dispatchActiveSpace
+  dispatchActiveSpace,
+  addSpaceAfterParking
 })(SpaceShow);

@@ -38,6 +38,16 @@ class Map extends React.Component {
   }
   
   renderMarkers = () => {
+    if (this.props.userSpace) {
+      let space = this.props.userSpace
+      let lat = parseFloat(space.latitude)
+      let lng = parseFloat(space.longitude)
+      return (
+        <Marker key={space.id} latitude={lat} longitude={lng} >
+          <div className="mapMarkerStyle"></div>
+        </Marker>
+      )
+    }
     let filteredMarkers = filterMarkers(this.props.spaces, this.props.currentUser)
     return filteredMarkers.map(space => {
       let lat = parseFloat(space.latitude)
@@ -84,6 +94,13 @@ class Map extends React.Component {
     }
   }
 
+  showViewport = () => {
+    if (this.props.userSpace) {
+      return {...this.props.viewport, ...this.props.usViewport}
+    } else {
+      return this.props.viewport
+    }
+  }
   render() {
     const style = this.findStyle()
     return(
@@ -92,7 +109,9 @@ class Map extends React.Component {
         mapboxApiAccessToken = {
           process.env.REACT_APP_MAPBOX_TOKEN
         }
-        {...this.props.viewport}
+        {
+          ...this.showViewport()
+        }
         mapStyle={`mapbox://styles/mapbox/${style}`}
         onViewportChange={(viewport) => this.props.changeViewport(viewport)}
       >

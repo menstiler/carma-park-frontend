@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
 import { Dropdown, Menu, Message, Icon, Label, Button } from 'semantic-ui-react'
 import { deleteAllNotifications, handleNotificationDismiss, closeActiveNotification, toggleShowNotifications } from '../actions/notification'
-import { logout } from '../actions/actions'
+import { logout } from '../actions/user'
 import '../styles/navbar.scss';
 import '../styles/loader.scss';
 import Loader from './Loader'
