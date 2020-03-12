@@ -99,7 +99,6 @@ class Map extends React.Component {
   }
 
   render() {
-    console.log(process.env.REACT_APP_MAPBOX_TOKEN)
     const style = this.findStyle()
     return(
       <ReactMapGL
