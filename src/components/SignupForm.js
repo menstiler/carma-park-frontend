@@ -6,7 +6,7 @@ import { GoogleLogin } from 'react-google-login';
 import Map from './Map'
 
 const SignupForm = (props) => {
-  const [account, setAccount] = useState({
+  const [data, setData] = useState({
     name: '',
     username: '',
     password: ''
@@ -14,21 +14,13 @@ const SignupForm = (props) => {
 
   useEffect(() => {
     props.closeAlert()
-  }, [])
+  })
 
   const handleChange = (event) => {
-    setAccount({
-      ...account,
+    setData({
+      ...data,
       [event.target.name]: event.target.value
     })
-  }
-
-  const onSuccess = (res) => {
-    props.handleGoogleLogin(res, props.routerProps.history)
-  };
-
-  const onFailure = (res) => {
-    console.log('Login failed: res:', res);
   }
 
   return (
@@ -45,34 +37,21 @@ const SignupForm = (props) => {
             :
             null
           }
-          <Form onSubmit={(event) => props.handleSignupSubmit(event, account, props.routerProps.history)}>
+          <Form onSubmit={(event) => props.handleSignupSubmit(event, data, props.routerProps.history)}>
             <Form.Field>
               <label>Name</label>
-              <input placeholder='Name' name="name" onChange={handleChange} />
+              <input placeholder='Name' name="name" value={data.name} onChange={handleChange} />
             </Form.Field>
             <Form.Field>
               <label>Username</label>
-              <input placeholder='Username' name="username" onChange={handleChange} />
+              <input placeholder='Username' name="username" value={data.username}  onChange={handleChange} />
             </Form.Field>
             <Form.Field>
               <label>Password</label>
-              <input placeholder='Password' name="password" type="password" onChange={handleChange} />
+              <input placeholder='Password' name="password" type="password" value={data.password}  onChange={handleChange} />
             </Form.Field>
-            <Button type='submit'>Sign Up</Button>
+            <Button type='submit' className='primary'>Sign Up</Button>
           </Form>
-          <div className="ui horizontal divider">
-          Or
-        </div>
-        <div className="google-login-container">
-          <GoogleLogin
-            clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}
-            buttonText="Create an account with Google"
-            onSuccess={onSuccess}
-            onFailure={onFailure}
-            cookiePolicy={'single_host_origin'}
-            className="google-login"
-          />
-        </div>
         </div>
       </div>
       <Map parent="form" />

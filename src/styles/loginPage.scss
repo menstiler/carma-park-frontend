@@ -51,11 +51,14 @@
       font-size: 35pt;
       text-transform: uppercase;
     }
+  } 
+
+  > div {
+    height: calc(100vh - 42px)!important
   }
 
   > div:nth-of-type(2) {
     width: 60%!important;
-    height:747px!important;
   }
 }
 

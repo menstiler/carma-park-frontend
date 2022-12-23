@@ -1,48 +1,22 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { connect } from 'react-redux'
-import { handleLoginSubmit, closeAlert, handleGoogleLogin } from '../actions/actions'
-import { Button, Form } from 'semantic-ui-react'
+import { handleLoginSubmit, closeAlert } from '../actions'
+import { Button, Form, Message } from 'semantic-ui-react'
 import Map from './Map'
 import '../styles/loginPage.scss';
 
-import { GoogleLogin } from 'react-google-login';
-
-const clientId =
-  '870890787841-hrvr0a3tk45hnu7bb54kdr1v4b9nh4gu.apps.googleusercontent.com';
-
 const LoginForm = (props) => {
 
-  const [account, setAccount] = useState({
+  const [data, setData] = useState({
     username: '',
     password: '',
   })
-  const [token, setToken] = useState(null)
-
-  useEffect(() => {
-    const token = localStorage.token
-    if (token) {
-      setToken(token)
-    }
-    props.closeAlert()
-  }, [])
+  const [modelOpen, setModelOpen] = useState(true);
 
   const handleChange = (event) => {
-    setAccount({
-      ...account,
+    setData({
       [event.target.name]: event.target.value
     })
-  }
-
-  const onSuccess = (res) => {
-    props.handleGoogleLogin(res, props.routerProps.history)
-  };
-
-  const onFailure = (res) => {
-    console.log('Login failed: res:', res);
-  };
-
-  const handleLogin = (event) => {
-    props.handleLoginSubmit(event, account, props.routerProps.history)
   }
 
   return (
@@ -59,7 +33,21 @@ const LoginForm = (props) => {
             :
             null
           }
-          <Form onSubmit={handleLogin}>
+          <Form onSubmit={(event) => props.handleLoginSubmit(event, data, props.routerProps.history)}>
+            {
+              modelOpen
+              &&
+              <Message >
+                <Message.Header>Welcome to Carma Park</Message.Header>
+                <i className="close icon" onClick={() => setModelOpen(false)}></i>
+                <p>
+                    Feel free to sign up, or login with the demo account:<br/>
+                    Username: test
+                    <br/>
+                    Password: test
+                </p>
+              </Message>
+            }
             <Form.Field>
               <label>Username</label>
               <input placeholder='Username' name="username" onChange={handleChange} />
@@ -68,22 +56,8 @@ const LoginForm = (props) => {
               <label>Password</label>
               <input placeholder='Password' name="password" type="password" onChange={handleChange} />
             </Form.Field>
-            <Button type='submit' loading={props.loading}>Login</Button>
+            <Button type='submit' className='primary'>Login</Button>
           </Form>
-          <div className="ui horizontal divider">
-            Or
-          </div>
-          <div className="google-login-container">
-            <GoogleLogin
-              clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}
-              buttonText="Login with Google"
-              onSuccess={onSuccess}
-              onFailure={onFailure}
-              cookiePolicy={'single_host_origin'}
-              isSignedIn={token ? true : false}
-              className="google-login"
-            />
-          </div>
         </div>
       </div>
       <Map parent="form" />
