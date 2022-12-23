@@ -50,7 +50,7 @@ class FilterContainer extends React.Component {
     return (
       <div className="filter-bar">
         <div className="filter-container">
-          <div className="filter-column-1">
+          {/* <div className="filter-column-1">
             <button className="ui button" onClick={this.props.updateDistanceFilter} value={this.props.distanceShow ? null : 10}>{this.props.distanceShow ? "Show All" : "Show Nearby"}</button>
             {this.props.distanceShow ?
               <>
@@ -62,61 +62,69 @@ class FilterContainer extends React.Component {
               :
               null
             }
-          </div>
+          </div> */}
           <div className="filter-column-2">
             <Search />
           </div>
-          {
-            this.props.currentUser
-            ?
-            <div className="filter-column-3">
-              {
-                !this.state.form
-                ?
-                <Button floated='left' onClick={this.openForm}>Add to Favorites</Button>
-                :
-                <>
-                <Form onSubmit={this.handleSubmit}>
-                  <Form.Field className="favorites-form">
-                    <label>Name</label>
-                    <Input
-                    required
-                    placeholder="e.g., Work, Home"
-                    label={<Button type="submit" onClick={this.handleClick}>Add</Button>}
-                    labelPosition='right'
-                    value={this.state.name}
-                    onChange={this.handleChange}
-                    />
-                  </Form.Field>
-                </Form>
-                <Button floated='left' className="cancel-favorites" onClick={this.openForm}>Cancel</Button>
-                </>
-              }
-              {
-                this.props.favorites && (this.props.favorites.length && !this.state.form)
-                ?
-                <Button floated='left' onClick={this.toggleViewFavorites}>{this.state.showFavorites ? "Hide Favorites" : "Show Favorites"}</Button>
-                :
-                null
-              }
-            </div>
-            :
-            null
-          }
+          {/* <Favorites {...this.props} /> */}
         </div>
-        {
-          this.state.showFavorites
-          ?
-          <div className="favorites-container">
-            {this.props.favorites.map(favorite => <Label key={favorite.id} size='large' onClick={() => this.props.goToViewport({ longitude: favorite.longitude, latitude: favorite.latitude}, this.props.spaces)}>{favorite.name} <Icon name='close' onClick={() => this.props.deleteFavorite(favorite)} /></Label>)}
-          </div>
-          :
-          null
-        }
       </div>
     )
   }
 
+}
+
+const Favorites = (props) => {
+  return (
+    <>
+      {
+        this.props.currentUser
+        ?
+        <div className="filter-column-3">
+          {
+            !this.state.form
+            ?
+            <Button floated='left' onClick={this.openForm}>Add to Favorites</Button>
+            :
+            <>
+            <Form onSubmit={this.handleSubmit}>
+              <Form.Field className="favorites-form">
+                <label>Name</label>
+                <Input
+                required
+                placeholder="e.g., Work, Home"
+                label={<Button type="submit" onClick={this.handleClick}>Add</Button>}
+                labelPosition='right'
+                value={this.state.name}
+                onChange={this.handleChange}
+                />
+              </Form.Field>
+            </Form>
+            <Button floated='left' className="cancel-favorites" onClick={this.openForm}>Cancel</Button>
+            </>
+          }
+          {
+            this.props.favorites && (this.props.favorites.length && !this.state.form)
+            ?
+            <Button floated='left' onClick={this.toggleViewFavorites}>{this.state.showFavorites ? "Hide Favorites" : "Show Favorites"}</Button>
+            :
+            null
+          }
+        </div>
+        :
+        null
+      }
+      {
+        this.state.showFavorites
+        ?
+        <div className="favorites-container">
+          {this.props.favorites.map(favorite => <Label key={favorite.id} size='large' onClick={() => this.props.goToViewport({ longitude: favorite.longitude, latitude: favorite.latitude}, this.props.spaces)}>{favorite.name} <Icon name='close' onClick={() => this.props.deleteFavorite(favorite)} /></Label>)}
+        </div>
+        :
+        null
+      }
+    </>
+  )
 }
 
 function msp(state) {

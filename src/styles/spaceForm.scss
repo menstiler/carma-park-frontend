@@ -1,19 +1,32 @@
+@import './index.scss';
+
+.space-form-modal {
+  width: 600px!important;
+
+  @media (max-width: 650px) {
+    width: 100%!important;
+  }
+}
+
 .space-form {
   width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-top: 20px;
+  margin: 20px auto;
 
   form {
     background: white;
-    border: 1px solid #ede7e7;
     padding: 16px;
     border-radius: 19px;
     
     > div:nth-of-type(2) {
       width: 500px!important;
-      height:450px!important
+      height:450px!important;
+
+      @media (max-width: 650px) {
+        height: 250px!important;
+      }
     }
 
     .input-container {
@@ -26,6 +39,10 @@
         }
       }
     }
+  }
+
+  .mapMarkerStyle {
+    @include marker;
   }
 
   button {

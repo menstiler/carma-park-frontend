@@ -8,6 +8,12 @@
     }
     .sub-menu {
       display: contents;
+
+      img {
+        object-fit: cover;
+        width: 1.5em;
+        height: 1.5em;
+      }
     }
   } 
 
@@ -35,7 +41,12 @@
 }
 
 @media screen and (max-width: 750px) {
-  .navbar {
+  .navbar {    
+    position: absolute;
+    z-index: 1;
+    left: 0px;
+    right: 0px;
+    
     .ui.menu {
       flex-direction: column;
       border:0px;
@@ -49,6 +60,9 @@
         max-height:0;
         overflow: hidden;
         transition: max-height 1s ease-in-out;
+        z-index: 4;
+        background: white;
+        border-bottom: 1px solid #e6e4e0;
       }
 
       &.mobile .sub-menu {

@@ -35,7 +35,10 @@ import {
   ADD_FAVORITE,
   REMOVE_FAVORITE,
   REMOVE_SHOW,
-  UPDATE_USER_SPACE
+  UPDATE_USER_SPACE,
+  UPDATE_USER,
+  UPDATE_USER_SPACES,
+  TOGGLE_LOADING_USER,
 } from '../types'
 
 import {
@@ -45,7 +48,7 @@ import {
 
 function filterData(spaces, currentUser) {
   let filteredSpaces = spaces.filter(space => {
-    if (!space.claimed && space.available) {
+    if (!space.claimed) {
       return space;
     } else if (space.claimed) {
       if (currentUser) {
@@ -140,12 +143,45 @@ function handleSignupSubmit(event, user, history) {
       },
       body: JSON.stringify({user: user})
     })
+    .then(res => res.json())
+    .then(response => {
+      if (response.errors){
+        dispatch({type: ALERT, payload: response.errors})
+      } else {
+        dispatch({type: SET_USER, payload: response.user})
+        dispatch({type: ALERT, payload: null})
+        localStorage.token = response.token
+        history.push('/')
+      }
+    })
+  }
+}
+
+function handleGoogleLogin(googleResp, history) {
+  return function(dispatch) {
+    fetch(API + "provider_login", {
+      method: "POST",
+      headers: HEADERS,
+      body: JSON.stringify(googleResp)
+    })
+    .then(res => res.json())
+    .then(response => {
+      if (response.errors){
+        dispatch({type: ALERT, payload: response.errors})
+      } else {
+        dispatch({type: SET_USER, payload: response.user})
+        dispatch({type: ALERT, payload: null})
+        localStorage.token = response.token
+        history.push('/')
+      }
+    })
   }
 }
 
 function handleLoginSubmit(event, user, history) {
   event.preventDefault()
   return function(dispatch) {
+    dispatch({type: TOGGLE_LOADING_USER})
     fetch(API + "login", {
       method: "POST",
       headers: {
@@ -158,9 +194,11 @@ function handleLoginSubmit(event, user, history) {
     .then(response => {
       if (response.errors){
         dispatch({type: ALERT, payload: response.errors})
+        dispatch({type: TOGGLE_LOADING_USER})
       } else {
         dispatch({type: SET_USER, payload: response.user})
         dispatch({type: ALERT, payload: null})
+        dispatch({type: TOGGLE_LOADING_USER})
         localStorage.token = response.token
         history.push('/')
       }
@@ -196,26 +234,23 @@ function handleReceivedUser(response, routerProps, currentUser) {
       routerProps.history.push('/')
       return {type: ADD_USER, payload: response.user}
     } else {
-      return {type: ADD_USER, payload: response.user}
+      return {type: UPDATE_USER, payload: response.user}
     }
   }
 }
 
 function handleReceivedSpace(response, router, currentUser) {
   const space = response.space;
-  return async function (dispatch) {
+  return async function(dispatch) {
     if (response.action === 'update') {
       if (currentUser.id === space.claimer) {
         router.history.push(`/spaces/${space.id}`)
       }
       await dispatch({type: CLAIM_SPACE, payload: space})
-      dispatch({ type: UPDATE_USER_SPACE, payload: response.user_space})
     } else if (response.action === 'delete') {
       await dispatch({type: REMOVE_SPACE, payload: space})
-      dispatch({type: UPDATE_USER_SPACE, payload: response.user_space})
     } else if (response.action === 'create') {
       await dispatch({type: NEW_SPACE, payload: space})
-      dispatch({type: UPDATE_USER_SPACE, payload: response.user_space})
     }
   }
 }
@@ -275,7 +310,10 @@ function openPopup(coords, text) {
 }
 
 function openSpace(space) {
-  return {type: OPEN_SPACE, payload: space}
+  return function(dispatch) {
+    dispatch({type: HIDE_CHAT})
+    dispatch({type: OPEN_SPACE, payload: space})
+  }
 }
 
 function closePopup() {
@@ -373,6 +411,12 @@ function createSpace(user_id, address, location, time, image) {
   }
 }
 
+function closeForm()  {
+  return function (dispatch) {
+    dispatch({ type: HANDLE_SUBMIT })
+  }
+}
+
 function nextStep() {
   return {type: UPDATE_PROGRESS_NEXT}
 }
@@ -433,6 +477,7 @@ function addSpaceAfterParking(user_id, space_id) {
 
 function showSpace(space) {
   return function(dispatch) {
+    dispatch({type: HIDE_CHAT})
     dispatch({type: SHOW_SPACE, payload: space})
     dispatch({type: GO_TO, payload: {coords: {latitude: space.latitude, longitude: space.longitude}}})
   }
@@ -511,4 +556,6 @@ export {
   handleReceivedUser,
   dispatchSetFavorites,
   filterData,
+  closeForm,
+  handleGoogleLogin
 }

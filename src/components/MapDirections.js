@@ -1,13 +1,14 @@
-import React from 'react'
+import React, { useRef, useEffect } from 'react'
 import { connect } from 'react-redux'
 import mapboxgl from 'mapbox-gl';
 import MapboxDirections from '@mapbox/mapbox-gl-directions/dist/mapbox-gl-directions'
 
 import {  } from '../actions/actions'
 
-class MapDirections extends React.Component {
+const MapDirections = (props) => {
+  const mapRef = useRef(null)
 
-  componentDidMount () {
+  useEffect(() => {
     const script1 = document.createElement("script");
     const script2 = document.createElement("script");
     script1.src = "https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-directions/v4.0.2/mapbox-gl-directions.js"
@@ -17,50 +18,45 @@ class MapDirections extends React.Component {
     document.body.appendChild(script1);
     document.body.appendChild(script2);
     mapboxgl.accessToken = process.env.REACT_APP_MAPBOX_TOKEN
-    this.map = new mapboxgl.Map({
-      container: this.mapContainer,
-      style: `mapbox://styles/mapbox/${this.props.mapStyle}`,
-      center: [this.props.currentPosition.longitude, this.props.currentPosition.latitude],
+    mapRef.current = new mapboxgl.Map({
+      container: mapRef.current,
+      style: `mapbox://styles/mapbox/${props.mapStyle}`,
+      center: [props.currentPosition.longitude, props.currentPosition.latitude],
       zoom: 10
     });
 
-    this.map.on('load', () => {
+    mapRef.current.on('load', () => {
       let directions = new MapboxDirections({
         accessToken: mapboxgl.accessToken
       });
-      this.map.addControl(directions, 'top-left');
-      directions.setOrigin(this.props.currentPosition.address);
-      directions.setDestination(this.props.selectedSpace.address);
+      mapRef.current.addControl(directions, 'top-left');
+      directions.setOrigin(props.currentPosition.address);
+      directions.setDestination(props.selectedSpace.address);
       document.querySelector('.directions-control.directions-control-inputs').style.display = "none"
     });
-
-  }
-
-
-  componentWillUnmount() {
-    this.map.remove();
-  }
-
-  componentDidUpdate() {
-    if (document.querySelector('.directions-control.directions-control-directions') !== null) {
-      document.querySelector('.directions-control.directions-control-directions').style.display = this.props.showDirection ? "block" : "none"
+    return () => {
+      mapRef.current.remove();
     }
-  }
+  }, [props.currentPosition]) 
 
-  render() {
-    const style = {
-      position: 'absolute',
-      top: 0,
-      bottom: 0,
-      width: '100%'
-    };
+  useEffect(() => {
+    if (document.querySelector('.directions-control.directions-control-directions') !== null) {
+      document.querySelector('.directions-control.directions-control-directions').style.display = props.showDirection ? "block" : "none"
+    }
+  }, [props.showDirection])
 
-    return (
-      <>
-        <div style={style} ref={el => (this.mapContainer = el)}></div>
-      </>
-    )
-  }
+  const style = {
+    position: 'absolute',
+    top: 0,
+    bottom: 0,
+    width: '100%'
+  };
+
+  return (
+    <>
+      <div style={style} ref={mapRef}></div>
+    </>
+  )
 }
 
 function msp(state) {

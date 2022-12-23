@@ -6,14 +6,20 @@ import ActiveSpace from '../components/ActiveSpace'
 import MapDirections from '../components/MapDirections'
 import FilterContainer from './FilterContainer'
 import { Route, Switch, Link } from 'react-router-dom'
-import { closePopup, changeMapStyle } from '../actions/actions'
-import { Button, Popup } from 'semantic-ui-react'
+import { closePopup, changeMapStyle, closeForm } from '../actions/actions'
+import { Button, Popup, Progress, Modal, Icon } from 'semantic-ui-react'
 import '../styles/loader.scss';
+import SpaceForm from '../components/SpaceForm'
 
 function MapContainer(props) {
 
   const style = (props.mapStyle === 'dark-v10' ? 'streets-v11' : 'dark-v10')
   
+  const closeForm = () => {
+    props.closeForm()
+    props.history.push('/')
+  }
+
   return (
     <Switch>
       <Route path="/spaces/:id" render={(routerProps) => {
@@ -48,10 +54,10 @@ function MapContainer(props) {
         } else {
           return (
             <>
-              <FilterContainer />
               <div className="action-container">
                 <SpacesContainer routerProps={routerProps}  />
                 <div className="map-container">
+                  <FilterContainer />
                   <Map />
                 </div>
                 <div className="icon-buttons">
@@ -67,6 +73,24 @@ function MapContainer(props) {
                   <Popup content={`Change to ${props.mapStyle === 'dark-v10' ? "Light Mode" : "Night Mode"}`} basic trigger={<Button icon={props.mapStyle === 'dark-v10' ? "lightbulb outline" : "lightbulb" } className="toggle-style"  onClick={() => props.changeMapStyle(style)} />} />
                 </div>  
               </div>
+              <Route path="/add_space" render={(routerProps) => {
+                return (
+                  <Modal 
+                    open={true}
+                    dimmer={'inverted'}
+                    onClose={closeForm}
+                    className="space-form-modal"
+                  >
+                    <Progress percent={props.progress} size='tiny'></Progress>
+                    <SpaceForm routerProps={routerProps} />
+                    <Modal.Actions>
+                      <Button onClick={closeForm}>
+                        Cancel
+                      </Button>
+                    </Modal.Actions>
+                  </Modal>
+                )
+              }} />
             </>
           )
         }
@@ -82,10 +106,11 @@ function msp(state) {
     currentUser: state.user.currentUser,
     address: state.form.address,
     loading: state.map.loading,
-    mapStyle: state.map.mapStyle
+    mapStyle: state.map.mapStyle,
+    progress: state.form.progress
   }
 }
 
 export default connect(msp, {
-  closePopup, changeMapStyle
+  closePopup, changeMapStyle, closeForm
 })(MapContainer);

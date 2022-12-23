@@ -4,9 +4,12 @@ import {
 } from '../constants'
 
 import {
-  REMOVE_USER_SPACE,
   REMOVE_ALL_USER_SPACES,
-  SET_USER
+  SET_USER,
+  REMOVE_SPACE_LOG,
+  UPDATE_USER,
+  UPDATE_ACTIVE_SPACE,
+  CLOSE_CHAT
 } from '../types';
 
 function editUser(user, userId) {
@@ -15,19 +18,19 @@ function editUser(user, userId) {
       method: "PATCH",
       headers: HEADERS,
       body: JSON.stringify({
-        user
+        user,
       })
     })
   }
 }
 
-function deleteUserSpace(id) {
+function deleteSpaceLog(id) {
   return async function(dispatch) {
-    await fetch(API + 'user_spaces/' + id, {
+    await fetch(API + 'space_logs/' + id, {
       method: "DELETE",
       headers: HEADERS, 
     })
-    dispatch({ type: REMOVE_USER_SPACE, payload: id });
+    dispatch({ type: REMOVE_SPACE_LOG, payload: id });
   }
 }
 
@@ -59,16 +62,26 @@ function deleteAccount(id, history) {
 function logout(history) {
   history.push("/login")
   localStorage.removeItem("token")
-  return {
-    type: SET_USER,
-    payload: null
+  return function(dispatch) {
+    dispatch({
+      type: SET_USER,
+      payload: null
+    })
+    dispatch({
+      type: UPDATE_ACTIVE_SPACE,
+      payload: null
+    })
+    dispatch({
+      type: CLOSE_CHAT,
+      payload: null
+    })
   }
 }
 
 export { 
   editUser,
-  deleteUserSpace,
+  deleteSpaceLog,
   deleteAllUserSpaces,
   deleteAccount,
-  logout
+  logout,
 }

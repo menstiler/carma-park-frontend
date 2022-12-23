@@ -18,9 +18,11 @@ class Search extends React.Component {
     fetch(`https://api.mapbox.com/geocoding/v5/mapbox.places/${result.value}.json?country=US&access_token=${process.env.REACT_APP_MAPBOX_TOKEN}`)
     .then(resp => resp.json())
     .then(geocodeResult => {
-      this.props.goToViewport({latitude: geocodeResult.features[0].center[1], longitude: geocodeResult.features[0].center[0]}, spaces)
       if (this.props.createSpace) {
+        this.props.updateMap({latitude: geocodeResult.features[0].center[1], longitude: geocodeResult.features[0].center[0]})
         this.props.handleFormChange(address, {latitude: geocodeResult.features[0].center[1], longitude: geocodeResult.features[0].center[0]})
+      } else {
+        this.props.goToViewport({latitude: geocodeResult.features[0].center[1], longitude: geocodeResult.features[0].center[0]}, this.props.spaces)
       }
     })
   }

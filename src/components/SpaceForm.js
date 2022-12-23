@@ -2,10 +2,10 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux'
 import Search from './Search'
 import Map from './Map'
-import { Button, Form, Icon, Progress} from 'semantic-ui-react'
-import ReactFilestack from 'filestack-react';
+import { Button, Form, Icon, Progress } from 'semantic-ui-react'
 import { createSpace, prevStep, nextStep, closePopup  } from '../actions/actions'
 import '../styles/spaceForm.scss';
+
 class SpaceForm extends Component {
 
   state = {
@@ -13,34 +13,45 @@ class SpaceForm extends Component {
     hours: 0,
     image: null,
     alert: null,
+    coords: null
   }
 
   componentWillMount() {
     this.props.closePopup();
+    let { longitude, latitude } = this.props.currentPosition;
+    let coords = {
+      latitude,
+      longitude,
+    }
+    this.setState({
+      coords
+    })
   }
 
-  componentWillReceiveProps() {
-    if (!this.props.currentUser) {
-      this.props.routerProps.history.push('/')
+  componentDidMount() {
+    const token = localStorage.token
+    if (!token) {
+      this.props.routerProps.history.push('/login')
     }
   }
 
-  nonDuplicate = (address) => {
-    let sharedAddress = this.props.spaces.find(space => space.address === address)
-    if (sharedAddress && sharedAddress.available) {
-      return false
+  duplicate = (address, coords) => {
+    if (!address || !coords) return;
+    let sharedAddress = this.props.spaces.find(space => space.address === address || (JSON.parse(space.longitude) === coords.longitude && JSON.parse(space.latitude) === coords.latitude))
+    if (sharedAddress) {
+      return sharedAddress
     }
-    return true
+    return false
   }
 
   saveAndContinue = (e) => {
     e.preventDefault()
-    let unique = this.nonDuplicate(this.props.address)
-    if (this.props.address && unique) {
+    let nonUnique = this.duplicate(this.props.address, this.props.coords)
+    if (this.props.address && !nonUnique) {
       this.props.nextStep()
-    } else if (!unique) {
+    } else if (nonUnique) {
       this.setState({
-        alert: "This location is already available"
+        alert: `This location is already ${nonUnique.available ? 'available' : 'claimed'}.`
       })
     } else {
       this.setState({
@@ -117,7 +128,13 @@ class SpaceForm extends Component {
     }
   }
 
-  render() {
+  updateMap = (coords) => {
+    this.setState({
+      coords: coords
+    })
+  }
+
+  renderForm = () => {
     const {step} = this.props;
     switch(step) {
       case 1:
@@ -135,9 +152,9 @@ class SpaceForm extends Component {
             }
               <label><strong>Step 1:</strong> Add Location</label>
               <div className="input-container">
-                <Search createSpace={true} />
+                <Search createSpace={true} updateMap={this.updateMap} />
               </div>
-              <Map createSpace={true} />
+              <Map createSpace={true} coords={this.state.coords} />
               <Button animated floated='right' onClick={this.saveAndContinue}>
                 <Button.Content visible>Next</Button.Content>
                 <Button.Content hidden>
@@ -211,7 +228,13 @@ class SpaceForm extends Component {
             </form>
           </div>
         )
+      default:
+        return;
     }
+  }
+
+  render() {
+    return this.renderForm()
   }
 }
 
@@ -223,7 +246,8 @@ function msp(state) {
     step: state.form.step,
     progress: state.form.progress,
     loading: state.form.loading,
-    spaces: state.map.spaces
+    spaces: state.map.spaces,
+    currentPosition: state.map.currentPosition
   }
 }
 
