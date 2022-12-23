@@ -1,68 +1,90 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
 import ChatTable from './ChatTable'
 import { Image, Segment, Button, Card } from 'semantic-ui-react'
-import {  hideChat, openSpace, openNewChat, cancelClaim, finishedParking, addSpaceAfterParking, removeSpace, toggleShowDirections, openChat } from '../actions/actions'
+import {  hideChat, openSpace, openNewChat, cancelClaim, finishedParking, removeSpace, toggleShowDirections, openChat, createSpace } from '../actions/actions'
 import '../styles/activeSpace.scss';
 import '../styles/loader.scss';
 import Loader from './Loader'
 
-class ActiveSpace extends React.Component {
-
-  renderChat = () => {
-    if (!this.props.activeChat) {
-      if (this.props.chats.find(chat => chat.space === this.props.activeSpace.id)) {
-        return <Button fluid onClick={() => this.props.openChat(this.props.activeSpace.id)}>Continue Chat</Button>
+const ActiveSpace = (props) => {
+  const [parked, setParked] = useState(false)
+  const activeSpace = props.activeSpace
+  const image = activeSpace.image
+  
+  const renderChat = () => {
+    if (parked) return
+    if (!props.activeChat) {
+      if (props.chats.find(chat => chat.space === props.activeSpace.id)) {
+        return <Button fluid onClick={() => props.openChat(props.activeSpace.id)}>Continue Chat</Button>
       } else {
-        return <Button fluid onClick={() => this.props.openNewChat(this.props.activeSpace.id, this.props.currentUser.id)}>Chat</Button>
+        return <Button fluid onClick={() => props.openNewChat(props.activeSpace.id, props.currentUser.id)}>Chat</Button>
       }
-    } else if (this.props.activeChat && (this.props.activeChat === this.props.activeSpace.id)) {
-      return <Button fluid onClick={() => this.props.hideChat(this.props.activeSpace.id)}>Hide Chat</Button>
+    } else if (props.activeChat && (props.activeChat === props.activeSpace.id)) {
+      return <Button fluid onClick={() => props.hideChat(props.activeSpace.id)}>Hide Chat</Button>
     } else {
-      return <Button fluid onClick={() => this.props.openNewChat(this.props.activeSpace.id, this.props.currentUser.id)}>Chat</Button>
+      return <Button fluid onClick={() => props.openNewChat(props.activeSpace.id, props.currentUser.id)}>Chat</Button>
     }
   }
 
-  render(){
-    const image = this.props.activeSpace.image
-    if (this.props.loading) {
-      return <Loader / >
-    } else {
-      return (
-      <div className={this.props.activeChat && (this.props.activeChat === this.props.activeSpace.id) ? "active-space-container double" : "active-space-container"}>
+  const handlePark = () => {
+    props.finishedParking(props.currentUser.id, activeSpace.id)
+    setParked(true)
+  }
+
+  const addSpaceAfterParking = () => {
+    let time = {
+      minutes: 0,
+      hours: 0
+    }
+    let { address, longitude, latitude, image } = activeSpace
+    props.createSpace(props.currentUser.id, address, { longitude, latitude }, time, image )
+  }
+  
+  
+  if (props.loading) {
+    return <Loader />
+  } else {
+    return (
+      <div className={props.activeChat && (props.activeChat === activeSpace.id) ? "active-space-container double" : "active-space-container"}>
         <div className="active-space-info">
-          <h3>{this.props.activeSpace.address}</h3>
+          <h3>{activeSpace.address}</h3>
           {
-            this.props.activeSpace.owner !== this.props.currentUser.id
+            activeSpace.owner !== props.currentUser.id
             ?
             <>
-              <h4>Created By: {this.props.users.find(user => user.id === this.props.activeSpace.owner).name}</h4>
-              <p>Claimed By: {this.props.users.find(user => user.id === this.props.activeSpace.claimer).name}</p>
-              {image
-              ?
-              <Card raised image={image} />
-              :
-              null
-              }
-              {this.renderChat()}
+              <div className="info">
+                <div className="">
+                  <h4>Created by: {activeSpace.users.find(user => user.id === activeSpace.owner).name}</h4>
+                  <p>Claimed by: {activeSpace.users.find(user => user.id === activeSpace.claimer).name}</p>
+                </div>
+                {
+                  image
+                  ?
+                  <Card raised image={image} />
+                  :
+                  null
+                }
+              </div>
+              {renderChat()}
             </>
             :
             null
           }
           {
-            this.props.activeSpace.owner === this.props.currentUser.id
+            parked
             ?
             <div className="parked-buttons">
               <Link to={"/"} >
                 <Button fluid
-                  onClick={() => this.props.addSpaceAfterParking(this.props.currentUser.id, this.props.activeSpace.id)}>
+                  onClick={addSpaceAfterParking}>
                   Add Parking Spot
                 </Button>
               </Link>
               <Link to={"/"} >
                 <Button fluid
-                  onClick={() => this.props.removeSpace(this.props.activeSpace.id)}>
+                  onClick={() => props.removeSpace(activeSpace.id)}>
                   Find New Parking Spot
                 </Button>
               </Link>
@@ -71,15 +93,15 @@ class ActiveSpace extends React.Component {
             <>
               <Link to={"/"} >
                 <Button fluid
-                  onClick={() => this.props.cancelClaim(this.props.currentUser.id, this.props.activeSpace.id)}>
+                  onClick={() => props.cancelClaim(props.currentUser.id, activeSpace.id)}>
                   Cancel
                 </Button>
               </Link>
               <Button fluid
-                onClick={() => this.props.finishedParking(this.props.currentUser.id, this.props.activeSpace.id)}>
+                onClick={handlePark}>
                 Parked
               </Button>
-              <Button floated='right' onClick={this.props.toggleShowDirections}>{this.props.showDirection ? "Hide Directions" : "Show Directions"}</Button>
+              <Button floated='right' onClick={props.toggleShowDirections}>{props.showDirection ? "Hide Directions" : "Show Directions"}</Button>
               <Link to={"/"} >
                 <Button floated='left'>Back</Button>
               </Link>
@@ -87,7 +109,7 @@ class ActiveSpace extends React.Component {
           }
         </div>
         {
-          this.props.activeChat && (this.props.activeChat === this.props.activeSpace.id)
+          props.activeChat && (props.activeChat === activeSpace.id)
           ?
           <div className="active-space-chattable">
             <ChatTable />
@@ -96,14 +118,12 @@ class ActiveSpace extends React.Component {
           null
         }
       </div>
-      )
-    }
+     )
   }
 }
 
 function msp(state) {
   return {
-    users: state.user.users,
     activeSpace: state.map.activeSpace,
     currentUser: state.user.currentUser,
     showDirection: state.map.showDirection,
@@ -116,11 +136,11 @@ function msp(state) {
 export default connect(msp, {
   cancelClaim,
   finishedParking,
-  addSpaceAfterParking,
   removeSpace,
   toggleShowDirections,
   openChat,
   openSpace,
   openNewChat,
   hideChat,
+  createSpace
 })(ActiveSpace);

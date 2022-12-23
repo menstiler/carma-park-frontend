@@ -1,3 +1,5 @@
+@import './index.scss';
+
 .action-container {
   display: flex;
   flex-direction: row;
@@ -6,39 +8,26 @@
   .map-container {
     width: 75%;
 
-    > div:nth-of-type(1) {
+    > div:nth-of-type(2) {
       width: 100%!important;
-      height:100%!important;
+      height:92%!important;
     }
 
     .mapMarkerStyle {
-      background-color: blue;
-      width: 1.5rem;
-      height: 1.5rem;
-      display: block;
-      left: -0.5rem;
-      top: -0.5rem;
-      position: relative;
-      border-radius: 1.5rem 1.5rem 0;
-      transform: rotate(45deg);
-      border: 1px solid #FFFFFF;
+      @include marker;
     }
 
     .userMarkerStyle {
       background-color: black;
     }
 
-    .mapMarkerStyle::after {
-      position: 'absolute';
-      content: '';
-      width: 0.4rem;
-      height: 0.4rem;
-      border-radius: 50%;
-      top: 50%;
-      left: 50%;
-      margin-left: -4px;
-      margin-top: -4px;
-      background-color: #fff;
+    @media (max-width: 650px) {
+      position: absolute;
+      top: 41px;  
+
+      > div:nth-of-type(2) {
+        height:106%!important;
+      }
     }
   }
 
@@ -52,16 +41,65 @@
   .space-container {
     width: 25%;
     overflow: auto;
-    height: 90vh;
+    height: 94vh;
 
-    .ui.card {
-      :last-child {
-        margin-bottom: 10px
+    .no-spaces {
+      margin: 20px;
+      display: flex;
+      justify-content: center;
+      font-weight: bold;
+    }
+
+    &.chat-open {
+      width: 35%;
+
+      @media (max-width: 650px) {
+        position: absolute;
+        top: 90px;
+        bottom: 284px;
+        width: 100%;
       }
-      
+    }
+
+    .ui.card {      
       &.on {
         background: #e0e1e2;
       }  
+    }
+
+    .space-show {
+      .info {
+        margin: 1em;
+        
+        img {
+          width: 15%!important;
+          height: auto!important
+        }
+        
+        > div {
+          margin: 10px auto;
+        }
+        
+        .car-info {
+          display: flex;
+          justify-content: space-between; 
+          align-items: center;
+
+          img {
+            width: 50px!important;
+          }
+
+          .text-info {
+            text-align: center;
+            margin: 0px;
+            color: #747576;
+
+            .license {
+              font-size: 20px
+            }
+          }
+        }
+      }
     }
   }
 
@@ -73,10 +111,6 @@
       font-size: 1.3em;
       transform: none;
     }
-  }
-
-  .space-show {
-    width:25%
   }
 
   .icon-buttons {
@@ -105,7 +139,10 @@
     .toggle-style {
       right:66px;
     }
-  
+    
+    @media (max-width: 650px) {
+      display: none;
+    }
   }
 }
 
@@ -115,7 +152,7 @@
   
     .map-container {
       width:100%;
-      height: 67%;
+      height: 88%;
       position: absolute;
       bottom: 0;
     }
@@ -123,16 +160,24 @@
     .space-container {
       width:100%;
       display: flex;
-      max-height: 175px;
-      background:#fff;
       z-index:3;
+      overflow-x: scroll;
+      height: auto;
+      position: absolute;
+      bottom: 0px;
+      align-items: flex-end;
 
       .ui.card {
-        min-width: 175px;
+        min-width: 80%;
+        max-height: 150px;
         margin: 0.5em;
 
         &:first-child {
           margin-left:1em;
+        }
+        
+        &:last-child {
+          margin-right:1em;
         }
       }
     }
@@ -142,16 +187,19 @@
       display: flex;
       justify-content: center;
       flex-direction: column;
-  
+
       .card {
-        width:100%;
         z-index: 3;
         margin: 0;
-        
+        max-height: none!important;
+        min-width: auto!important;
+
         .content {
+          padding: 6px;
           display: flex;
           align-items: center;
           justify-content: space-evenly;
+          flex-direction: row;
 
           img {
             width:100px;

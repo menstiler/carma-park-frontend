@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './styles/index.scss';
 import App from './App';
-import { createStore, combineReducers, applyMiddleware } from 'redux'
+import { createStore, combineReducers, applyMiddleware, compose } from 'redux'
 import thunk from 'redux-thunk'
 import { BrowserRouter as Router, Route } from 'react-router-dom'
 import mapReducer from './reducers/mapReducer'
@@ -16,7 +16,11 @@ require('dotenv').config()
 
 // combine all reducers, add them as key-value pairs to combineReducers
 const rootReducer = combineReducers({map: mapReducer, form: formReducer, user: userReducer})
-const store = createStore(rootReducer, applyMiddleware(thunk))
+
+const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
+const store = createStore(rootReducer, /* preloadedState, */ composeEnhancers(
+  applyMiddleware(thunk)
+));
 
 ReactDOM.render(
   <ActionCableProvider url={API_WS_ROOT}>

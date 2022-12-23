@@ -3,6 +3,7 @@ import { connect } from 'react-redux'
 import moment from 'moment'
 import { Icon } from 'semantic-ui-react'
 import { showSpace, claimSpace, removeSpace } from '../actions/actions'
+import SpaceShow from './SpaceShow';
 
 class SpaceCard extends Component {
 
@@ -46,15 +47,15 @@ class SpaceCard extends Component {
         </>
       )
     } else if (this.props.space.claimed) {
-      const claimer = this.props.users.find(user => user.id === this.props.space.claimer)
+      const claimer = this.props.space.users.find(user => user.id === this.props.space.claimer)
       if (this.props.currentUser.id === claimer.id) {
         if (claimer.id !== this.props.space.owner) {
-          return "Claimed By You"
+          return "Claimed by You"
         } else {
           return "You have parked here"
         }
       } else {
-        return `Claimed By ${claimer.name}`
+        return `Claimed by ${claimer.name}`
       }
     } else {
       return null
@@ -62,7 +63,7 @@ class SpaceCard extends Component {
   }
 
   renderCreatedBy() {
-    const owner = this.props.users.find(user => user.id === this.props.space.owner)
+    const owner = this.props.space.users.find(user => user.id === this.props.space.owner)
     let createdBy;
     if (owner.id !== this.props.space.claimer) {
       createdBy = (this.props.currentUser && this.props.currentUser.id === owner.id) ? "You" : `${owner.name}`
@@ -73,6 +74,14 @@ class SpaceCard extends Component {
   }
 
   render() {
+    if (this.props.selectedSpace && (this.props.selectedSpace.id === this.props.space.id)) {
+      return (
+        <div className="space-show">
+          <SpaceShow routerProps={this.props.routerProps} />
+        </div>
+      )
+    }
+    
     return (
       <div 
         data-id={this.props.space.id} 
@@ -96,7 +105,6 @@ class SpaceCard extends Component {
 
 function msp(state) {
   return {
-    users: state.user.users,
     selectedSpace: state.map.selectedSpace,
     currentUser: state.user.currentUser,
     timer: state.user.timer

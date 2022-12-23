@@ -1,27 +1,39 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux'
 import SpaceCard from '../components/SpaceCard'
-import SpaceShow from '../components/SpaceShow'
 import { claimSpace, filterData as filterSpaces } from '../actions/actions'
-
+import ChatTable from '../components/ChatTable'
 
 function SpacesContainer(props) {
 
   const renderSpaces = () => {
     let filteredSpaces = filterSpaces(props.spaces, props.currentUser)
+    if (filteredSpaces.length < 1) {
+      return <div className="no-spaces">No Available Parking Spots</div>
+    } 
     return filteredSpaces.map(space => <SpaceCard key={space.id} space={space} routerProps={props.routerProps} />)
   }
+  
+  const showChat = () => {
+    if (props.activeChat 
+    && (props.activeChat === props.selectedSpace.id)
+    && props.selectedSpace.owner === props.currentUser.id) {
+      return true;
+    }
+    return false;
+  }
+
+  let chatOpen = showChat();
 
   return(
     <>
-      <div className="space-container">
+      <div className={`space-container ${chatOpen ? 'chat-open' : ''}`}>
         {renderSpaces()}
       </div>
-      {props.currentUser && props.selectedSpace
+      {
+        chatOpen
         ?
-        <div className="space-show">
-          <SpaceShow routerProps={props.routerProps} />
-        </div>
+        <ChatTable />
         :
         null
       }
@@ -37,9 +49,9 @@ function msp(state) {
     showPopup: state.map.showPopup,
     popupDets: state.map.popupDets,
     spaces: state.map.spaces,
-    users: state.user.users,
     distanceShow: state.form.distanceShow,
-    selectedSpace: state.map.selectedSpace
+    selectedSpace: state.map.selectedSpace,
+    activeChat: state.user.activeChat,
   }
 }
 

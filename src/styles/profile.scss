@@ -1,28 +1,150 @@
+@import './index.scss';
+
+.profile {
+  display: flex;
+  justify-content: space-evenly;
+
+  @media (max-width: 650px) {
+    flex-direction: column;  
+    background: url(https://img.freepik.com/free-vector/silhouette-skyline-illustration_53876-78792.jpg?size=626&ext=jpg) no-repeat bottom;  
+  }
+
+  form, .profile-tabs {
+    width: 50%;
+    margin: 20px;
+  
+    @media (max-width: 650px) {
+      width: auto;
+    }
+  }
+
+  .tab.segment {
+    max-height: 45vw;
+    overflow-y: scroll;
+
+    .empty {
+      min-height: 150px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    &.active {
+      .header {
+        display: inline-block;
+        margin: -.21425em 0 0;
+        font-family: Lato,'Helvetica Neue',Arial,Helvetica,sans-serif;
+        font-weight: 700;
+        color: rgba(0,0,0,.85);
+        font-size: 1.28571429em;
+      }
+
+      .content {
+        justify-content: space-between;
+      }
+    }
+  }
+}
+
+.ui.form {
+  margin: 25px;
+
+  .field {
+    width: 50%
+  }
+
+  .dropzone {
+    background: white;
+    border: 1px solid rgba(34,36,38,.15);
+    border-radius: 3px;
+
+    .buttons {
+      display: flex;
+      justify-content: center;
+      
+      button {
+        margin: 6px;
+      }
+    }
+
+    &.dragging {
+      border: 2px dashed black;
+    }
+
+    img {
+      min-width: 150px;
+      min-height: 150px;
+      max-width: 150px;
+      max-height: 150px;
+      object-fit: contain;
+      display: block;
+      margin: 0 auto;
+    }
+  }
+}
+ 
 .item {
   .content {
     display: flex!important;
     flex-direction: column;   
+    padding-right: 1.5em!important;
   }
 
   .map {
     width: 25%;
 
-     .mapMarkerStyle {
-      background-color: blue;
-      width: 1.5rem;
-      height: 1.5rem;
-      display: block;
-      left: -0.5rem;
-      top: -0.5rem;
-      position: relative;
-      border-radius: 1.5rem 1.5rem 0;
-      transform: rotate(45deg);
-      border: 1px solid #FFFFFF;
+    .mapMarkerStyle {
+      @include marker;
     }
     
     > div:nth-of-type(1) {
       width: 100%!important;
       height: 150px!important;
+    }
+  }
+}
+
+.ui.table {
+  th:last-child {
+    display: none;
+  }
+
+  ~ .notification-footer {
+    float: right;
+  }
+}
+
+@media (max-width: 650px) {
+  .ui.items:not(.unstackable)>.item>.image {
+    width: 28%!important;    
+  }
+
+  .ui.divided.items, .items.ui {
+    .item {
+      display: flex;
+      flex-direction: row!important;
+
+      .image {
+        width: 28%!important;
+      }
+
+      .content {
+        margin-left: 10px!important;;
+        font-size: 13px;
+        padding: 0px!important;
+
+        .extra {
+          .button {
+            width: 100%;
+            margin: 0 auto;
+            padding-right: 0px;
+          }
+        }
+      }
+
+      .map {
+        display: none
+      }
     }
   }
 }

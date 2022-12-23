@@ -29,7 +29,7 @@ const defaultState = {
   currentPosition: {
     latitude: 40.7052529,
     longitude: -74.016259,
-    address: "11 Broadway, 11 Broadway, New York, New York 10004, United States"
+    address: "760 Montgomery St, Brooklyn New York 11213, United States"
   },
   showPopup: false,
   popupDets: {
@@ -74,7 +74,7 @@ function mapReducer(prevState=defaultState, action) {
         return {...prevState, spaces: newSpaces, activeSpace: action.payload, showPopup: false, showDirection: true, loading: false}
       }
     case UPDATE_ACTIVE_SPACE:
-      return {...prevState, activeSpace: action.payload}
+      return {...prevState, activeSpace: action.payload, selectedSpace: action.payload}
     case NEW_SPACE:
       return {...prevState, spaces: [...prevState.spaces, action.payload], loading: false}
     case SHOW_SPACE:
@@ -97,7 +97,7 @@ function mapReducer(prevState=defaultState, action) {
         longitude: parseFloat(action.payload.coords.longitude)
       }}
     case SET_POSITION:
-      return {...prevState, currentPosition: {...prevState.currentPosition, longitude: action.payload[0], latitude: action.payload[1]}, viewport: {...prevState.viewport, longitude: action.payload[0], latitude: action.payload[1] }}
+      return {...prevState, currentPosition: {...prevState.currentPosition, longitude: action.payload[0], latitude: action.payload[1], address: action.payload[2]}, viewport: {...prevState.viewport, longitude: action.payload[0], latitude: action.payload[1] }}
     case TOGGLE_SHOW_DIRECTIONS:
       return {...prevState, showDirection: !prevState.showDirection}
     case MAP_STYLE:

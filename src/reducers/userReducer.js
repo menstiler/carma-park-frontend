@@ -1,4 +1,5 @@
 import moment from 'moment'
+import _ from 'lodash';
 import {
   FETCH_USERS,
   UPDATE_TIMER,
@@ -22,11 +23,11 @@ import {
   REMOVE_FAVORITE,
   REMOVE_ALL_NOTIFICATIONS,
   REMOVE_NOTIFICATION,
-  UPDATE_USER_SPACE,
-  REMOVE_USER_SPACE,
-  REMOVE_ALL_USER_SPACES
+  UPDATE_USER,
+  REMOVE_ALL_USER_SPACES,
+  REMOVE_SPACE_LOG,
+  TOGGLE_LOADING_USER,
 } from '../types'
-
 const defaultState = {
   currentUser: null,
   timer: moment(new Date()),
@@ -39,33 +40,29 @@ const defaultState = {
   showNotifications: false,
   activeNotification: null,
   showFavorites: false,
-  userSpaces: []
+  userSpaces: [],
+  loading: false,
+  claimedSpot: false
 }
 
 function userReducer(prevState=defaultState, action) {
   switch(action.type) {
+    case TOGGLE_LOADING_USER:
+      return {...prevState, loading: !prevState.loading}
     case FETCH_USERS:
       return {...prevState, users: action.payload}
-    case UPDATE_USER_SPACE:
-      let record = prevState.userSpaces.find(userSpace => userSpace.id === action.payload.id)
-      if (record) {
-        let filteredUserSpaces = prevState.userSpaces.map(userSpace => {
-          if (userSpace.id === record.id) {
-            userSpace.status = action.payload.status
-            return userSpace
-          } else {  
-            return userSpace
-          }
-        })
-        return {...prevState, userSpaces: filteredUserSpaces}
-      } else {
-        return {...prevState, userSpaces: [...prevState.userSpaces, action.payload] }
+    case UPDATE_USER:
+      if (action.payload.id === prevState.currentUser.id) {
+        let claimedSpot = _.find(action.payload.spaces, ['claimer', action.payload.id]) || false;
+        return {...prevState, currentUser: action.payload, claimedSpot }
       }
-    case REMOVE_USER_SPACE:
-      let filteredUserSpaces = prevState.userSpaces.filter(userSpace => userSpace.id !== action.payload);
-      return {...prevState, userSpaces: filteredUserSpaces}
-    case REMOVE_ALL_USER_SPACES:
-      return {...prevState, userSpaces: []}
+      return {...prevState}
+    case REMOVE_SPACE_LOG:
+      let filteredSpaceLogs = prevState.currentUser.space_logs.filter(spaceLog => {
+        return spaceLog.id !== action.payload
+      })
+      let updatedUser = { ...prevState.currentUser, space_logs: filteredSpaceLogs }
+      return {...prevState, currentUser: updatedUser }
     case ALERT:
       return {...prevState, alert: action.payload}
     case ADD_USER:  
@@ -142,7 +139,7 @@ function userReducer(prevState=defaultState, action) {
         const filterChats = [...prevState.chats].filter(chat => chat.space !== action.payload.space)
         return {...prevState, chats: filterChats, activeChat: null}
       } else {
-        return {...prevState}
+        return {...prevState, activeChat: null}
       }
     case ADD_MESSAGE:
       const message = action.payload;

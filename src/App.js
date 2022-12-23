@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { useEffect } from 'react';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import MainContainer from './containers/MainContainer'
 import Navbar from './components/Navbar'
@@ -7,82 +7,83 @@ import { ActionCableConsumer } from 'react-actioncable-provider'
 import Cable from './components/Cable'
 import { handleReceivedNotifications, closeNotifications, toggleShowNotifications } from './actions/notification'
 import { dispatchSetFavorites, handleReceivedUser, fetchUsers, handleReceivedSpace, handleAutoLogin, fetchSpots, setCurrentPosition, updateTimer, fetchChats, handleReceivedMessage, handleReceivedChatroom } from './actions/actions'
+import _ from 'lodash';
 
-class App extends Component {
+const App = (props) => {
   
-  notificationId = 0
-  mainInterval = 0
+  let mainInterval = 0
   
-  async componentDidMount() {
+  useEffect(() => {
     const token = localStorage.token
     if (token) {
-      await this.props.handleAutoLogin(token)
+      props.handleAutoLogin(token)
     }
-    this.props.fetchUsers()
-    this.props.fetchSpots(this.props.viewport)
-    this.props.dispatchSetFavorites()
-    this.props.fetchChats()
+    props.fetchUsers()
+    props.fetchSpots(props.viewport)
+    props.dispatchSetFavorites()
+    props.fetchChats()
     if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(this.displayLocationInfo);
+      navigator.geolocation.getCurrentPosition(displayLocationInfo);
     } else {
-      this.props.setCurrentPosition([-74.01500, 40.705341])
+      props.setCurrentPosition([-74.01500, 40.705341])
     }
     
-    this.mainInterval = setInterval(() => {
-      this.props.updateTimer()
+    mainInterval = setInterval(() => {
+      props.updateTimer()
     }, 1000)
-  }
 
+    return () => {
+      clearInterval(mainInterval)
+    }
+  }, [])
 
-  componentWillUnmount() {
-    clearInterval(this.mainInterval)
-    clearInterval(this.notificationInterval)
-  }
-
-  displayLocationInfo = (position) => {
+  const displayLocationInfo = async (position) => {
     const lng = position.coords.longitude;
     const lat = position.coords.latitude;
-    this.props.setCurrentPosition([lng, lat])
+    let res = await fetch(`https://api.mapbox.com/geocoding/v5/mapbox.places/${lng},${lat}.json?country=US&access_token=${process.env.REACT_APP_MAPBOX_TOKEN}`)
+    .then(res => res.json())
+    .then(geocodeResult => {
+      let address = _.find(geocodeResult.features, ['place_type', ['address']]).place_name;
+      props.setCurrentPosition([lng, lat, address])
+    })
   }
 
-  render() {
-    return (
-      <>
-        {
-          this.props.currentUser
-          ?
-          <>
-            <ActionCableConsumer
-              channel={{ channel: 'ChatroomsChannel' }}
-              onReceived={this.props.handleReceivedChatroom}
-            />
-            <ActionCableConsumer
-              channel={{ channel: 'NotificationsChannel' }}
-              onReceived = {(response) => this.props.handleReceivedNotifications(response)}
-            />
-            <ActionCableConsumer
-              channel={{ channel: 'SpacesChannel' }}
-              onReceived={(response) => this.props.handleReceivedSpace(response, this.props.routerProps, this.props.currentUser)}
-            />
-            <ActionCableConsumer
-              channel={{ channel: 'UsersChannel' }}
-              onReceived={(response) => this.props.handleReceivedUser(response, this.props.routerProps, this.props.currentUser)}
-            />
-          </>
-          :
-          null
-        }
-        {this.props.chats.length ? (
-          <Cable
-            chatrooms={this.props.chats}
-            handleReceivedMessage={this.props.handleReceivedMessage}
+  return (
+    <>
+      {
+        props.currentUser
+        ?
+        <>
+          <ActionCableConsumer
+            channel={{ channel: 'ChatroomsChannel' }}
+            onReceived={props.handleReceivedChatroom}
           />
-        ) : null}
-        <Navbar routerProps={this.props.routerProps} />
-        <MainContainer routerProps={this.props.routerProps} />
-      </>
-    );
-  }
+          <ActionCableConsumer
+            channel={{ channel: 'NotificationsChannel' }}
+            onReceived = {(response) => props.handleReceivedNotifications(response)}
+          />
+          <ActionCableConsumer
+            channel={{ channel: 'SpacesChannel' }}
+            onReceived={(response) => props.handleReceivedSpace(response, props.routerProps, props.currentUser)}
+          />
+          <ActionCableConsumer
+            channel={{ channel: 'UsersChannel' }}
+            onReceived={(response) => props.handleReceivedUser(response, props.routerProps, props.currentUser)}
+          />
+        </>
+        :
+        null
+      }
+      {props.chats.length ? (
+        <Cable
+          chatrooms={props.chats}
+          handleReceivedMessage={props.handleReceivedMessage}
+        />
+      ) : null}
+      <Navbar routerProps={props.routerProps} />
+      <MainContainer routerProps={props.routerProps} />
+    </>
+  );
 }
 
 function msp(state) {
