@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { connect } from 'react-redux'
-import { handleLoginSubmit, closeAlert } from '../actions'
+import { handleLoginSubmit, closeAlert } from '../actions/actions'
 import { Button, Form, Message } from 'semantic-ui-react'
 import Map from './Map'
 import '../styles/loginPage.scss';
@@ -75,6 +75,5 @@ function msp(state) {
 
 export default connect(msp, {
   handleLoginSubmit,
-  handleGoogleLogin,
   closeAlert
 })(LoginForm);

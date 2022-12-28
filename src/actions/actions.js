@@ -52,9 +52,9 @@ function filterData(spaces, currentUser) {
       return space;
     } else if (space.claimed) {
       if (currentUser) {
-        if (space.owner === currentUser.id) {    
+        if (space.owner_id === currentUser.id) {    
           return space;
-        } else if (space.claimer === currentUser.id) {
+        } else if (space.claimer_id === currentUser.id) {
           return space;
         }
       }
@@ -349,16 +349,8 @@ function sortSpotByDistance(origin, spaces) {
   return sortedSpaces
 }
 
-function fetchUsers() {
-  return function(dispatch) {
-    return fetch(API + 'users')
-    .then(resp => resp.json())
-    .then(users => {
-      dispatch({type: FETCH_USERS, payload: users})
-      dispatch({type: SET_FAVORITES})
-      dispatch({type: TOGGLE_LOADING})
-    })
-  }
+function toggleLoading() {
+  return {type: TOGGLE_LOADING}
 }
 
 
@@ -427,7 +419,7 @@ function prevStep() {
 
 function createNewSpace(user_id, address, location, time, image) {
   let space = {
-    owner: user_id,
+    owner_id: user_id,
     longitude: location.longitude,
     latitude: location.latitude,
     address: address,
@@ -543,7 +535,7 @@ export {
   handleLoginSubmit,
   handleAutoLogin,
   handleReceivedSpace,
-  fetchUsers,
+  toggleLoading,
   handleSignupSubmit,
   closeAlert,
   nextStep,

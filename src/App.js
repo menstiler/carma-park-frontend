@@ -6,7 +6,7 @@ import { connect } from 'react-redux'
 import { ActionCableConsumer } from 'react-actioncable-provider'
 import Cable from './components/Cable'
 import { handleReceivedNotifications, closeNotifications, toggleShowNotifications } from './actions/notification'
-import { dispatchSetFavorites, handleReceivedUser, fetchUsers, handleReceivedSpace, handleAutoLogin, fetchSpots, setCurrentPosition, updateTimer, fetchChats, handleReceivedMessage, handleReceivedChatroom } from './actions/actions'
+import { dispatchSetFavorites, handleReceivedUser, toggleLoading, handleReceivedSpace, handleAutoLogin, fetchSpots, setCurrentPosition, updateTimer, fetchChats, handleReceivedMessage, handleReceivedChatroom } from './actions/actions'
 import _ from 'lodash';
 
 const App = (props) => {
@@ -18,7 +18,7 @@ const App = (props) => {
     if (token) {
       props.handleAutoLogin(token)
     }
-    props.fetchUsers()
+    props.toggleLoading()
     props.fetchSpots(props.viewport)
     props.dispatchSetFavorites()
     props.fetchChats()
@@ -107,7 +107,7 @@ export default connect(msp, {
   handleReceivedChatroom,
   handleAutoLogin,
   handleReceivedSpace,
-  fetchUsers,
+  toggleLoading,
   handleReceivedNotifications,
   toggleShowNotifications,
   closeNotifications,

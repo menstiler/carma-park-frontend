@@ -26,7 +26,7 @@
       top: 41px;  
 
       > div:nth-of-type(2) {
-        height:106%!important;
+        height:108%!important;
       }
     }
   }
@@ -137,7 +137,7 @@
     }
 
     .toggle-style {
-      right:66px;
+      right:0;
     }
     
     @media (max-width: 650px) {
@@ -187,26 +187,30 @@
       display: flex;
       justify-content: center;
       flex-direction: column;
-
+      min-width: 80%;
+        
       .card {
         z-index: 3;
         margin: 0;
         max-height: none!important;
         min-width: auto!important;
 
-        .content {
-          padding: 6px;
-          display: flex;
-          align-items: center;
-          justify-content: space-evenly;
+        .item {
           flex-direction: row;
 
-          img {
-            width:100px;
-          }
+          .image {
+            max-width: 28%!important;
+            margin-left: 0;
 
-          .header {
-            padding: 10px;
+            + .content {
+              padding-left: 1em;
+            }
+          }
+        }
+
+        .car-info {
+          img {
+            width:auto!important;
           }
           
           .ui.feed {

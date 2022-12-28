@@ -46,39 +46,54 @@
   }
 }
 
-.ui.form {
-  margin: 25px;
+.profile {  
+  .forms {
+    display: flex;
 
-  .field {
-    width: 50%
+    @media (max-width: 650px) {
+      flex-direction: column;
+    }
+  }
+  
+  .btn-container {
+    margin: 0 25px;
   }
 
-  .dropzone {
-    background: white;
-    border: 1px solid rgba(34,36,38,.15);
-    border-radius: 3px;
+  .ui.form {
+    margin: 25px;
+    width: 50%;
 
-    .buttons {
-      display: flex;
-      justify-content: center;
-      
-      button {
-        margin: 6px;
+    @media (max-width: 650px) {
+      width: auto;
+    }
+
+    .dropzone {
+      background: white;
+      border: 1px solid rgba(34,36,38,.15);
+      border-radius: 3px;
+  
+      .buttons {
+        display: flex;
+        justify-content: center;
+        
+        button {
+          margin: 6px;
+        }
       }
-    }
-
-    &.dragging {
-      border: 2px dashed black;
-    }
-
-    img {
-      min-width: 150px;
-      min-height: 150px;
-      max-width: 150px;
-      max-height: 150px;
-      object-fit: contain;
-      display: block;
-      margin: 0 auto;
+  
+      &.dragging {
+        border: 2px dashed black;
+      }
+  
+      img {
+        min-width: 150px;
+        min-height: 150px;
+        max-width: 150px;
+        max-height: 150px;
+        object-fit: contain;
+        display: block;
+        margin: 0 auto;
+      }
     }
   }
 }
@@ -115,35 +130,39 @@
 }
 
 @media (max-width: 650px) {
-  .ui.items:not(.unstackable)>.item>.image {
-    width: 28%!important;    
-  }
+  .profile {
+    padding-top: 40px;
 
-  .ui.divided.items, .items.ui {
-    .item {
-      display: flex;
-      flex-direction: row!important;
-
-      .image {
-        width: 28%!important;
-      }
-
-      .content {
-        margin-left: 10px!important;;
-        font-size: 13px;
-        padding: 0px!important;
-
-        .extra {
-          .button {
-            width: 100%;
-            margin: 0 auto;
-            padding-right: 0px;
+    .ui.items:not(.unstackable)>.item>.image {
+      width: 28%!important;    
+    }
+  
+    .ui.divided.items, .items.ui {
+      .item {
+        display: flex;
+        flex-direction: row!important;
+  
+        .image {
+          width: 28%!important;
+        }
+  
+        .content {
+          margin-left: 10px!important;;
+          font-size: 13px;
+          padding: 0px!important;
+  
+          .extra {
+            .button {
+              width: 100%;
+              margin: 0 auto;
+              padding-right: 0px;
+            }
           }
         }
-      }
-
-      .map {
-        display: none
+  
+        .map {
+          display: none
+        }
       }
     }
   }

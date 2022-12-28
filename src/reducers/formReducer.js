@@ -24,9 +24,9 @@ function formReducer(prevState=defaultState, action) {
     case SHOW_DISTANCE:
       return {...prevState, distanceShow: action.payload}
     case UPDATE_PROGRESS_NEXT:
-      return {...prevState, progress: prevState.progress + 35, step: prevState.step + 1}
+      return {...prevState, progress: prevState.progress + 50, step: prevState.step + 1}
     case UPDATE_PROGRESS_PREV:
-      return {...prevState, progress: prevState.progress - 35, step: prevState.step - 1}
+      return {...prevState, progress: prevState.progress - 50, step: prevState.step - 1}
     default:
       return {...prevState}
   }

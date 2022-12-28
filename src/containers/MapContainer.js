@@ -6,12 +6,12 @@ import ActiveSpace from '../components/ActiveSpace'
 import MapDirections from '../components/MapDirections'
 import FilterContainer from './FilterContainer'
 import { Route, Switch, Link } from 'react-router-dom'
-import { closePopup, changeMapStyle, closeForm } from '../actions/actions'
+import { changeMapStyle, closeForm } from '../actions/actions'
 import { Button, Popup, Progress, Modal, Icon } from 'semantic-ui-react'
 import '../styles/loader.scss';
 import SpaceForm from '../components/SpaceForm'
 
-function MapContainer(props) {
+const MapContainer = (props) => {
 
   const style = (props.mapStyle === 'dark-v10' ? 'streets-v11' : 'dark-v10')
   
@@ -61,15 +61,6 @@ function MapContainer(props) {
                   <Map />
                 </div>
                 <div className="icon-buttons">
-                  {
-                    props.currentUser
-                    ?
-                    <Link to={'/add_space'} >
-                      <Popup content='Add Parking Spot' basic trigger={<Button className="add-space" icon='car' onClick={props.closePopup} />} />
-                    </Link>
-                    :
-                    null
-                  }
                   <Popup content={`Change to ${props.mapStyle === 'dark-v10' ? "Light Mode" : "Night Mode"}`} basic trigger={<Button icon={props.mapStyle === 'dark-v10' ? "lightbulb outline" : "lightbulb" } className="toggle-style"  onClick={() => props.changeMapStyle(style)} />} />
                 </div>  
               </div>
@@ -112,5 +103,5 @@ function msp(state) {
 }
 
 export default connect(msp, {
-  closePopup, changeMapStyle, closeForm
+  changeMapStyle, closeForm
 })(MapContainer);

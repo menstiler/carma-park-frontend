@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react'
 import { connect } from 'react-redux'
 import { handleSignupSubmit, closeAlert, handleGoogleLogin } from '../actions/actions'
 import { Button, Form } from 'semantic-ui-react'
-import { GoogleLogin } from 'react-google-login';
 import Map from './Map'
 
 const SignupForm = (props) => {

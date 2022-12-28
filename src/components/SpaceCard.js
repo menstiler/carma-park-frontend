@@ -1,55 +1,50 @@
-import React, { Component } from 'react';
+import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux'
 import moment from 'moment'
 import { Icon } from 'semantic-ui-react'
 import { showSpace, claimSpace, removeSpace } from '../actions/actions'
 import SpaceShow from './SpaceShow';
 
-class SpaceCard extends Component {
+const SpaceCard = (props) => {
+  const [time, setTime] = useState(null)
 
-  state = {
-    time: null
-  }
-
-  componentDidMount() {
-    if (this.props.space.deadline) {
-      let deadline = this.props.space.deadline
+  useEffect(() => {
+    if (props.space.deadline) {
+      let deadline = props.space.deadline
       if (deadline > Date.now()) {
-        // let totalMinutes = (new Date(this.props.space.deadline).getHours() * 60) + (new Date(this.props.space.deadline).getMinutes()) - (new Date().getHours() * 60 + new Date().getMinutes())
-        let expiration = new Date(this.props.space.deadline)
+        // let totalMinutes = (new Date(props.space.deadline).getHours() * 60) + (new Date(props.space.deadline).getMinutes()) - (new Date().getHours() * 60 + new Date().getMinutes())
+        let expiration = new Date(props.space.deadline)
 
         let momentExpiration =  moment(expiration)
-        this.setState({
-          time: momentExpiration
-        })
+        setTime(momentExpiration)
       } else {
-        this.props.removeSpace(this.props.space.id)
+        props.removeSpace(props.space.id)
       }
     }
-  }
+  }, [])
 
-  componentWillUpdate() {
-    if (this.props.space.deadline) {
-      if (this.state.time) {
-        if (moment(this.state.time.diff(this.props.timer)) < 0) {
-          this.props.removeSpace(this.props.space.id)
+  useEffect(() => {
+    if (props.space.deadline) {
+      if (time) {
+        if (moment(time.diff(props.timer)) < 0) {
+          props.removeSpace(props.space.id)
         }
       }
     }
-  }
+  }, [])
 
-  renderDeadline = () => {
-    if (this.state.time && !this.props.space.claimed && this.props.space.deadline) {
+  const renderDeadline = () => {
+    if (time && !props.space.claimed && props.space.deadline) {
       return (
         <>
           <Icon name='hourglass half' />
-          {`Expiring in ${moment.duration(this.state.time.diff(this.props.timer)).humanize()}`}
+          {`Expiring in ${moment.duration(time.diff(props.timer)).humanize()}`}
         </>
       )
-    } else if (this.props.space.claimed) {
-      const claimer = this.props.space.users.find(user => user.id === this.props.space.claimer)
-      if (this.props.currentUser.id === claimer.id) {
-        if (claimer.id !== this.props.space.owner) {
+    } else if (props.space.claimed) {
+      const claimer = props.space.claimer
+      if (props.currentUser.id === claimer.id) {
+        if (claimer.id !== props.space.owner) {
           return "Claimed by You"
         } else {
           return "You have parked here"
@@ -62,45 +57,46 @@ class SpaceCard extends Component {
     }
   }
 
-  renderCreatedBy() {
-    const owner = this.props.space.users.find(user => user.id === this.props.space.owner)
-    let createdBy;
-    if (owner.id !== this.props.space.claimer) {
-      createdBy = (this.props.currentUser && this.props.currentUser.id === owner.id) ? "You" : `${owner.name}`
-    } else {
-      return null
-    }
+  const renderCreatedBy = () => {
+    const { owner_id, owner } = props.space
+    let createdBy = (props.currentUser && props.currentUser.id === owner_id) ? "You" : `${owner.name}`;
     return `Created by ${createdBy}` 
   }
 
-  render() {
-    if (this.props.selectedSpace && (this.props.selectedSpace.id === this.props.space.id)) {
-      return (
-        <div className="space-show">
-          <SpaceShow routerProps={this.props.routerProps} />
-        </div>
-      )
-    }
-    
+  if (props.selectedSpace && (props.selectedSpace.id === props.space.id)) {
     return (
-      <div 
-        data-id={this.props.space.id} 
-        className={(this.props.selectedSpace && (this.props.selectedSpace.id === this.props.space.id)) ? "ui card on" : "ui card" } 
-        onClick={() => this.props.showSpace(this.props.space)}>
-        <div className="content">
-          <div className="header">{this.props.space.address}</div>
-          <div className="meta">
-          {
-            this.renderCreatedBy()
-          }
-          </div>
-          <div className="description">
-            <p>{this.renderDeadline()}</p>
-          </div>
-        </div>
+      <div className="space-show">
+        <SpaceShow routerProps={props.routerProps} />
       </div>
     )
   }
+  
+  const showSpace = (e) => {
+    e.stopPropagation()
+    props.showSpace(props.space)
+  }
+
+  return (
+    <div 
+      data-id={props.space.id} 
+      className={(props.selectedSpace && (props.selectedSpace.id === props.space.id)) ? "ui card on" : "ui card" } 
+      onClick={showSpace}>
+      <div className="content">
+        <div className="header">{props.space.address}</div>
+        <div className="meta">
+        {
+          renderCreatedBy()
+        }
+        </div>
+        <div className="description">
+          <p>{renderDeadline()}</p>
+        </div>
+      </div>
+      <button className="ui bottom attached button" onClick={showSpace}>
+        View Details
+      </button>
+    </div>
+  )
 }
 
 function msp(state) {

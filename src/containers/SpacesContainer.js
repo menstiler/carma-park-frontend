@@ -4,7 +4,7 @@ import SpaceCard from '../components/SpaceCard'
 import { claimSpace, filterData as filterSpaces } from '../actions/actions'
 import ChatTable from '../components/ChatTable'
 
-function SpacesContainer(props) {
+const SpacesContainer = (props) => {
 
   const renderSpaces = () => {
     let filteredSpaces = filterSpaces(props.spaces, props.currentUser)
@@ -17,7 +17,7 @@ function SpacesContainer(props) {
   const showChat = () => {
     if (props.activeChat 
     && (props.activeChat === props.selectedSpace.id)
-    && props.selectedSpace.owner === props.currentUser.id) {
+    && props.selectedSpace.owner_id === props.currentUser.id) {
       return true;
     }
     return false;

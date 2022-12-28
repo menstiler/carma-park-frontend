@@ -7,16 +7,14 @@ import { Route, Switch } from 'react-router-dom'
 import '../styles/mainContainer.scss';
 import Profile from '../components/Profile'
 
-function MainContainer(props) {
+const MainContainer = (props) => {
   return (
-    <>
-      <Switch>
-        <Route path="/login" render={(routerProps) => <LoginForm routerProps={routerProps}/>} />
-        <Route path="/sign_up" render={(routerProps) => <SignupForm routerProps={routerProps}/>} />
-        <Route path="/profile" render={(routerProps) => <Profile routerProps={routerProps}/>} />
-        <Route path="/" component={MapContainer} />
-      </Switch>
-    </>
+    <Switch>
+      <Route path="/login" render={(routerProps) => <LoginForm routerProps={routerProps}/>} />
+      <Route path="/sign_up" render={(routerProps) => <SignupForm routerProps={routerProps}/>} />
+      <Route path="/profile" render={(routerProps) => <Profile routerProps={routerProps}/>} />
+      <Route path="/" component={MapContainer} />
+    </Switch>
   );
 }
 

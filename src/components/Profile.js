@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import {
   connect
 } from 'react-redux'
-import { Popup, Button, Form, Input, Item, Label }  from 'semantic-ui-react'
+import { Popup, Button, Form, Input, Item, Label, Icon }  from 'semantic-ui-react'
 import {
   editUser,
   deleteAccount
@@ -17,13 +17,13 @@ import {
 import { findPerson } from '../actions/utils'
 import Map from './Map'
 import '../styles/profile.scss'
-import { Route, Switch, NavLink, Prompt } from 'react-router-dom';
-import { withRouter } from 'react-router';
+import { Route, Switch, NavLink, Prompt, withRouter } from 'react-router-dom';
 import { useDropzone } from 'react-dropzone';
 import _ from 'lodash';
 import Notifications from './Notifications';
 import Activity from './Activity';
 import CarSearch from './CarSearch';
+import moment from 'moment';
 
 const Profile = (props) => {
  
@@ -31,23 +31,20 @@ const Profile = (props) => {
     name: "",
     username: "",
     password: "",
-    loading: false,
     license_plate: "",
     car_image: "",
     user_image: "",
     car_make: "",
     car_model: ""
   })
+  const [loading, setLoading] = useState(false);
   const [oldProfile, setOldProfile] = useState(null)
   const [newProfile, setNewProfile] = useState(null)
   const [isDirty, setIsDirty] = useState(false)
   const [editLoader, setEditLoader] = useState(false)
 
   useEffect(() => {
-    setProfile({
-      ...profile,
-      loading: true
-    })
+    setLoading(true)
     const token = localStorage.token
     if (!token) {
       props.routerProps.history.push('/login')
@@ -61,12 +58,12 @@ const Profile = (props) => {
         username: props.currentUser.username,
         password: "",
         license_plate: props.currentUser.license_plate,
-        loading: false,
         car_image: props.currentUser.car_image,
         user_image: props.currentUser.user_image,
         car_make: props.currentUser.car_make,
         car_model: props.currentUser.car_model,
       })
+      setLoading(false)
     }
   }, [props.currentUser])
 
@@ -97,7 +94,7 @@ const Profile = (props) => {
     if (!activeSpaces.length) return <div className="empty">No Active Spaces</div>;
 
     const renderActiveButton = (activeSpace) => {
-      if (activeSpace.owner === userId) {
+      if (activeSpace.owner_id === userId && !activeSpace.claimed) {
         return <Button
           icon='trash'
           labelPosition='left'
@@ -105,7 +102,7 @@ const Profile = (props) => {
           content='Cancel'
           onClick={() => props.removeSpace(activeSpace.id)}
         />
-      } else if (activeSpace.claimer === userId && activeSpace.owner !== userId) {
+      } else if (activeSpace.claimer_id === userId && activeSpace.owner_id !== userId) {
         return <Button
         icon='car'
         labelPosition='left'
@@ -113,38 +110,44 @@ const Profile = (props) => {
           content='Continue Parking'
           onClick={() => goToActiveSpace(activeSpace)}
         />
-      } else if (activeSpace.claimer !== userId && !activeSpace.available) {
-        return null
       }
-      let claimer = _.find(activeSpace.users, ['id', activeSpace.claimer]);
-      return <Label>Claimed by {claimer.name}</Label>
+      return <Label>Claimed by {activeSpace.claimer.name}</Label>
     }
     
     return _.orderBy(activeSpaces, ['updated_at'], ['desc']).map(activeSpace => {
       let space = _.find(props.currentUser.space_logs, ['space_id', activeSpace.id])
-      let owner = _.find(space.users, ['id', space.space.owner]);
+      let deadline = space && space.space.deadline;
+      let time;
+      if (deadline) {
+        if (deadline > Date.now()) {
+          let expiration = new Date(deadline)
+  
+          let momentExpiration =  moment(expiration)
+          time = momentExpiration
+        } 
+      }
 
       return (
         <div className="items ui" key={activeSpace.id}>
           <Item>
-            <Item.Image src={activeSpace.image} />
             <Item.Content>
-              <div>
-                <Item.Header>{activeSpace.address}</Item.Header>
+              <Item.Header>{activeSpace.address}</Item.Header>
+              <Item.Meta>
+                Created by {activeSpace.owner.name}
+              </Item.Meta>
+              {
+                deadline
+                ? 
                 <Item.Meta>
-                  Created by {owner.name}
-                  {
-                    activeSpace.deadline
-                      ?
-                      <div>{activeSpace.deadline}</div>
-                      :
-                      null
-                  }
+                  <Icon name='hourglass half' />
+                  {`Expiring in ${moment.duration(time.diff(props.timer)).humanize()}`}
                 </Item.Meta>
-              </div>
+                :
+                null
+              }
               <Item.Extra>
                 {
-                  renderActiveButton({ ...activeSpace, users: space.users })
+                  renderActiveButton(activeSpace)
                 }
               </Item.Extra>
             </Item.Content>
@@ -222,82 +225,96 @@ const Profile = (props) => {
     }
   }
 
-  if (profile.loading) {
+  if (loading) {
     return null
   } else {
     return (
       <div className="profile">
         <Form onSubmit={handleSubmit}>
           <h3>Profile</h3>
-          <Form.Group widths='equal'>
-            <Form.Field 
-              label="Name" 
-              control={Input}
-              value={profile.name}  
-              name="name"
-              onChange={handleChange}
-            />
-            <Form.Field 
-              label="Username" 
-              control={Input}
-              value={profile.username}  
-              name="username"
-              onChange={handleChange}
-            />
-          </Form.Group>
-          <Form.Group widths='equal'>
-            <Form.Field 
-              label="Password" 
-              control={Input}
-              type="password"
-              placeholder="Password"
-              value={profile.password}  
-              name="password"
-              onChange={handleChange}
-            />
-            <Form.Field 
-              label="License Plate Number" 
-              control={Input}
-              type="text"
-              placeholder="License Plate Number"
-              value={profile.license_plate || ''}  
-              name="license_plate"
-              onChange={handleChange}
-            />
-          </Form.Group>
-          <div className="equal width fields images">
-            <div className="field">
-              <label>Profile Image</label>
-              <UploadImage uploadImage={uploadImage} deleteImage={deleteImage} field='user_image' profile={profile} />
+          <div className='forms'>
+            <div className='ui form'>
+              <div className='ui header'>Account Details</div>
+              <Form.Field 
+                label="Name" 
+                control={Input}
+                value={profile.name}  
+                name="name"
+                onChange={handleChange}
+              />
+              <Form.Field 
+                label="Username" 
+                control={Input}
+                value={profile.username}  
+                name="username"
+                onChange={handleChange}
+              />
+              <Form.Field 
+                label="Password" 
+                control={Input}
+                type="password"
+                placeholder="Password"
+                value={profile.password}  
+                name="password"
+                onChange={handleChange}
+              />
+              <div className="field">
+                <label>Profile Image</label>
+                <UploadImage uploadImage={uploadImage} deleteImage={deleteImage} field='user_image' profile={profile} />
+              </div>
             </div>
-            <div className="field">
-              <label>Car Image</label>
-              <UploadImage uploadImage={uploadImage} deleteImage={deleteImage} field='car_image'  profile={profile} />
+            <div className='ui form'>
+              <div className='ui header'>Car Details</div>
+              <div className="field">
+                <label>Car Make</label>
+                <CarSearch type="car_make" updateCar={updateCar} value={profile.car_make} />
+              </div>
+              <div className="field">
+                <label>Car Model</label>
+                <CarSearch type="car_model" updateCar={updateCar} car_make={profile.car_make} value={profile.car_model} />
+              </div>
+              <Form.Field 
+                label="License Plate Number" 
+                control={Input}
+                type="text"
+                placeholder="License Plate Number"
+                value={profile.license_plate || ''}  
+                name="license_plate"
+                onChange={handleChange}
+              />  
+              <div className="field">
+                <label>Car Image</label>
+                <UploadImage uploadImage={uploadImage} deleteImage={deleteImage} field='car_image'  profile={profile} />
+              </div>
             </div>
           </div>
-          <div className="equal width fields">
-            <div className="field">
-              <label>Car Make</label>
-              <CarSearch type="car_make" updateCar={updateCar} value={profile.car_make} />
-            </div>
-            <div className="field">
-              <label>Car Model</label>
-              <CarSearch type="car_model" updateCar={updateCar} car_make={profile.car_make} value={profile.car_model} />
-            </div>
+          <div className='btn-container'>
+            <Button negative floated="left" onClick={deleteAccount}>
+              Delete Account
+            </Button>
+            <Prompt
+              when={isDirty}
+              message="You have unsaved changes. Are you sure you want to leave?"
+            />
+            <Button type='submit' floated="right" className='primary' loading={editLoader}>Update</Button>
           </div>
-          <Button type='submit' loading={editLoader}>Update</Button>
-          <Button negative floated="right" onClick={deleteAccount}>
-            Delete Account
-          </Button>
-          <Prompt
-            when={isDirty}
-            message="You have unsaved changes. Are you sure you want to leave?"
-          />
         </Form>
         <div className="profile-tabs">
           <div className="ui top attached tabular menu">
             <NavLink exact={true} to='/profile' activeClassName="active" className="item">Spaces</NavLink>
-            <NavLink to='/profile/notifications' activeClassName="active" className="item">Notifications</NavLink>
+            <NavLink to='/profile/notifications' activeClassName="active" className="item">
+              Notifications
+              {
+                  props.notifications 
+                  ?
+                  <Label color='teal' id="toggleNotifications" > {
+                    props.notifications.length
+                  } 
+                  </Label>
+                  :
+                  <Label>0</Label>
+              }
+            </NavLink>
             <NavLink to='/profile/past_activity' activeClassName="active" className="item">Activity</NavLink>
           </div>
           <div className="ui bottom attached active tab segment">
@@ -367,7 +384,9 @@ const UploadImage = (props) => {
 function msp(state) {
   return {
     currentUser: state.user.currentUser,
-    spaces: state.map.spaces
+    spaces: state.map.spaces,
+    notifications: state.user.notifications,
+    timer: state.user.timer,
   }
 }
 

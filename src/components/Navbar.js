@@ -1,7 +1,7 @@
 import React, { useRef, useState, useEffect } from 'react'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
-import { Dropdown, Menu, Message, Icon, Label, Button } from 'semantic-ui-react'
+import { Dropdown, Menu, Message, Icon, Button } from 'semantic-ui-react'
 import { deleteAllNotifications, handleNotificationDismiss, closeActiveNotification, toggleShowNotifications } from '../actions/notification'
 import { logout } from '../actions/user'
 import '../styles/navbar.scss';
@@ -84,29 +84,6 @@ const Navbar = (props) => {
                       {props.currentUser.name}
                     </Menu.Item>
                   }
-                    <Menu.Item id="toggleNotifications" as={Link} to='/profile/notifications' >
-                    {
-                      props.notifications 
-                      ?
-                      <>
-                        <Icon name='bell' id="toggleNotifications" />
-                        Notifications
-                        {
-                          
-                        }
-                        <Label color='teal' id="toggleNotifications" > {
-                          props.notifications.length
-                        } 
-                        </Label>
-                      </>
-                      :
-                      <>
-                        <Icon name='bell slash' />
-                        Notifications
-                        <Label>0</Label>
-                      </>
-                    }
-                  </Menu.Item>
                 </>
                 :
                 null

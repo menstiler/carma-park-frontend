@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Button, Item, Label, Dropdown }  from 'semantic-ui-react'
+import { Button, Item, Label, Dropdown, Icon }  from 'semantic-ui-react'
 import { connect } from 'react-redux'
 import {
   deleteSpaceLog,
@@ -7,7 +7,7 @@ import {
 } from '../actions/user'
 import { capitalize } from '../actions/utils'
 import Map from './Map'
-import { withRouter } from 'react-router';
+import { withRouter } from 'react-router-dom';
 import _ from 'lodash';
 import moment from 'moment';
 
@@ -97,24 +97,12 @@ const Activity = (props) => {
           _.orderBy(filteredSpaceLogs, ['space.updated_at'], ['desc']).map(spaceLog => {
           let space = spaceLog.space;
           let status = spaceLog.status;
-          let owner = spaceLog.users.find(user => user.id === space.owner);
           let isActive = _.find(props.currentUser.spaces, ['id', space.id]) !== undefined ? true : false;
 
           return ( 
             <Item key={spaceLog.id}>
-              {space.image ? <Item.Image src={space.image} /> : null}
               <Item.Content>
                 <Item.Header>{space.address}</Item.Header>
-                <Item.Meta>
-                  Created by {owner.name}
-                  {
-                    space.deadline
-                    ? 
-                    <div>{space.deadline}</div>
-                    :
-                    null
-                  }
-                </Item.Meta>
                 <Item.Meta>
                   {
                     moment(space.updated_at).format('dddd, MMMM Do YYYY, h:mm a')
@@ -160,6 +148,7 @@ const Activity = (props) => {
 function msp(state) {
   return {
     currentUser: state.user.currentUser,
+    timer: state.user.timer
   }
 }
 

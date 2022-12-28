@@ -1,27 +1,61 @@
 .active-space-container {
   width: 25%;
-  height: 95vh;
-
+  height: calc(100vh - 42px);
+    
   @media (max-width: 650px) {
     width: 100%;
     position: absolute;
-    bottom: 10px;
-    height: auto;
+    bottom: 0;
+    height: 50%;
   }
 
   &.double {
     width: 50%;
-    display: flex
+    display: flex;
+    justify-content: space-between;
+
+    @media (max-width: 650px) {
+      height: calc(100vh - 42px);
+      width: 100%;
+
+      + .map-container-directions {
+        display: none;
+      }
+
+      .active-space-info {
+        width: 100%;
+        display: block;
+      }
+    }
   }
 
   .active-space-info {
     padding:10px;
+    display: flex;
+    flex-direction: column;
+    height: inherit;
+    justify-content: space-between;
 
     @media (max-width: 650px) {
-      .info {
-        display: flex;
-        justify-content: space-between;
+      height: 100%;
+      
+      .ui.items {
+        .item {
+          flex-direction: row!important;
+          margin: 1em 0;
 
+          .image {
+            max-width: 20%!important;
+            margin-left: 0;
+  
+            + .content {
+              padding-left: 1em;
+            }
+          }
+        }
+      }
+
+      .info {
         img {
           width: 75px
         }
@@ -44,9 +78,18 @@
   .active-space-chattable {
     width:50%;
 
+    @media (max-width: 650px) {
+      width:auto;
+    }
+
     .ui.card {
       height: 90vh;
       justify-content: flex-end;
+
+      @media (max-width: 650px) {
+        height: 50%;  
+        width:100%;
+      }
     }
   }
 }

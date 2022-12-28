@@ -7,7 +7,7 @@ import {
   handleNotificationDismiss,
   deleteAllNotifications
 } from '../actions/notification'
-import { withRouter } from 'react-router';
+import { withRouter } from 'react-router-dom';
 
 const Notifications = (props) => {
   if (props.notifications.length) {

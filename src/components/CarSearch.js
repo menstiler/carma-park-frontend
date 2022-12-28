@@ -9,7 +9,7 @@ const initialState = {
   value: '',
 }
 
-function exampleReducer(state, action) {
+const exampleReducer = (state, action) => {
   switch (action.type) {
     case 'CLEAN_QUERY':
       return initialState
@@ -24,7 +24,7 @@ function exampleReducer(state, action) {
   }
 }
 
-function SearchExampleStandard(props) {
+const SearchExampleStandard = (props) => {
   const [state, dispatch] = React.useReducer(exampleReducer, initialState)
   const { loading, results, value } = state
   let [cars, setCars] = useState([])
@@ -44,7 +44,7 @@ function SearchExampleStandard(props) {
       .then(res => res.json())
       .then(data => {
         let original = data.Results.map(car => fetchingCarMake ? car.MakeName : car.Model_Name)
-        let unique = [... new Set(original)]
+        let unique = [...new Set(original)]
         let cars = unique.map(car => ({
           title: capitalize(car.toLowerCase())
         }))

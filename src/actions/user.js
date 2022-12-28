@@ -12,6 +12,14 @@ import {
   CLOSE_CHAT
 } from '../types';
 
+function getUserSpaces(userId) {
+  fetch(API + 'users/' + userId + '/user_spaces')
+  .then(resp => resp.json())
+  .then(users => {
+  })
+}
+
+
 function editUser(user, userId) {
   return function(dispatch){
     return fetch(API + 'users/' + userId, {
@@ -84,4 +92,5 @@ export {
   deleteAllUserSpaces,
   deleteAccount,
   logout,
+  getUserSpaces
 }

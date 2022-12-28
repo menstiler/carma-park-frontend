@@ -10,13 +10,25 @@ import {
   openChat,
   addSpaceAfterParking,
   hideChat } from '../actions/actions'
-import { Card } from 'semantic-ui-react'
 
-const SpaceShow = (props) => {
+const SpaceShow = ({ 
+  selectedSpace, 
+  activeChat, 
+  hideChat, 
+  openChat, 
+  openNewChat, 
+  currentUser,
+  claimSpace,
+  chats,
+  dispatchActiveSpace,
+  routerProps,
+  addSpaceAfterParking,
+  claimedSpot,
+  removeSpace
+}) => {
 
   const spaceRef = useRef(null);
-  const owner = props.selectedSpace.users.find(user => user.id === props.selectedSpace.owner)
-  const image = props.selectedSpace.image
+  const { owner, image } = selectedSpace
   
   useEffect(() => {
     if (spaceRef && spaceRef.current) {
@@ -27,129 +39,112 @@ const SpaceShow = (props) => {
   }, [spaceRef])
 
   const claimAction = () => {
-    props.claimSpace(props.currentUser.id, props.selectedSpace.id)
+    claimSpace(currentUser.id, selectedSpace.id)
   }
 
   const renderChatButtons = () => {
-    if (props.activeChat === props.selectedSpace.id) {
-      return <button className="ui button" onClick={() => props.hideChat()}><i className="talk icon"></i>Hide Chat</button> 
+    if (activeChat === selectedSpace.id) {
+      return <button className="ui button" onClick={() => hideChat()}><i className="talk icon"></i>Hide Chat</button> 
     }
-    if (!props.activeChat || (props.activeChat !== props.selectedSpace.id)) {
-      if (props.chats.find(chat => chat.space === props.selectedSpace.id)) {
-        return <button className="ui button" onClick={() => props.openChat(props.selectedSpace.id)}><i className="talk icon"></i>Continue Chat</button>
+    if (!activeChat || (activeChat !== selectedSpace.id)) {
+      if (chats.find(chat => chat.space === selectedSpace.id)) {
+        return <button className="ui button" onClick={() => openChat(selectedSpace.id)}><i className="talk icon"></i>Continue Chat</button>
       } else {
-        return <button  className="ui button" onClick={() => props.openNewChat(props.selectedSpace.id, props.currentUser.id)}><i className="talk icon"></i>Chat</button>
+        return <button  className="ui button" onClick={() => openNewChat(selectedSpace.id, currentUser.id)}><i className="talk icon"></i>Chat</button>
       }
     }
   }
 
   const goToActiveSpace = () => {
-    props.dispatchActiveSpace(props.selectedSpace)
-    props.routerProps.history.push(`/spaces/${props.selectedSpace.id}`)
+    dispatchActiveSpace(selectedSpace)
+    routerProps.history.push(`/spaces/${selectedSpace.id}`)
   }
 
-  const renderCreatedBy = (owner) => {
-    let createdBy;
-    if (owner.id !== props.selectedSpace.claimer) {
-      createdBy = (props.currentUser.id === owner.id) ? "You" : `${owner.name}`
+  const renderCreatedBy = () => {
+    let { owner, claimer_id, owner_id } = selectedSpace;
+
+    if (currentUser.id === claimer_id) {
+      return <Description user={owner} text='Created by' />
     } else {
-      return "You have parked here";
+      return `Created by ${currentUser.id === owner_id ? 'You' : owner.name}`;
     }
-    return `Created by ${createdBy}`
   }
   
-  const renderClaimedBy = () => {
-    if (props.selectedSpace.claimed) {
-      if ((props.selectedSpace.owner === props.currentUser.id) || (props.selectedSpace.claimer === props.currentUser.id)) {
-        if (props.selectedSpace.owner !== props.selectedSpace.claimer) {
-          if (props.selectedSpace.claimer === props.currentUser.id) {
-            return <h4>Claimed by You</h4>  
-          }
-          return (
-            <h4>
-              Claimed by {props.users.find(user => user.id === props.selectedSpace.claimer).name}
-            </h4>
-          )
-        } 
+  const renderSummary = () => {
+    let { claimer, owner_id, claimed } = selectedSpace;
+    if (claimed) {
+      if (currentUser.id === owner_id) { 
+        return <Description user={claimer} text='Claimed by' />
+      } else {
+        return null;
       }
-    }
-    return null
+    } 
   }
 
-  const renderSummary = () => {
-    let { claimer, users, claimed } = props.selectedSpace;
-    let claimerProfile = users.find(user => user.id === claimer)
-    if (owner.id === props.currentUser.id && claimed) {
-      return (
-        <div className="info">
-          <h4>Claimed by {claimerProfile.name}</h4>
-          <div className="car-info">
-            <div>
-              {
-                claimerProfile.user_image && claimerProfile.user_image.content 
-                ?
-                <img src={`data:image/jpeg;base64,${claimerProfile.user_image.content}`} />  
-                :
-                null
-              }
-            </div>
-            <div className="text-info">
-              <div>
-                <span className="license">{claimerProfile.license_plate ? claimerProfile.license_plate : null}</span>
-                <div>
-                  {claimerProfile.car_make ? claimerProfile.car_make : null}
-                  {claimerProfile.car_model ? <span>&nbsp;{claimerProfile.car_model}</span> : null}
-                </div>
+  const Description = ({ user, text }) => (
+    <div>
+      <div className='ui items'>
+          <div className='meta'>
+            {text} 
+          </div>
+          <div className='item'>
+            {
+              user.user_image && user.user_image.content 
+              ?
+              <div className='ui tiny image'>
+                <img src={`data:image/jpeg;base64,${user.user_image.content}`} />  
+              </div>
+              :
+              null
+            }
+            <div className='content'>
+              <h4 className='header'>
+                {user.name}
+              </h4>
+              <div className="meta car-info">
+                {user.car_make ? <span>{user.car_make}</span> : null}
+                {user.car_model ? <span>{user.car_model}</span> : null}
+                {user.license_plate ? <span>{user.license_plate}</span> : null}
+                {
+                  user.car_image && user.car_image.content 
+                  ?
+                  <img className="ui avatar image" src={`data:image/jpeg;base64,${user.car_image.content}`} />  
+                  :
+                  null
+                }
               </div>
             </div>
-            <div>
-              {
-                claimerProfile.car_image && claimerProfile.car_image.content 
-                ?
-                <img src={`data:image/jpeg;base64,${claimerProfile.car_image.content}`} />  
-                :
-                null
-              }
-            </div>
           </div>
-        </div>
-      )
-    }
-  }
-  
+      </div>
+    </div>
+  )
+
+  if (!currentUser) return null;
+
   return (
     <>
       <div className="ui card" ref={spaceRef}>
         <div className="content">
-          <div className="header">{props.selectedSpace.address}</div>
+          <div className="header">{selectedSpace.address}</div>
         </div>
         <div className="content">
-          <h4 className="ui sub header">
+          <div className="meta">
             {
               renderCreatedBy(owner)
             }
-          </h4>
+          </div>
           <div className="ui small feed">
             <div className="event">
               <div className="content">
-                {
-                  image
-                  ?
-                  <Card raised image={image} className="parking-image" alt={props.selectedSpace.address} />
-                  :
-                  null
-                }
-                <div className="summary">
-                  {renderSummary()}
-                </div>
+                {renderSummary()}
               </div>
             </div>
           </div>
         </div>
         {
-          props.selectedSpace.claimed 
-            && props.selectedSpace.claimer === props.currentUser.id
-              && props.selectedSpace.claimer !== props.selectedSpace.owner
+          selectedSpace.claimed 
+            && selectedSpace.claimer_id === currentUser.id
+              && selectedSpace.claimer_id !== selectedSpace.owner_id
           ?
           <button className="ui bottom attached button" onClick={goToActiveSpace}>
             <i className="car icon"></i>
@@ -159,10 +154,10 @@ const SpaceShow = (props) => {
           null
         }
         {
-          props.selectedSpace.claimed
-            && props.selectedSpace.claimer === props.selectedSpace.owner
+          selectedSpace.claimed
+            && selectedSpace.claimer_id === selectedSpace.owner_id
           ?
-            <button className="ui bottom attached button" onClick={() => props.addSpaceAfterParking(props.currentUser.id, props.selectedSpace.id)}>
+            <button className="ui bottom attached button" onClick={() => addSpaceAfterParking(currentUser.id, selectedSpace.id)}>
             <i className="car icon"></i>
             Add Parking Spot
           </button>
@@ -170,18 +165,18 @@ const SpaceShow = (props) => {
             null
         }
         {
-          props.selectedSpace.claimed 
-            && props.selectedSpace.owner === props.currentUser.id
-              && props.selectedSpace.owner !== props.selectedSpace.claimer
+          selectedSpace.claimed 
+            && selectedSpace.owner_id === currentUser.id
+              && selectedSpace.owner_id !== selectedSpace.claimer_id
           ?
           renderChatButtons()
           :
           null
         }
         {
-          !props.selectedSpace.claimed 
-          && (props.selectedSpace.owner !== props.currentUser.id) 
-          && !props.claimedSpot
+          !selectedSpace.claimed 
+          && (selectedSpace.owner_id !== currentUser.id) 
+          && !claimedSpot
           ?
             <button className="ui bottom attached button" onClick={claimAction}>
               <i className="car icon"></i>
@@ -191,10 +186,10 @@ const SpaceShow = (props) => {
           null
         }
         {
-          !props.selectedSpace.claimed && props.selectedSpace.owner === props.currentUser.id
+          !selectedSpace.claimed && selectedSpace.owner_id === currentUser.id
           ?
           <Link to={'/'}>
-            <div className="ui bottom attached button" onClick={() => props.removeSpace(props.selectedSpace.id)}>
+            <div className="ui bottom attached button" onClick={() => removeSpace(selectedSpace.id)}>
                 <i className="trash alternate outline icon"></i>
                 Cancel
             </div>

@@ -50,63 +50,81 @@ const ActiveSpace = (props) => {
       <div className={props.activeChat && (props.activeChat === activeSpace.id) ? "active-space-container double" : "active-space-container"}>
         <div className="active-space-info">
           <h3>{activeSpace.address}</h3>
-          {
-            activeSpace.owner !== props.currentUser.id
-            ?
-            <>
-              <div className="info">
-                <div className="">
-                  <h4>Created by: {activeSpace.users.find(user => user.id === activeSpace.owner).name}</h4>
-                  <p>Claimed by: {activeSpace.users.find(user => user.id === activeSpace.claimer).name}</p>
+          <div className='space-info'>
+            {
+              activeSpace.owner !== props.currentUser.id
+              ?
+              <div className='ui items'>
+                <div className='meta'>Created by:</div>
+                <div className='item'>
+                  {
+                    activeSpace.owner.user_image && activeSpace.owner.user_image.content 
+                    ?
+                    <div className='ui tiny image'>
+                      <img src={`data:image/jpeg;base64,${activeSpace.owner.user_image.content}`} />  
+                    </div>
+                    :
+                    null
+                  }
+                  <div className='content'>
+                    <h4 className='header'>{activeSpace.owner.name}</h4>
+                    <div className="meta car-info">
+                      {activeSpace.owner.car_make ? <span>{activeSpace.owner.car_make}</span> : null}
+                      {activeSpace.owner.car_model ? <span>{activeSpace.owner.car_model}</span> : null}
+                      {activeSpace.owner.license_plate ? <span>{activeSpace.owner.license_plate}</span> : null}
+                      {
+                        activeSpace.owner.car_image && activeSpace.owner.car_image.content 
+                        ?
+                        <img className="ui avatar image" src={`data:image/jpeg;base64,${activeSpace.owner.car_image.content}`} />  
+                        :
+                        null
+                      }
+                    </div>
+                  </div>
                 </div>
-                {
-                  image
-                  ?
-                  <Card raised image={image} />
-                  :
-                  null
-                }
               </div>
-              {renderChat()}
-            </>
-            :
-            null
-          }
-          {
-            parked
-            ?
-            <div className="parked-buttons">
-              <Link to={"/"} >
+              :
+              null
+            }
+          </div>
+          <div className='action-btns'>
+            {
+              parked
+              ?
+              <div className="parked-buttons">
+                <Link to={"/"} >
+                  <Button fluid
+                    onClick={addSpaceAfterParking}>
+                    Add Parking Spot
+                  </Button>
+                </Link>
+                <Link to={"/"} >
+                  <Button fluid
+                    onClick={() => props.removeSpace(activeSpace.id)}>
+                    Find New Parking Spot
+                  </Button>
+                </Link>
+              </div>
+              :
+              <>
+                {renderChat()}
+                <Link to={"/"} >
+                  <Button fluid
+                    onClick={() => props.cancelClaim(props.currentUser.id, activeSpace.id)}>
+                    Cancel
+                  </Button>
+                </Link>
                 <Button fluid
-                  onClick={addSpaceAfterParking}>
-                  Add Parking Spot
+                  onClick={handlePark}>
+                  Parked
                 </Button>
-              </Link>
-              <Link to={"/"} >
-                <Button fluid
-                  onClick={() => props.removeSpace(activeSpace.id)}>
-                  Find New Parking Spot
-                </Button>
-              </Link>
-            </div>
-            :
-            <>
-              <Link to={"/"} >
-                <Button fluid
-                  onClick={() => props.cancelClaim(props.currentUser.id, activeSpace.id)}>
-                  Cancel
-                </Button>
-              </Link>
-              <Button fluid
-                onClick={handlePark}>
-                Parked
-              </Button>
-              <Button floated='right' onClick={props.toggleShowDirections}>{props.showDirection ? "Hide Directions" : "Show Directions"}</Button>
-              <Link to={"/"} >
-                <Button floated='left'>Back</Button>
-              </Link>
-            </>
-          }
+                <Button floated='right' onClick={props.toggleShowDirections}>{props.showDirection ? "Hide Directions" : "Show Directions"}</Button>
+                <Link to={"/"} >
+                  <Button floated='left'>Back</Button>
+                </Link>
+              </>
+            }
+          </div>
         </div>
         {
           props.activeChat && (props.activeChat === activeSpace.id)

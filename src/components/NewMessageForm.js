@@ -1,50 +1,46 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux'
 import { Form, Button, Input } from 'semantic-ui-react'
 import { API, HEADERS } from '../constants'
 
 
-class NewMessageForm extends React.Component {
-  state = {
-    content: '',
-    chatroom_id: this.props.chatroom_id,
-    user_id: this.props.currentUser.id
-  };
+const NewMessageForm = (props) => {
+  const [content, setContent] = useState('')
+  const [chatroomId, setChatroomId] = useState(props.chatroom_id)
+  const [userId, setUserId] = useState(props.currentUser.id)
 
-  componentWillReceiveProps = nextProps => {
-    this.setState({ chatroom_id: nextProps.chatroom_id });
-  };
+  useEffect(() => {
+    setChatroomId(props.chatroom_id);
+  }, [])
 
-  handleChange = e => {
-    this.setState({ content: e.target.value });
+  const handleChange = e => {
+    setContent(e.target.value);
   };
   
-  handleSubmit = e => {
+  const handleSubmit = e => {
     e.preventDefault();
     fetch(`${API}/messages`, {
       method: 'POST',
       headers: HEADERS,
-      body: JSON.stringify(this.state)
+      body: JSON.stringify({ content, chatroom_id: chatroomId, user_id: userId })
     });
-    this.setState({ content: '' });
+    setContent('');
   };
 
-  render = () => {
-    return (
-      <div className="message-form">
-        <Form onSubmit={this.handleSubmit}  >
-          <Form.Field>
-            <Input
-            label={<Button type="submit">Send</Button>}
-            labelPosition='right'
-            value={this.state.content}
-            onChange={this.handleChange}
-            />
-          </Form.Field>
-        </Form>
-      </div>
-    );
-  };
+  return (
+    <div className="message-form">
+      <Form onSubmit={handleSubmit}  >
+        <Form.Field>
+          <Input
+          label={<Button type="submit">Send</Button>}
+          labelPosition='right'
+          value={content}
+          onChange={handleChange}
+          />
+        </Form.Field>
+      </Form>
+    </div>
+  );
 }
 
 function msp(state) {

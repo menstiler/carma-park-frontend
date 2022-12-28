@@ -1,161 +1,135 @@
-import React, { Component } from 'react';
+import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux'
 import Search from './Search'
 import Map from './Map'
-import { Button, Form, Icon, Progress } from 'semantic-ui-react'
+import { Button, Icon} from 'semantic-ui-react'
 import { createSpace, prevStep, nextStep, closePopup  } from '../actions/actions'
 import '../styles/spaceForm.scss';
 
-class SpaceForm extends Component {
-
-  state = {
+const SpaceForm = (props) => {
+  const [alert, setAlert] = useState(null)
+  const [coords, setCoords] = useState(null)
+  const [deadline, setDeadline] = useState({
     minutes: 0,
     hours: 0,
-    image: null,
-    alert: null,
-    coords: null
-  }
+  })
 
-  componentWillMount() {
-    this.props.closePopup();
-    let { longitude, latitude } = this.props.currentPosition;
+  useEffect(() => {
+    props.closePopup();
+    let { longitude, latitude } = props.currentPosition;
     let coords = {
       latitude,
       longitude,
     }
-    this.setState({
-      coords
-    })
-  }
+    setCoords(coords)
+  }, [props.currentPosition])
 
-  componentDidMount() {
+  useEffect(() => {
     const token = localStorage.token
     if (!token) {
-      this.props.routerProps.history.push('/login')
+      props.routerProps.history.push('/login')
     }
-  }
+  }, [])
 
-  duplicate = (address, coords) => {
+  const duplicate = (address, coords) => {
     if (!address || !coords) return;
-    let sharedAddress = this.props.spaces.find(space => space.address === address || (JSON.parse(space.longitude) === coords.longitude && JSON.parse(space.latitude) === coords.latitude))
+    let sharedAddress = props.spaces.find(space => space.address === address || (JSON.parse(space.longitude) === coords.longitude && JSON.parse(space.latitude) === coords.latitude))
     if (sharedAddress) {
       return sharedAddress
     }
     return false
   }
 
-  saveAndContinue = (e) => {
+  const saveAndContinue = (e) => {
     e.preventDefault()
-    let nonUnique = this.duplicate(this.props.address, this.props.coords)
-    if (this.props.address && !nonUnique) {
-      this.props.nextStep()
+    let nonUnique = duplicate(props.address, props.coords)
+    if (props.address && !nonUnique) {
+      props.nextStep()
     } else if (nonUnique) {
-      this.setState({
-        alert: `This location is already ${nonUnique.available ? 'available' : 'claimed'}.`
-      })
+      setAlert(`This location is already ${nonUnique.available ? 'available' : 'claimed'}.`)
     } else {
-      this.setState({
-        alert: "Please input a location"
-      })
+      setAlert("Please input a location")
     }
 
   }
 
-  back = (e) => {
+  const back = (e) => {
     e.preventDefault();
-    this.props.prevStep();
-    if (this.props.step === 2) {
-      this.setState({
-        image: null,
+    props.prevStep();
+    if (props.step === 2) {
+      setDeadline({
         hours: 0,
         minutes: 0
       })
     }
   }
 
-
-  closeAlert = () => {
-    this.setState({
-      alert: null
-    })
+  const closeAlert = () => {
+    setAlert(null)
   }
 
-  removeGoogleStreetView = (e) => {
-    e.preventDefault()
-    this.setState({
-      image: null
-    })
-  }
-  
-  grabGoogleStreetView = (e) => {
-    e.preventDefault()
-    this.setState({
-      image: `https://maps.googleapis.com/maps/api/streetview?size=400x400&location=${parseFloat(this.props.coords.latitude)},${parseFloat(this.props.coords.longitude)}&fov=90&heading=200&pitch=5&key=${process.env.REACT_APP_GOOGLE_TOKEN}`
-    })
-  }
-
-  handleFormSubmit = (event) => {
+  const handleFormSubmit = (event) => {
     event.preventDefault()
     let time = {
-      minutes: this.state.minutes,
-      hours: this.state.hours
+      minutes: deadline.minutes,
+      hours: deadline.hours
     }
-    this.props.createSpace(this.props.currentUser.id, this.props.address, this.props.coords, time, this.state.image)
-    if (!this.props.loading) {
-      this.props.routerProps.history.push('/')
+    props.createSpace(props.currentUser.id, props.address, props.coords, time)
+    if (!props.loading) {
+      props.routerProps.history.push('/')
     }
   }
 
-  handleTimeChange = (event) => {
+  const handleTimeChange = (event) => {
     if (event.target.name === "minutes") {
-      this.setState({
+      setDeadline({
+        ...deadline,
         minutes: event.target.value
       })
     } else {
-      this.setState({
+      setDeadline({
+        ...deadline,
         hours: event.target.value
       })
     }
   }
 
-  renderOutput = () => {
-    if (this.state.hours && this.state.minutes) {
-      return `${this.state.hours} ${this.state.hours > 1 ? "hours" : "hour"} and ${this.state.minutes} ${this.state.minutes > 1 ? "minutes" : "minute"}`
-    } else if (this.state.hours) {
-      return `${this.state.hours} ${this.state.hours > 1 ? "hours" : "hour"}`
-    } else if (this.state.minutes) {
-      return `${this.state.minutes} ${this.state.minutes > 1 ? "minutes" : "minute"}`
+  const renderOutput = () => {
+    if (deadline.hours && deadline.minutes) {
+      return `${deadline.hours} ${deadline.hours > 1 ? "hours" : "hour"} and ${deadline.minutes} ${deadline.minutes > 1 ? "minutes" : "minute"}`
+    } else if (deadline.hours) {
+      return `${deadline.hours} ${deadline.hours > 1 ? "hours" : "hour"}`
+    } else if (deadline.minutes) {
+      return `${deadline.minutes} ${deadline.minutes > 1 ? "minutes" : "minute"}`
     }
   }
 
-  updateMap = (coords) => {
-    this.setState({
-      coords: coords
-    })
+  const updateMap = (coords) => {
+    setCoords(coords)
   }
-
-  renderForm = () => {
-    const {step} = this.props;
+  
+  const renderForm = () => {
+    const {step} = props;
     switch(step) {
       case 1:
         return (
           <div className="space-form">
           <form>
-            {this.state.alert ? (
-             <section className="ui message">
-               <i className="close icon" onClick={this.closeAlert}></i>
-               <div className="header">{this.state.alert}</div>
-             </section>
-              )
-              :
-              null
-            }
+              {alert ? (
+              <section className="ui message">
+                <i className="close icon" onClick={closeAlert}></i>
+                <div className="header">{alert}</div>
+              </section>
+                )
+                :
+                null
+              }
               <label><strong>Step 1:</strong> Add Location</label>
               <div className="input-container">
-                <Search createSpace={true} updateMap={this.updateMap} />
+                <Search createSpace={true} updateMap={updateMap} />
               </div>
-              <Map createSpace={true} coords={this.state.coords} />
-              <Button animated floated='right' onClick={this.saveAndContinue}>
+              <Map createSpace={true} coords={coords} />
+              <Button animated floated='right' onClick={saveAndContinue}>
                 <Button.Content visible>Next</Button.Content>
                 <Button.Content hidden>
                   <Icon name='arrow right' />
@@ -170,61 +144,25 @@ class SpaceForm extends Component {
             <form>
               <label><strong>Step 2:</strong> Add a Deadline (optional)</label>
               <div className="setTime">
-                <input type="number" placeholder="00" min="1" max="24" name="hours" onChange={this.handleTimeChange}/>:
-                <input type="number" placeholder="00" min="1" max="59" name="minutes" onChange={this.handleTimeChange}/>
+                <input type="number" placeholder="00" min="1" max="24" name="hours" onChange={handleTimeChange}/>:
+                <input type="number" placeholder="00" min="1" max="59" name="minutes" onChange={handleTimeChange}/>
                 <div>
                 {
-                  this.state.hours || this.state.minutes
+                  deadline.hours || deadline.minutes
                   ?
-                  `Parking spot will be available for ${this.renderOutput()}`
+                  `Parking spot will be available for ${renderOutput()}`
                   :
                   null
                 }
                 </div>
               </div>
-              <Button animated floated='left' onClick={this.back}>
+              <Button animated floated='left' onClick={back}>
                 <Button.Content visible>Back</Button.Content>
                 <Button.Content hidden>
                   <Icon name='arrow left' />
                 </Button.Content>
               </Button>
-              <Button animated floated='right' onClick={this.saveAndContinue}>
-                <Button.Content visible>Next</Button.Content>
-                <Button.Content hidden>
-                  <Icon name='arrow right' />
-                </Button.Content>
-              </Button>
-            </form>
-          </div>
-        )
-      case 3:
-        return (
-          <div className="space-form">
-            <form >
-              <label><strong>Step 2:</strong> Add an Image (optional)</label>
-              <div className="streetview-image">
-              {
-                this.state.image
-                ?
-                <Button onClick={this.removeGoogleStreetView}>Remove Street View Image</Button>
-                :
-                <Button onClick={this.grabGoogleStreetView}>Add Street View Image</Button>
-              }
-                {
-                  this.state.image
-                  ?
-                  <img src={this.state.image} />
-                  :
-                  null
-                }
-              </div>
-              <Button animated floated='left' onClick={this.back}>
-                <Button.Content visible>Back</Button.Content>
-                <Button.Content hidden>
-                  <Icon name='arrow left' />
-                </Button.Content>
-              </Button>
-              <Button floated='right' onClick={this.handleFormSubmit}>Add Parking Spot</Button>
+              <Button floated='right' onClick={handleFormSubmit}>Add Parking Spot</Button>
             </form>
           </div>
         )
@@ -233,9 +171,7 @@ class SpaceForm extends Component {
     }
   }
 
-  render() {
-    return this.renderForm()
-  }
+  return renderForm();
 }
 
 function msp(state) {
@@ -244,7 +180,6 @@ function msp(state) {
     address: state.form.address,
     coords: state.form.coords,
     step: state.form.step,
-    progress: state.form.progress,
     loading: state.form.loading,
     spaces: state.map.spaces,
     currentPosition: state.map.currentPosition
