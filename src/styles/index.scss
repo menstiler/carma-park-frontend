@@ -6,7 +6,7 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   background: url(https://img.freepik.com/free-vector/silhouette-skyline-illustration_53876-78792.jpg?size=626&ext=jpg);
-  background-repeat-y: no-repeat;
+  background-repeat: repeat-x;
   background-position: bottom;
 
   @media (max-width: 650px) {
