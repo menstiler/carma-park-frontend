@@ -1,11 +1,10 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { connect } from 'react-redux'
 import SpaceCard from '../components/SpaceCard'
 import { claimSpace, filterData as filterSpaces } from '../actions/actions'
 import ChatTable from '../components/ChatTable'
 
 const SpacesContainer = (props) => {
-
   const renderSpaces = () => {
     let filteredSpaces = filterSpaces(props.spaces, props.currentUser)
     if (filteredSpaces.length < 1) {
@@ -17,7 +16,8 @@ const SpacesContainer = (props) => {
   const showChat = () => {
     if (props.activeChat 
     && (props.activeChat === props.selectedSpace.id)
-    && props.selectedSpace.owner_id === props.currentUser.id) {
+    && (props.selectedSpace.owner_id === props.currentUser.id || props.selectedSpace.claimer_id === props.currentUser.id)
+     ) {
       return true;
     }
     return false;
@@ -52,6 +52,7 @@ function msp(state) {
     distanceShow: state.form.distanceShow,
     selectedSpace: state.map.selectedSpace,
     activeChat: state.user.activeChat,
+    activeSpace: state.map.activeSpace
   }
 }
 

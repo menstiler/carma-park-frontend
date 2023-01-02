@@ -82,7 +82,8 @@
 
 @media screen and (max-width: 750px) {
   .filter-bar {
-
+    z-index: 1;
+    
     .filter-container {
       display: flex;
       flex-direction: column-reverse;

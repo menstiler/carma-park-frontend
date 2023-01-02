@@ -19,7 +19,7 @@ const NewMessageForm = (props) => {
   
   const handleSubmit = e => {
     e.preventDefault();
-    fetch(`${API}/messages`, {
+    fetch(`${API}messages`, {
       method: 'POST',
       headers: HEADERS,
       body: JSON.stringify({ content, chatroom_id: chatroomId, user_id: userId })

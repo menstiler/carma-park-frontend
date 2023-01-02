@@ -35,10 +35,11 @@ import {
   ADD_FAVORITE,
   REMOVE_FAVORITE,
   REMOVE_SHOW,
-  UPDATE_USER_SPACE,
   UPDATE_USER,
-  UPDATE_USER_SPACES,
   TOGGLE_LOADING_USER,
+  CANCEL_CLAIM,
+  CREATE_AFTER_PARK,
+  PARKED
 } from '../types'
 
 import {
@@ -48,6 +49,9 @@ import {
 
 function filterData(spaces, currentUser) {
   let filteredSpaces = spaces.filter(space => {
+    if (!space.owner_id) {
+      return false
+    }
     if (!space.claimed) {
       return space;
     } else if (space.claimed) {
@@ -56,9 +60,10 @@ function filterData(spaces, currentUser) {
           return space;
         } else if (space.claimer_id === currentUser.id) {
           return space;
-        }
+        } 
       }
     } 
+    return false;
   })
   return filteredSpaces;
 }
@@ -225,32 +230,36 @@ function fetchChats() {
   }
 }
 
-function handleReceivedUser(response, routerProps, currentUser) {
+function handleReceivedUser(response, routerProps) {
   if (response.errors) {
     return {type: ALERT, payload: response.errors.join(', ')}
   } else {
-    if (!currentUser) {
-      localStorage.token = response.token
-      routerProps.history.push('/')
-      return {type: ADD_USER, payload: response.user}
-    } else {
-      return {type: UPDATE_USER, payload: response.user}
-    }
+    return {type: UPDATE_USER, payload: response.user}
   }
 }
 
 function handleReceivedSpace(response, router, currentUser) {
   const space = response.space;
   return async function(dispatch) {
-    if (response.action === 'update') {
-      if (currentUser.id === space.claimer) {
-        router.history.push(`/spaces/${space.id}`)
-      }
-      await dispatch({type: CLAIM_SPACE, payload: space})
-    } else if (response.action === 'delete') {
-      await dispatch({type: REMOVE_SPACE, payload: space})
-    } else if (response.action === 'create') {
-      await dispatch({type: NEW_SPACE, payload: space})
+    console.log(response)
+    switch(response.action) {
+      case 'claim':
+        await dispatch({type: CLAIM_SPACE, payload: space})
+        break;
+      case 'delete':
+        await dispatch({type: REMOVE_SPACE, payload: space})
+        break;
+      case 'cancel':
+        await dispatch({type: CANCEL_CLAIM, payload: space})
+        break;
+      case 'create':
+        await dispatch({type: NEW_SPACE, payload: space})
+        break;
+      case 'parked':
+        await dispatch({type: PARKED, payload: space})
+        break;
+      default:
+        await dispatch({type: CREATE_AFTER_PARK, payload: space})
     }
   }
 }

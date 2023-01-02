@@ -10,10 +10,10 @@ import Profile from '../components/Profile'
 const MainContainer = (props) => {
   return (
     <Switch>
-      <Route path="/login" render={(routerProps) => <LoginForm routerProps={routerProps}/>} />
-      <Route path="/sign_up" render={(routerProps) => <SignupForm routerProps={routerProps}/>} />
-      <Route path="/profile" render={(routerProps) => <Profile routerProps={routerProps}/>} />
-      <Route path="/" component={MapContainer} />
+      <Route path="/login" component={routerProps => <LoginForm {...props} />} />
+      <Route path="/sign_up" component={routerProps => <SignupForm {...props} />} />
+      <Route path="/profile" component={Profile} />
+      <Route path="/" component={routerProps => <MapContainer {...props} />} />
     </Switch>
   );
 }

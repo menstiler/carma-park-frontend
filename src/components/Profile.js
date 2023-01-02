@@ -14,7 +14,6 @@ import {
   addSpaceAfterParking,
   removeSpace
 } from '../actions/actions'
-import { findPerson } from '../actions/utils'
 import Map from './Map'
 import '../styles/profile.scss'
 import { Route, Switch, NavLink, Prompt, withRouter } from 'react-router-dom';
@@ -47,7 +46,7 @@ const Profile = (props) => {
     setLoading(true)
     const token = localStorage.token
     if (!token) {
-      props.routerProps.history.push('/login')
+      props.history.push('/login')
     }
   }, [])
 
@@ -84,7 +83,6 @@ const Profile = (props) => {
 
   const goToActiveSpace = (space) => {
     props.dispatchActiveSpace(space)
-    props.routerProps.history.push(`/spaces/${space.id}`)
   }
 
   const renderActiveSpace = () => {
@@ -108,7 +106,7 @@ const Profile = (props) => {
         labelPosition='left'
           floated='right'
           content='Continue Parking'
-          onClick={() => goToActiveSpace(activeSpace)}
+          onClick={() => props.history.push('/')}
         />
       }
       return <Label>Claimed by {activeSpace.claimer.name}</Label>
@@ -168,7 +166,7 @@ const Profile = (props) => {
 
   const openUserSpace = (space) => {
     props.showSpace(space);
-    props.routerProps.history.push('/')
+    props.history.push('/')
     setIsDirty(false)
   }
 
@@ -191,7 +189,7 @@ const Profile = (props) => {
   const deleteAccount = () => {
     let shouldDelete = window.confirm('Are you sure you want to delete your account?');
     if (shouldDelete) {
-      props.deleteAccount(props.currentUser.id, props.routerProps.history)
+      props.deleteAccount(props.currentUser.id, props.history)
     }
   }
 

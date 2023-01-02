@@ -5,7 +5,6 @@ import { GeoapifyGeocoderAutocomplete, GeoapifyContext } from '@geoapify/react-g
 import '@geoapify/geocoder-autocomplete/styles/minimal.css'
 
 const Search = (props) => {
-  
   const handleChange = async (data) => {
     props.goToViewport({latitude: data.properties.lat, longitude: data.properties.lon}, props.spaces)
     if (props.createSpace) {
@@ -18,6 +17,7 @@ const Search = (props) => {
     <GeoapifyContext apiKey={process.env.REACT_APP_GEOAPIFY_API_KEY}>
       <GeoapifyGeocoderAutocomplete placeholder="Enter address here"
         placeSelect={handleChange}
+        value={props.address}
         />
     </GeoapifyContext>
   )
@@ -25,7 +25,8 @@ const Search = (props) => {
 
 function msp(state) {
   return {
-    spaces: state.map.spaces
+    spaces: state.map.spaces,
+    address: state.form.address,
   }
 }
 

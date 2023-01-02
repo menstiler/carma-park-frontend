@@ -5,6 +5,7 @@ import Map from './Map'
 import { Button, Icon} from 'semantic-ui-react'
 import { createSpace, prevStep, nextStep, closePopup  } from '../actions/actions'
 import '../styles/spaceForm.scss';
+import { withRouter } from "react-router-dom";
 
 const SpaceForm = (props) => {
   const [alert, setAlert] = useState(null)
@@ -27,7 +28,7 @@ const SpaceForm = (props) => {
   useEffect(() => {
     const token = localStorage.token
     if (!token) {
-      props.routerProps.history.push('/login')
+      props.history.push('/login')
     }
   }, [])
 
@@ -46,7 +47,7 @@ const SpaceForm = (props) => {
     if (props.address && !nonUnique) {
       props.nextStep()
     } else if (nonUnique) {
-      setAlert(`This location is already ${nonUnique.available ? 'available' : 'claimed'}.`)
+      setAlert(`This location is already ${nonUnique.claimed ? 'claimed' : 'available'}.`)
     } else {
       setAlert("Please input a location")
     }
@@ -76,7 +77,7 @@ const SpaceForm = (props) => {
     }
     props.createSpace(props.currentUser.id, props.address, props.coords, time)
     if (!props.loading) {
-      props.routerProps.history.push('/')
+      props.history.push('/')
     }
   }
 
@@ -191,4 +192,4 @@ export default connect(msp, {
   nextStep,
   prevStep,
   closePopup
-})(SpaceForm);
+})(withRouter(SpaceForm));

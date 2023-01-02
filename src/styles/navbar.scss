@@ -16,19 +16,6 @@
       }
     }
   } 
-
-  #active-message {
-    margin: 0px;
-    padding:13px;
-    border-radius:0px;
-    -webkit-box-shadow:none;
-    box-shadow:none;
-
-    i.close.icon {
-      right: 4px;
-      top:2px;
-    }
-  }
   
   .notifications {
     padding: 10px;
@@ -40,10 +27,14 @@
   }
 }
 
+.toaster {
+  display: flex
+}
+
 @media screen and (max-width: 750px) {
   .navbar {    
     position: absolute;
-    z-index: 1;
+    z-index: 2;
     left: 0px;
     right: 0px;
     

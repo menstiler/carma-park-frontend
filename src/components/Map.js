@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import ReactMapGL, { Marker, Popup, GeolocateControl } from 'react-map-gl';
+import ReactMapGL, { Marker, Popup } from 'react-map-gl';
 import { connect } from 'react-redux'
 
 // import actions!
@@ -17,24 +17,44 @@ const Map = (props) => {
   const [viewport, setViewport] = useState({
     width: 400,
     height: 400,
-    latitude: 40.705740,
-    longitude: -74.014000,
+    latitude: null,
+    longitude: null,
     zoom: 15
   })
 
   const mapRef = useRef(null)
   
+  const updateViewport = (coords) => {
+    let { longitude, latitude } = coords;
+    setViewport({
+      ...viewport,
+      longitude: parseFloat(longitude),
+      latitude: parseFloat(latitude)
+    })
+  }
+
+  useEffect(() => {
+    updateViewport(props.viewport)
+  }, [props.viewport])
+
+  useEffect(() => { 
+    if (props.activeSpace) {
+      updateViewport(props.activeSpace)
+    } 
+  }, [props.activeSpace])
+
   useEffect(() => {
     if (props.parent === "form" || props.createSpace) {
       props.closePopup()
-      let { longitude, latitude } = props.currentPosition;
-      setViewport({
-        ...viewport,
-        longitude,
-        latitude
-      })
     }
+    updateViewport(props.currentPosition)
   }, [props.currentPosition])
+  
+  useEffect(() => {
+    if (props.coords) {
+      updateViewport(props.coords)
+    }
+  }, [props.coords]) 
 
   const renderNewSpaceMarker = () => {
     if (props.marker) {
@@ -102,18 +122,7 @@ const Map = (props) => {
       return "streets-v11"
     }
   }
-
-  useEffect(() => {
-    if (props.coords) {
-      let { longitude, latitude } = props.coords;
-      setViewport({
-        ...viewport,
-        latitude,
-        longitude
-      })
-    }
-  }, [props.coords])
-
+  
   const showViewport = () => {
     if (props.spaceLog) {
       let { longitude, latitude } = props.usViewport;
@@ -122,25 +131,22 @@ const Map = (props) => {
         longitude,
         latitude
       }
-    } else if (props.createSpace) {
+    } else {
       return {
         ...viewport,
       }
-    } else {
-      return props.viewport
-    }
+    } 
   }
 
   const onViewportChange = (viewport) => {
-    if (props.SpaceLog || props.createSpace) {
-      setViewport(viewport)
-    } else {
-      props.changeViewport(viewport)
-    }
+    setViewport(viewport)
   }
 
   const style = findStyle()
 
+  if (!viewport.latitude || !viewport.longitude) {
+    return null
+  }
   return(
     <ReactMapGL
       ref={mapRef}
@@ -204,6 +210,7 @@ function msp(state) {
     currentUser: state.user.currentUser,
     mapStyle: state.map.mapStyle,
     activeSpace: state.map.activeSpace,
+    coords: state.form.coords,
   }
 }
 

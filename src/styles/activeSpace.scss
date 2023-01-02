@@ -1,12 +1,26 @@
 .active-space-container {
   width: 25%;
   height: calc(100vh - 42px);
-    
+  
+  + .map-container {
+    > div {
+      width: 100%!important;
+      height: calc(100vh - 48px)!important;
+    }
+  }
+
   @media (max-width: 650px) {
     width: 100%;
     position: absolute;
     bottom: 0;
     height: 50%;
+
+    + .map-container {
+      height: 50%!important;
+      > div {
+        height: 100%!important;
+      }
+    }
   }
 
   &.double {
@@ -100,5 +114,14 @@
     height: 48%;
     position: absolute;
     top: -10px;
+  }
+}
+
+.alert {
+  display: flex;
+  justify-content: center;
+  
+  .message {
+    margin: 50px 10px!important
   }
 }

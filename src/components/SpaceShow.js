@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
 import { 
@@ -8,7 +8,8 @@ import {
   cancelClaim, 
   removeSpace, 
   openChat,
-  addSpaceAfterParking,
+  finishedParking,
+  createSpace,
   hideChat } from '../actions/actions'
 
 const SpaceShow = ({ 
@@ -22,11 +23,12 @@ const SpaceShow = ({
   chats,
   dispatchActiveSpace,
   routerProps,
-  addSpaceAfterParking,
   claimedSpot,
-  removeSpace
+  removeSpace,
+  finishedParking,
+  cancelClaim,
+  createSpace
 }) => {
-
   const spaceRef = useRef(null);
   const { owner, image } = selectedSpace
   
@@ -55,19 +57,9 @@ const SpaceShow = ({
     }
   }
 
-  const goToActiveSpace = () => {
-    dispatchActiveSpace(selectedSpace)
-    routerProps.history.push(`/spaces/${selectedSpace.id}`)
-  }
-
   const renderCreatedBy = () => {
-    let { owner, claimer_id, owner_id } = selectedSpace;
-
-    if (currentUser.id === claimer_id) {
-      return <Description user={owner} text='Created by' />
-    } else {
-      return `Created by ${currentUser.id === owner_id ? 'You' : owner.name}`;
-    }
+    let { owner, owner_id } = selectedSpace;
+    return `Created by ${currentUser.id === owner_id ? 'You' : owner.name}`;
   }
   
   const renderSummary = () => {
@@ -99,7 +91,7 @@ const SpaceShow = ({
             }
             <div className='content'>
               <h4 className='header'>
-                {user.name}
+                {user.id === currentUser.id ? 'You' : user.name}
               </h4>
               <div className="meta car-info">
                 {user.car_make ? <span>{user.car_make}</span> : null}
@@ -118,7 +110,7 @@ const SpaceShow = ({
       </div>
     </div>
   )
-
+  
   if (!currentUser) return null;
 
   return (
@@ -141,29 +133,6 @@ const SpaceShow = ({
             </div>
           </div>
         </div>
-        {
-          selectedSpace.claimed 
-            && selectedSpace.claimer_id === currentUser.id
-              && selectedSpace.claimer_id !== selectedSpace.owner_id
-          ?
-          <button className="ui bottom attached button" onClick={goToActiveSpace}>
-            <i className="car icon"></i>
-            Continue Parking
-          </button>
-          :
-          null
-        }
-        {
-          selectedSpace.claimed
-            && selectedSpace.claimer_id === selectedSpace.owner_id
-          ?
-            <button className="ui bottom attached button" onClick={() => addSpaceAfterParking(currentUser.id, selectedSpace.id)}>
-            <i className="car icon"></i>
-            Add Parking Spot
-          </button>
-            :
-            null
-        }
         {
           selectedSpace.claimed 
             && selectedSpace.owner_id === currentUser.id
@@ -219,6 +188,7 @@ export default connect(msp, {
   openChat,
   openNewChat,
   dispatchActiveSpace,
-  addSpaceAfterParking,
-  hideChat
+  hideChat,
+  finishedParking,
+  createSpace
 })(SpaceShow);

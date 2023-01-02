@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Button, Item, Label, Dropdown, Icon }  from 'semantic-ui-react'
+import { Button, Item, Label, Dropdown }  from 'semantic-ui-react'
 import { connect } from 'react-redux'
 import {
   deleteSpaceLog,
@@ -94,54 +94,76 @@ const Activity = (props) => {
         {
           spaceLogsExists
           ?
-          _.orderBy(filteredSpaceLogs, ['space.updated_at'], ['desc']).map(spaceLog => {
-          let space = spaceLog.space;
-          let status = spaceLog.status;
-          let isActive = _.find(props.currentUser.spaces, ['id', space.id]) !== undefined ? true : false;
-
-          return ( 
-            <Item key={spaceLog.id}>
-              <Item.Content>
-                <Item.Header>{space.address}</Item.Header>
-                <Item.Meta>
-                  {
-                    moment(space.updated_at).format('dddd, MMMM Do YYYY, h:mm a')
-                  }
-                </Item.Meta>
-                <Item.Extra>
-                  <Label>{capitalize(status)}</Label>
-                  {
-                    isActive
-                    ?
-                    null
-                    :
-                    <Button 
-                      icon='trash' 
-                      labelPosition='left'
-                      floated='right' 
-                      content='Delete Record'
-                      onClick={() => props.deleteSpaceLog(spaceLog.id)}
-                    />
-                  }
-                </Item.Extra>
-              </Item.Content>
-              <div className="map">
-                <Map 
-                  spaceLog={space} 
-                  usViewport={{
-                    latitude: parseFloat(space.latitude),
-                    longitude: parseFloat(space.longitude)
-                  }}  
-                />
-              </div>
-            </Item>
+          _.orderBy(filteredSpaceLogs, ['space.updated_at'], ['desc']).map(spaceLog => 
+            <SpaceCell
+              spaceLog={spaceLog} 
+              deleteSpaceLog={deleteSpaceLog} 
+              currentUser={props.currentUser}
+            />
           ) 
-        })
         :
         <div className="empty">No Activity</div>
       }
     </Item.Group>
   </>
+  )
+}
+
+const SpaceCell = ({ spaceLog, deleteSpaceLog, currentUser }) => {
+  const [showMap, setShowMap] = useState(false)
+  let space = spaceLog.space
+  let status = spaceLog.status
+  let isActive = _.find(currentUser.spaces, ['id', space.id]) !== undefined ? true : false;
+
+  return ( 
+    <Item key={spaceLog.id}>
+      <Item.Content>
+        <Item.Header>{space.address}</Item.Header>
+        <Item.Meta>
+          {
+            moment(space.updated_at).format('dddd, MMMM Do YYYY, h:mm a')
+          }
+        </Item.Meta>
+        <Item.Extra>
+          <Label>{capitalize(status)}</Label>
+          <Button 
+            icon='map marker alternate' 
+            labelPosition='left'
+            floated='right' 
+            content={showMap ? 'Hide Map' : 'Show Map'}
+            onClick={() => setShowMap(!showMap)}
+          />
+          {
+            isActive
+            ?
+            null
+            :
+            <Button 
+              icon='trash' 
+              labelPosition='left'
+              floated='right' 
+              content='Delete Record'
+              onClick={() => deleteSpaceLog(spaceLog.id)}
+            />
+          }
+        </Item.Extra>
+      </Item.Content>
+      {
+        showMap 
+        ?
+        <div className="map">
+          <Map 
+            spaceLog={space} 
+            usViewport={{
+              latitude: parseFloat(space.latitude),
+              longitude: parseFloat(space.longitude)
+            }}  
+          />
+        </div>
+        :
+        null
+      }
+    </Item>
   )
 }
 

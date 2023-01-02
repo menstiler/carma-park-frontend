@@ -6,7 +6,7 @@ import { deleteAllNotifications, handleNotificationDismiss, closeActiveNotificat
 import { logout } from '../actions/user'
 import '../styles/navbar.scss';
 import '../styles/loader.scss';
-import Loader from './Loader'
+import toast from 'react-hot-toast';
 
 const Navbar = (props) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -40,6 +40,31 @@ const Navbar = (props) => {
     }
   }, [props.routerProps.location])
 
+  // {
+  //   props.currentUser && props.activeNotification
+  //   ?
+  //   <Message
+  //     id="active-message"
+  //     onDismiss={props.closeActiveNotification}
+  //     content={props.activeNotification.message}
+  //   />
+  //   :
+  //   null
+  // }
+
+  useEffect(() => {
+    if (props.currentUser && props.activeNotification) {
+      toast((t) => (
+        <span className='toaster'>
+          {props.activeNotification.message}
+          <button className='ui button icon small' onClick={() => toast.dismiss(t.id)}>
+            <Icon name='delete' />
+          </button>
+        </span>
+      ))
+    }
+  }, [props.activeNotification])
+
   const handleClickOutside = (event) => {
 		if (menuRef.current && !menuRef.current.contains(event.target) && openRef.current && !openRef.current.contains(event.target)) {
 			setMobileMenuOpen(false)
@@ -48,11 +73,53 @@ const Navbar = (props) => {
 
   const renderMobileMenu = (e) => {
     setMobileMenuOpen(!mobileMenuOpen)
-  }
+  } 
 
+  const Actions = (props) => {
+    const AddOrFind = (props) => {
+      if (props.activeSpace) {
+        return null
+      }
+      if (props.routerProps.location.pathname === "/add_space") {
+        return (
+          <Link to={"/"} className="item" >
+            Find Parking Spot
+          </Link>
+        )
+      } else {
+        return (
+          <Link to={"/add_space"} className="item" >
+            Add Parking Spot
+          </Link>
+        )
+      }
+    }
+    if (props.currentUser) {
+      return (
+        <Menu.Menu position='right'>
+          <AddOrFind {...props} />
+          <Menu.Item name='logout' onClick={() => props.logout(props.routerProps.history)}>
+            Logout
+          </Menu.Item>
+        </Menu.Menu>
+      )
+    } else {
+      return (
+        <Menu.Menu position='right' >
+          <Link to='/login' className="item">
+              Login
+          </Link>
+          <Link to='/sign_up' className="item">
+              Sign Up
+          </Link>
+        </Menu.Menu>
+      )
+    }
+  }
+  
   const renderNavbar = () => {
     if (props.loading) {
-      return <Loader />
+      return null
     } else {
       return (
         <div className="navbar" ref={openRef}>
@@ -88,47 +155,8 @@ const Navbar = (props) => {
                 :
                 null
               }
-              {
-                props.currentUser && props.activeNotification
-                ?
-                <Message
-                  id="active-message"
-                  onDismiss={props.closeActiveNotification}
-                  content={props.activeNotification.message}
-                />
-                :
-                null
-              }
               <div id="active-notification"></div>
-              {
-                props.currentUser
-                ?
-                <Menu.Menu position='right'>
-                  {
-                    props.routerProps.location.pathname === "/add_space"
-                    ?
-                    <Link to={"/"} className="item" >
-                      Find Parking Spot
-                    </Link>
-                    :
-                    <Link to={"/add_space"} className="item" >
-                      Add Parking Spot
-                    </Link>
-                  }
-                  <Menu.Item name='logout' onClick={() => props.logout(props.routerProps.history)}>
-                    Logout
-                  </Menu.Item>
-                </Menu.Menu>
-                :
-                <Menu.Menu position='right' >
-                  <Link to='/login' className="item">
-                      Login
-                  </Link>
-                  <Link to='/sign_up' className="item">
-                      Sign Up
-                  </Link>
-                </Menu.Menu>
-              }
+              <Actions {...props} />
             </div>
           </Menu>
           {
@@ -167,7 +195,8 @@ function msp(state) {
     loading: state.map.loading,
     notifications: state.user.notifications,
     showNotifications: state.user.showNotifications,
-    activeNotification: state.user.activeNotification
+    activeNotification: state.user.activeNotification,
+    activeSpace: state.map.activeSpace
   }
 }
 

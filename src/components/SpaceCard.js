@@ -44,7 +44,7 @@ const SpaceCard = (props) => {
     } else if (props.space.claimed) {
       const claimer = props.space.claimer
       if (props.currentUser.id === claimer.id) {
-        if (claimer.id !== props.space.owner) {
+        if (claimer.id !== props.space.owner_id) {
           return "Claimed by You"
         } else {
           return "You have parked here"

@@ -3,11 +3,10 @@ import 'mapbox-gl/dist/mapbox-gl.css';
 import MainContainer from './containers/MainContainer'
 import Navbar from './components/Navbar'
 import { connect } from 'react-redux'
-import { ActionCableConsumer } from 'react-actioncable-provider'
-import Cable from './components/Cable'
 import { handleReceivedNotifications, closeNotifications, toggleShowNotifications } from './actions/notification'
-import { dispatchSetFavorites, handleReceivedUser, toggleLoading, handleReceivedSpace, handleAutoLogin, fetchSpots, setCurrentPosition, updateTimer, fetchChats, handleReceivedMessage, handleReceivedChatroom } from './actions/actions'
+import { dispatchSetFavorites, handleReceivedUser, toggleLoading, handleReceivedSpace, handleAutoLogin, fetchSpots, setCurrentPosition, updateTimer, fetchChats, handleReceivedMessage, handleReceivedChatroom, dispatchActiveSpace } from './actions/actions'
 import _ from 'lodash';
+import { Toaster } from 'react-hot-toast';
 
 const App = (props) => {
   
@@ -22,12 +21,16 @@ const App = (props) => {
     props.fetchSpots(props.viewport)
     props.dispatchSetFavorites()
     props.fetchChats()
-    if (navigator.geolocation) {
+
+    navigator.geolocation.watchPosition((position) => {
       navigator.geolocation.getCurrentPosition(displayLocationInfo);
-    } else {
-      props.setCurrentPosition([-74.01500, 40.705341])
-    }
-    
+    },
+    (error) => {
+      if (error.code === error.PERMISSION_DENIED) {
+        props.setCurrentPosition([-74.01500, 40.705341])
+      }
+    });
+
     mainInterval = setInterval(() => {
       props.updateTimer()
     }, 1000)
@@ -36,6 +39,86 @@ const App = (props) => {
       clearInterval(mainInterval)
     }
   }, [])
+
+  useEffect(() => {    
+    const ChatroomSubscription = props.cable.subscriptions.create(
+        {
+          channel: 'ChatroomsChannel',
+        },
+        {
+          received: (response) => props.handleReceivedChatroom(response)
+        }
+    )
+    const NotificationSubscription = props.cable.subscriptions.create(
+        {
+          channel: 'NotificationsChannel',
+        },
+        {
+          received: (response) => props.handleReceivedNotifications(response)
+        }
+    )
+    const UsersSubscription = props.cable.subscriptions.create(
+      {
+        channel: 'UsersChannel',
+      },
+      { 
+        connected: () => {
+          console.log("connected!")
+        },
+        disconnected: () => {
+          console.log("disconnected!")
+        },
+        received: (response) => {
+          console.log("received!")
+          props.handleReceivedUser(response, props.routerProps)
+        }
+      }
+    )
+    const SpacesSubscription = props.cable.subscriptions.create(
+        {
+          channel: 'SpacesChannel',
+        },
+        {
+          received: (response) => props.handleReceivedSpace(response, props.routerProps, props.currentUser)
+        }
+    )
+
+    return () => {
+      SpacesSubscription.unsubscribe()
+      UsersSubscription.unsubscribe()
+      NotificationSubscription.unsubscribe()
+      ChatroomSubscription.unsubscribe()
+    }
+  }, [props.cable.subscriptions, props.currentUser])
+
+  useEffect(() => {
+    if (props.chats.length) {
+      props.chats.map(chatroom => {
+        const existingChatroom = props.cable.subscriptions.subscriptions.find(subscription => JSON.parse(subscription.identifier).chatroom === chatroom.id)
+        if (existingChatroom) {
+          return null
+        }
+        return props.cable.subscriptions.create(
+          {
+            channel: 'MessagesChannel',
+            chatroom: chatroom.id
+          },
+          {
+            received: (response) => props.handleReceivedMessage(response)
+          }
+        )
+      })
+    }
+  }, [props.chats])
+
+  useEffect(() => {
+    if (props.currentUser) {
+      if (props.currentUser.claimed_spaces.length) {
+        const activeSpace = props.currentUser.claimed_spaces[0]
+        props.dispatchActiveSpace(activeSpace)
+      }
+    } 
+  }, [props.currentUser])
 
   const displayLocationInfo = async (position) => {
     const lng = position.coords.longitude;
@@ -50,38 +133,17 @@ const App = (props) => {
 
   return (
     <>
-      {
-        props.currentUser
-        ?
-        <>
-          <ActionCableConsumer
-            channel={{ channel: 'ChatroomsChannel' }}
-            onReceived={props.handleReceivedChatroom}
-          />
-          <ActionCableConsumer
-            channel={{ channel: 'NotificationsChannel' }}
-            onReceived = {(response) => props.handleReceivedNotifications(response)}
-          />
-          <ActionCableConsumer
-            channel={{ channel: 'SpacesChannel' }}
-            onReceived={(response) => props.handleReceivedSpace(response, props.routerProps, props.currentUser)}
-          />
-          <ActionCableConsumer
-            channel={{ channel: 'UsersChannel' }}
-            onReceived={(response) => props.handleReceivedUser(response, props.routerProps, props.currentUser)}
-          />
-        </>
-        :
-        null
-      }
-      {props.chats.length ? (
-        <Cable
-          chatrooms={props.chats}
-          handleReceivedMessage={props.handleReceivedMessage}
-        />
-      ) : null}
       <Navbar routerProps={props.routerProps} />
       <MainContainer routerProps={props.routerProps} />
+      <Toaster 
+        position="top-right"
+        toastOptions={{
+          duration: 5000
+        }}
+        containerStyle={{ 
+          top: '50px'
+        }}
+      />
     </>
   );
 }
@@ -94,7 +156,7 @@ function msp(state) {
     chats: state.user.chats,
     currentUser: state.user.currentUser,
     viewport: state.map.viewport,
-    showNotifications: state.user.showNotifications
+    showNotifications: state.user.showNotifications,
   }
 }
 
@@ -113,4 +175,5 @@ export default connect(msp, {
   closeNotifications,
   handleReceivedUser,
   dispatchSetFavorites,
+  dispatchActiveSpace
 })(App);
